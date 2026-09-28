@@ -165,13 +165,13 @@
         </template>
 
         <!-- Confirm: delete an exam the user owns -->
-        <div v-if="deleteTarget" class="overlay" @click.self="deleteTarget = null">
+        <div v-if="deleteTarget" class="overlay" @click.self="closeConfirm">
             <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="del-title" aria-describedby="del-desc">
                 <h2 id="del-title">刪除這份考卷？</h2>
                 <p id="del-desc">「{{ deleteTarget.name }}」會從你的考卷中移除。題目本身還留在題庫。</p>
                 <p v-if="actionError" class="dialog-error" role="alert">{{ actionError }}</p>
                 <div class="dialog-actions">
-                    <button type="button" class="action action-outline" @click="deleteTarget = null; actionError = ''">取消</button>
+                    <button type="button" class="action action-outline" @click="closeConfirm">取消</button>
                     <button type="button" class="action action-danger" :disabled="busy" @click="confirmDelete">
                         {{ busy ? '刪除中…' : '刪除考卷' }}
                     </button>
@@ -180,13 +180,13 @@
         </div>
 
         <!-- Confirm: abandon an unfinished attempt -->
-        <div v-if="abandonTarget" class="overlay" @click.self="abandonTarget = null">
+        <div v-if="abandonTarget" class="overlay" @click.self="closeConfirm">
             <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="ab-title" aria-describedby="ab-desc">
                 <h2 id="ab-title">放棄這次作答？</h2>
                 <p id="ab-desc">已作答的 {{ abandonTarget.open_attempt.answered_count }} 題會清除，不會計入成績。考卷本身還在，之後可以重新開始。</p>
                 <p v-if="actionError" class="dialog-error" role="alert">{{ actionError }}</p>
                 <div class="dialog-actions">
-                    <button type="button" class="action action-outline" @click="abandonTarget = null; actionError = ''">繼續保留</button>
+                    <button type="button" class="action action-outline" @click="closeConfirm">繼續保留</button>
                     <button type="button" class="action action-danger" :disabled="busy" @click="confirmAbandon">
                         {{ busy ? '處理中…' : '放棄作答' }}
                     </button>
@@ -236,13 +236,17 @@
                         </div>
                     </fieldset>
 
-                    <p class="mock-summary" aria-live="polite">{{ mockSummary }}</p>
+                    <div v-if="failedSourceIds.length" class="dialog-error" role="alert">
+                        <span>有 {{ failedSourceIds.length }} 份考卷的題目載入失敗，還不能抽題。</span>
+                        <button type="button" class="action action-quiet action-sm" @click="retryFailedSources">重試</button>
+                    </div>
+                    <p v-else class="mock-summary" aria-live="polite">{{ mockSummary }}</p>
                 </template>
 
                 <div class="dialog-actions dialog-actions-split">
                     <button type="button" class="action action-outline" @click="closeMockExamModal">取消</button>
-                    <button type="button" class="action action-primary" :disabled="!mockPool || creatingMockExam" @click="confirmMockExam">
-                        {{ creatingMockExam ? '抽題中…' : mockPool ? `抽題並建立考卷（${mockDrawCount} 題）` : '抽題並建立考卷' }}
+                    <button type="button" class="action action-primary" :disabled="!canDraw" @click="confirmMockExam">
+                        {{ canDraw ? `抽題並建立考卷（${mockDrawCount} 題）` : '抽題並建立考卷' }}
                     </button>
                 </div>
             </div>
@@ -251,7 +255,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useExamStore } from '@/stores/examStore'
 import examService from '@/services/examService'
@@ -348,6 +352,13 @@ const printExam = (examId) => {
     window.open(url, '_blank')
 }
 
+// Every way out of a confirmation drops its error, so the next dialog starts clean
+const closeConfirm = () => {
+    deleteTarget.value = null
+    abandonTarget.value = null
+    actionError.value = ''
+}
+
 const confirmDelete = async () => {
     busy.value = true
     actionError.value = ''
@@ -387,20 +398,55 @@ const availableExams = ref([])
 const loadingAvailableExams = ref(false)
 const selectedExamIdsForMock = ref([])
 const mockQuestionCount = ref(30)
-const creatingMockExam = ref(false)
 
-const mockPool = computed(() =>
-    availableExams.value
-        .filter((e) => selectedExamIdsForMock.value.includes(e.id))
-        .reduce((sum, e) => sum + (e.question_count || 0), 0)
+// Each source exam's question ids, fetched when it is first ticked:
+// { status: 'loading' | 'ready' | 'error', questionIds }
+const sources = ref({})
+
+const loadSource = async (examId) => {
+    sources.value[examId] = { status: 'loading', questionIds: [] }
+    try {
+        const res = await examStore.getExam(examId)
+        const questionIds = (res?.data?.exam_questions || []).map((eq) => eq.question).filter(Boolean)
+        sources.value[examId] = { status: 'ready', questionIds }
+    } catch (err) {
+        console.error(`Failed to fetch exam ${examId}:`, err)
+        sources.value[examId] = { status: 'error', questionIds: [] }
+    }
+}
+
+watch(selectedExamIdsForMock, (ids, prev = []) => {
+    for (const id of ids) {
+        if (!prev.includes(id) && sources.value[id]?.status !== 'ready' && sources.value[id]?.status !== 'loading') loadSource(id)
+    }
+})
+
+const failedSourceIds = computed(() => selectedExamIdsForMock.value.filter((id) => sources.value[id]?.status === 'error'))
+const retryFailedSources = () => failedSourceIds.value.forEach(loadSource)
+
+const sourcesLoading = computed(() =>
+    selectedExamIdsForMock.value.some((id) => !sources.value[id] || sources.value[id].status === 'loading')
 )
+
+// A question in several selected exams counts once
+const mockPoolIds = computed(() => {
+    const ids = new Set()
+    for (const id of selectedExamIdsForMock.value) {
+        for (const q of sources.value[id]?.questionIds || []) ids.add(q)
+    }
+    return ids
+})
+const mockPool = computed(() => mockPoolIds.value.size)
 const mockDrawCount = computed(() => Math.min(mockQuestionCount.value, mockPool.value))
+const canDraw = computed(() => mockPool.value > 0 && !sourcesLoading.value && !failedSourceIds.value.length)
 const allSourcesSelected = computed(() =>
     availableExams.value.length > 0 && selectedExamIdsForMock.value.length === availableExams.value.length
 )
 
 const mockSummary = computed(() => {
-    if (!mockPool.value) return '先選至少一份考卷。'
+    if (!selectedExamIdsForMock.value.length) return '先選至少一份考卷。'
+    if (sourcesLoading.value) return '正在計算題數…'
+    if (!mockPool.value) return '選的考卷裡沒有題目。'
     const note = mockQuestionCount.value > mockPool.value ? `（只有 ${mockPool.value} 題，全部都會抽到）` : ''
     return `從 ${mockPool.value} 題中隨機抽 ${mockDrawCount.value} 題${note}。重複的題目只算一次。`
 })
@@ -441,29 +487,12 @@ const shuffle = (items) => {
     return out
 }
 
-const confirmMockExam = async () => {
-    if (!mockPool.value) return
-    creatingMockExam.value = true
-    try {
-        const examIds = selectedExamIdsForMock.value
-        // Fetched together; an exam that fails to load just adds no questions
-        const loaded = await Promise.allSettled(examIds.map((examId) => examStore.getExam(examId)))
-        const ids = new Set()
-        loaded.forEach((res, i) => {
-            if (res.status === 'rejected') {
-                console.error(`Failed to fetch exam ${examIds[i]}:`, res.reason)
-                return
-            }
-            for (const eq of res.value?.data?.exam_questions || []) if (eq.question) ids.add(eq.question)
-        })
-        const picked = shuffle(ids).slice(0, mockQuestionCount.value)
-        if (!picked.length) return
-        closeMockExamModal()
-        // The create page opens with these questions filled in, ready to name and save
-        router.push({ path: '/exams/create', query: { preload_questions: picked.join(',') } })
-    } finally {
-        creatingMockExam.value = false
-    }
+const confirmMockExam = () => {
+    if (!canDraw.value) return
+    const picked = shuffle(mockPoolIds.value).slice(0, mockQuestionCount.value)
+    closeMockExamModal()
+    // The create page opens with these questions filled in, ready to name and save
+    router.push({ path: '/exams/create', query: { preload_questions: picked.join(',') } })
 }
 
 onMounted(loadExams)
@@ -974,6 +1003,14 @@ defineExpose({ exams, loadExams })
     background: var(--danger-soft);
     color: var(--danger);
     font-size: 14px;
+}
+
+div.dialog-error {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    line-height: 1.6;
 }
 
 .dialog-head {

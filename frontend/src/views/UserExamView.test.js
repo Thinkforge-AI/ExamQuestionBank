@@ -183,6 +183,20 @@ describe('UserExamView (我的考卷)', () => {
       expect(wrapper.text()).toContain('作答沒有放棄')
       expect(wrapper.find('.spotlight').text()).toContain('還沒寫完')
     })
+
+    it('does not carry a failed action\'s error into the next dialog', async () => {
+      examService.abandonExamAttempt.mockRejectedValue(new Error('Network Error'))
+      await mountView()
+      await button('放棄這次作答').trigger('click')
+      await button('放棄作答').trigger('click')
+      await flushPromises()
+      expect(wrapper.find('.dialog-error').exists()).toBe(true)
+
+      await wrapper.find('.overlay').trigger('click') // backdrop
+      await wrapper.find('button[aria-label="刪除「民法總則　自訂練習卷」"]').trigger('click')
+      expect(wrapper.text()).toContain('刪除這份考卷？')
+      expect(wrapper.find('.dialog-error').exists()).toBe(false)
+    })
   })
 
   describe('states', () => {
@@ -225,7 +239,40 @@ describe('UserExamView (我的考卷)', () => {
       expect(wrapper.find('.mock-summary').text()).toBe('先選至少一份考卷。')
 
       await wrapper.findAll('.source input')[0].setValue(true)
+      expect(wrapper.find('.mock-summary').text()).toBe('正在計算題數…')
+      expect(button('抽題並建立考卷').attributes('disabled')).toBeDefined()
+
+      await flushPromises()
       expect(wrapper.find('.mock-summary').text()).toContain('從 3 題中隨機抽 3 題（只有 3 題，全部都會抽到）')
+      expect(button('抽題並建立考卷（3 題）').attributes('disabled')).toBeUndefined()
+    })
+
+    it('counts a question shared by two sources once', async () => {
+      await mountView()
+      await button('隨機模擬考').trigger('click')
+      await flushPromises()
+      await button('全選').trigger('click')
+      await flushPromises()
+
+      // 3 + 2 listed, but question 13 is in both
+      expect(wrapper.find('.mock-summary').text()).toContain('從 4 題中隨機抽 4 題')
+      expect(button('抽題並建立考卷（4 題）')).toBeTruthy()
+    })
+
+    it('will not draw while a source failed to load, and can retry it', async () => {
+      examService.getExam.mockRejectedValueOnce(new Error('Network Error'))
+      await mountView()
+      await button('隨機模擬考').trigger('click')
+      await flushPromises()
+      await wrapper.findAll('.source input')[0].setValue(true)
+      await flushPromises()
+
+      expect(wrapper.find('.dialog-error').text()).toContain('有 1 份考卷的題目載入失敗')
+      expect(button('抽題並建立考卷').attributes('disabled')).toBeDefined()
+
+      await button('重試').trigger('click')
+      await flushPromises()
+      expect(wrapper.find('.dialog-error').exists()).toBe(false)
       expect(button('抽題並建立考卷（3 題）').attributes('disabled')).toBeUndefined()
     })
 
@@ -234,6 +281,7 @@ describe('UserExamView (我的考卷)', () => {
       await button('隨機模擬考').trigger('click')
       await flushPromises()
       await button('全選').trigger('click')
+      await flushPromises()
       await button('10 題').trigger('click')
       await button('抽題並建立考卷').trigger('click')
       await flushPromises()
