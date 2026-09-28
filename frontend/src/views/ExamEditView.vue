@@ -283,6 +283,7 @@ import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 
 import { useExamStore } from '@/stores/test/exam';
 import { useQuestionStore } from '@/stores/test/question';
+import { questionApi } from '@/api/test/question';
 import { QuestionDifficultyList, QuestionTypeList } from '@/models/Question'
 
 import TableList from '@/components/common/TableList.vue'
@@ -592,8 +593,27 @@ onMounted(async () => {
         }
     } else {
         examStore.initNewExam();
+        await preloadQuestions(route.query.preload_questions);
     }
 });
+
+// A new exam can open with questions already picked (隨機模擬考, 練習模式),
+// passed as ?preload_questions=1,2,3. They count as unsaved additions.
+const preloadQuestions = async (param) => {
+    const ids = String(param || '').split(',').map(Number).filter(id => id > 0)
+    if (!ids.length) return
+    const loaded = await Promise.allSettled(ids.map(id => questionApi.getQuestionDetail(id)))
+    let failed = 0
+    loaded.forEach((res, i) => {
+        if (res.status === 'fulfilled' && res.value) {
+            examStore.addQuestion(res.value)
+        } else {
+            console.error(`Failed to preload question ${ids[i]}:`, res.reason)
+            failed++
+        }
+    })
+    if (failed) alert(`有 ${failed} 題載入失敗，沒有加入考卷。`)
+}
 
 const handUpdateScore = (id, event) => {
     const points = Number(event.target.value)
