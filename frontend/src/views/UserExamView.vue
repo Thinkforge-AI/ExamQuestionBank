@@ -56,7 +56,7 @@
                     </div>
                     <div class="exam-title spotlight-name">{{ openAttemptExam.name }}</div>
                     <div class="spotlight-meta">
-                        <span>{{ formatWhen(openAttemptExam.open_attempt.updated_at) }}中斷</span>
+                        <span>{{ formatWhen(openAttemptExam.open_attempt.updated_at) }} 中斷</span>
                         <span>進度已自動儲存</span>
                     </div>
                     <div class="spotlight-actions">
@@ -256,6 +256,7 @@ import { useRouter } from 'vue-router'
 import { useExamStore } from '@/stores/examStore'
 import examService from '@/services/examService'
 import { clearAttempt } from '@/lib/examAttemptStorage'
+import { formatDay, formatWhen, formatSecondsLeft } from '@/lib/attemptFormat'
 
 const router = useRouter()
 const examStore = useExamStore()
@@ -292,16 +293,14 @@ const time = (value) => (value ? new Date(value).getTime() : 0)
 const lastActivity = (exam) =>
     Math.max(time(exam.created_at), time(exam.last_result?.completed_at), time(exam.open_attempt?.updated_at))
 
-// The most recently touched unfinished attempt goes on top
-const openAttemptExam = computed(() => {
-    const open = exams.value.filter((e) => e.open_attempt)
-    return open.sort((a, b) => time(b.open_attempt.updated_at) - time(a.open_attempt.updated_at))[0] || null
-})
+// The exam whose `at(exam)` timestamp is latest, among those that have one
+const latestBy = (list, at) =>
+    list.reduce((best, e) => (at(e) && (!best || time(at(e)) > time(at(best))) ? e : best), null)
 
-const lastPractisedExam = computed(() => {
-    const done = exams.value.filter((e) => e.last_result)
-    return done.sort((a, b) => time(b.last_result.completed_at) - time(a.last_result.completed_at))[0] || null
-})
+// The most recently touched unfinished attempt goes on top
+const openAttemptExam = computed(() => latestBy(exams.value, (e) => e.open_attempt?.updated_at))
+
+const lastPractisedExam = computed(() => latestBy(exams.value, (e) => e.last_result?.completed_at))
 
 const sortedExams = computed(() => {
     const list = [...exams.value]
@@ -328,20 +327,6 @@ const formatShortDate = (value) => {
     return `${d.getMonth() + 1}/${pad(d.getDate())}`
 }
 
-const isToday = (d) => d.toDateString() === new Date().toDateString()
-
-// "9 月 26 日"
-const formatDay = (value) => {
-    const d = new Date(value)
-    return isToday(d) ? '今天' : `${d.getMonth() + 1} 月 ${d.getDate()} 日`
-}
-
-// "今天 14:32 " / "9 月 26 日 14:32 "
-const formatWhen = (value) => {
-    const d = new Date(value)
-    return `${formatDay(value)} ${pad(d.getHours())}:${pad(d.getMinutes())} `
-}
-
 const formatDuration = (seconds) => {
     const minutes = Math.round(seconds / 60)
     return minutes >= 1 ? `${minutes} 分鐘` : `${seconds} 秒`
@@ -350,8 +335,7 @@ const formatDuration = (seconds) => {
 const timeLeftText = (attempt) => {
     if (!attempt.time_limit_seconds) return '不限時'
     const left = Math.max(0, attempt.time_limit_seconds - attempt.elapsed_seconds)
-    if (left === 0) return '時間已用完'
-    return left >= 60 ? `還剩 ${Math.floor(left / 60)} 分鐘` : `還剩 ${left} 秒`
+    return left === 0 ? '時間已用完' : `還剩 ${formatSecondsLeft(left)}`
 }
 
 // ---- Actions ---------------------------------------------------------------
@@ -447,25 +431,32 @@ const closeMockExamModal = () => {
     selectedExamIdsForMock.value = []
 }
 
+// Fisher–Yates, on a copy
+const shuffle = (items) => {
+    const out = [...items]
+    for (let i = out.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[out[i], out[j]] = [out[j], out[i]]
+    }
+    return out
+}
+
 const confirmMockExam = async () => {
     if (!mockPool.value) return
     creatingMockExam.value = true
     try {
+        const examIds = selectedExamIdsForMock.value
+        // Fetched together; an exam that fails to load just adds no questions
+        const loaded = await Promise.allSettled(examIds.map((examId) => examStore.getExam(examId)))
         const ids = new Set()
-        for (const examId of selectedExamIdsForMock.value) {
-            try {
-                const { data } = await examStore.getExam(examId)
-                for (const eq of data?.exam_questions || []) if (eq.question) ids.add(eq.question)
-            } catch (err) {
-                console.error(`Failed to fetch exam ${examId}:`, err)
+        loaded.forEach((res, i) => {
+            if (res.status === 'rejected') {
+                console.error(`Failed to fetch exam ${examIds[i]}:`, res.reason)
+                return
             }
-        }
-        const shuffled = [...ids]
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1))
-            ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-        }
-        const picked = shuffled.slice(0, mockQuestionCount.value)
+            for (const eq of res.value?.data?.exam_questions || []) if (eq.question) ids.add(eq.question)
+        })
+        const picked = shuffle(ids).slice(0, mockQuestionCount.value)
         if (!picked.length) return
         closeMockExamModal()
         // The create page opens with these questions filled in, ready to name and save

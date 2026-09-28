@@ -159,10 +159,10 @@
           />
 
           <ResultsActions
-            :results="normalizedResultsForActions"
+            :results="normalizedResults"
             :exam-name="exam.name"
             @retake-exam="handleRetakeExam"
-            @return-to-list="handleReturnToList"
+            @return-to-list="goBack"
             @questions-bookmarked="handleQuestionsBookmarked"
             @flashcards-created="handleFlashcardsCreated"
           />
@@ -190,7 +190,7 @@
 
         <!-- Footer Actions (Preview Mode) -->
         <footer v-if="!isQuizActive && !showResults" class="actions">
-          <button class="btn" @click="handleGoBack" aria-label="Go back">返回</button>
+          <button class="btn" @click="goBack" aria-label="Go back">返回</button>
         </footer>
       </div>
 
@@ -230,7 +230,7 @@
       <div class="modal-content resume-modal">
         <template v-if="!confirmingRestart">
           <h3 id="resume-title">{{ savedAttemptTimeUp ? '上次作答的時間已經用完' : '上次的作答還沒寫完' }}</h3>
-          <p id="resume-desc">{{ savedAttemptWhen }}離開，進度都有保存。</p>
+          <p id="resume-desc">{{ savedAttemptWhen }} 離開，進度都有保存。</p>
           <dl class="resume-facts">
             <div>
               <dt>已作答</dt>
@@ -304,6 +304,7 @@ import questionService from '@/services/questionService'
 import examService from '@/services/examService'
 import { useExamClock } from '@/composables/useExamClock'
 import { loadAttempt, saveAttempt, clearAttempt, fromServerAttempt, toServerProgress } from '@/lib/examAttemptStorage'
+import { formatWhen, formatSecondsLeft } from '@/lib/attemptFormat'
 
 // Import components
 import ExamHeader from '@/components/exam/ExamHeader.vue'
@@ -336,7 +337,6 @@ const examResults = ref(null)
 const isLoading = ref(false)
 const showExplanations = ref(false)
 const showNavigationWarning = ref(false)
-const pendingNavigation = ref(null)
 const errorBoundaryRef = ref(null)
 const showSubmissionError = ref(false)
 const submissionErrorMessage = ref('')
@@ -376,19 +376,10 @@ const savedAttemptTimeUp = computed(() =>
 const savedAttemptTimeLeft = computed(() => {
   if (!savedAttempt.value) return ''
   if (!timeLimitSeconds.value) return '不限時'
-  const left = Math.max(0, timeLimitSeconds.value - savedAttempt.value.elapsedSeconds)
-  return left >= 60 ? `${Math.floor(left / 60)} 分鐘` : `${left} 秒`
+  return formatSecondsLeft(Math.max(0, timeLimitSeconds.value - savedAttempt.value.elapsedSeconds))
 })
 
-// "今天 14:32" / "9 月 26 日 14:32"
-const savedAttemptWhen = computed(() => {
-  const at = savedAttempt.value?.updatedAt ? new Date(savedAttempt.value.updatedAt) : null
-  if (!at || Number.isNaN(at.getTime())) return ''
-  const time = at.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false })
-  const today = new Date()
-  const sameDay = at.toDateString() === today.toDateString()
-  return sameDay ? `今天 ${time} ` : `${at.getMonth() + 1} 月 ${at.getDate()} 日 ${time} `
-})
+const savedAttemptWhen = computed(() => formatWhen(savedAttempt.value?.updatedAt))
 
 const currentQuestion = computed(() => {
   if (!exam.value) return null
@@ -452,7 +443,7 @@ const normalizedCurrentQuestion = computed(() => {
   }
 })
 
-// Normalize results for ScoreDisplay and ResultsBreakdown
+// Normalize results for ScoreDisplay, ResultsBreakdown and ResultsActions
 const normalizedResults = computed(() => {
   if (!examResults.value) return null
   return {
@@ -464,15 +455,6 @@ const normalizedResults = computed(() => {
     duration: examResults.value.duration || 0,
     details: examResults.value.details || [],
     wrongQuestionIds: examResults.value.wrongQuestionIds || []
-  }
-})
-
-// Normalize results for ResultsActions (needs string examId)
-const normalizedResultsForActions = computed(() => {
-  if (!normalizedResults.value) return null
-  return {
-    ...normalizedResults.value,
-    examId: exam.value?.id?.toString() || ''
   }
 })
 
@@ -602,11 +584,14 @@ const launchQuiz = () => {
   persistExamState()
 }
 
+// Restore the saved attempt's answers, position, attempt id and time used
 const applySavedAttempt = () => {
   const saved = savedAttempt.value
   userAnswers.value = { ...saved.answers }
   flaggedQuestions.value = new Set(saved.flagged)
   currentQuestionIndex.value = saved.currentIndex
+  attemptId.value = saved.attemptId
+  startClock(saved.elapsedSeconds)
   savedAttempt.value = null
   showResumePrompt.value = false
   return saved
@@ -616,9 +601,7 @@ const resumeAttempt = async () => {
   const saved = applySavedAttempt()
   showResults.value = false
   isQuizActive.value = true
-  startClock(saved.elapsedSeconds)
   quizMessage.value = `已接著上次的進度，從第 ${saved.currentIndex + 1} 題開始`
-  attemptId.value = saved.attemptId
   syncState.value = saved.attemptId ? 'synced' : 'local'
   persistExamState()
   // Progress that only existed on this device gets an attempt on the server now
@@ -628,9 +611,7 @@ const resumeAttempt = async () => {
 
 // The saved attempt has no time left: grade what was answered.
 const submitSavedAttempt = () => {
-  const saved = applySavedAttempt()
-  attemptId.value = saved.attemptId
-  startClock(saved.elapsedSeconds)
+  applySavedAttempt()
   submitExam(true)
 }
 
@@ -772,53 +753,37 @@ const submitExam = async (autoSubmit = false) => {
   quizMessage.value = autoSubmit ? '時間到！測驗已自動提交' : '測驗已提交'
   
   // Save results to backend in background (non-blocking)
-  saveResultsToBackend(score, correct, total, durationSeconds, wrongQuestionIds)
+  saveResultsToBackend()
 }
 
-// Separate function to save results to backend (non-blocking)
-const saveResultsToBackend = async (score, correct, total, durationSeconds, wrongQuestionIds) => {
+// Save the graded examResults. On failure the results stay on screen and the
+// submission error modal offers a retry. Returns whether the save succeeded.
+const saveResultsToBackend = async () => {
+  const results = examResults.value
+  if (!results) return false
   try {
     await examStore.saveExamResult({
       exam_id: exam.value.id,
-      score,
-      correct_count: correct,
-      total_count: total,
-      duration_seconds: durationSeconds,
-      wrong_question_ids: wrongQuestionIds,
+      score: results.score,
+      correct_count: results.correct,
+      total_count: results.total,
+      duration_seconds: results.duration,
+      wrong_question_ids: results.wrongQuestionIds,
+      // Same attempt on every retry: a retry after a lost response doesn't create a second result
       attempt_id: submittedAttemptId.value
     })
+    return true
   } catch (err) {
     console.error('Failed to save exam result:', err)
-    // Show submission error modal but results are already shown
-    const friendlyError = createUserFriendlyError(err)
-    submissionErrorMessage.value = friendlyError.message
+    submissionErrorMessage.value = createUserFriendlyError(err).message
     showSubmissionError.value = true
+    return false
   }
 }
 
-// Retry submission
 const retrySubmission = async () => {
   showSubmissionError.value = false
-  
-  if (!examResults.value) return
-  
-  try {
-    await examStore.saveExamResult({
-      exam_id: exam.value.id,
-      score: examResults.value.score,
-      correct_count: examResults.value.correct,
-      total_count: examResults.value.total,
-      duration_seconds: examResults.value.duration,
-      wrong_question_ids: examResults.value.wrongQuestionIds,
-      // Same attempt: a retry after a lost response doesn't create a second result
-      attempt_id: submittedAttemptId.value
-    })
-    quizMessage.value = '成績已成功保存'
-  } catch (err) {
-    const friendlyError = createUserFriendlyError(err)
-    submissionErrorMessage.value = friendlyError.message
-    showSubmissionError.value = true
-  }
+  if (await saveResultsToBackend()) quizMessage.value = '成績已成功保存'
 }
 
 const dismissSubmissionError = () => {
@@ -847,11 +812,7 @@ const handleRetakeExam = () => {
   handleStartExam()
 }
 
-const handleReturnToList = () => {
-  router.back()
-}
-
-const handleGoBack = () => {
+const goBack = () => {
   router.back()
 }
 
@@ -896,13 +857,11 @@ const handleKeyboardNavigation = (event) => {
     case '2':
     case '3':
     case '4':
-    case '5':
-      const optionIndex = parseInt(event.key) - 1
-      const options = currentQuestionOptions.value
-      if (options[optionIndex]) {
-        selectAnswer(options[optionIndex].id)
-      }
+    case '5': {
+      const option = currentQuestionOptions.value[Number(event.key) - 1]
+      if (option) selectAnswer(option.id)
       break
+    }
   }
 }
 
@@ -967,6 +926,14 @@ const persistOnHide = () => {
   if (document.visibilityState === 'hidden') saveBeforeLeaving()
 }
 
+// Save and stop the clock when leaving within the app; the attempt stays unfinished
+// and can be resumed. flushServerSave reads the progress before its first await.
+const suspendAttempt = () => {
+  persistExamState()
+  flushServerSave()
+  pauseClock()
+}
+
 // Error handling
 const createUserFriendlyError = (err) => {
   let message = '發生未預期的錯誤，請稍後再試。'
@@ -1006,7 +973,6 @@ const pendingNavigationTo = ref(null)
 
 const cancelNavigation = () => {
   showNavigationWarning.value = false
-  pendingNavigation.value = null
   pendingNavigationTo.value = null
 }
 
@@ -1014,15 +980,11 @@ const confirmNavigation = () => {
   showNavigationWarning.value = false
   // Save the destination before clearing
   const destination = pendingNavigationTo.value
-  pendingNavigation.value = null
   pendingNavigationTo.value = null
   
   // Navigate to the saved destination
   if (destination) {
-    // Save and pause first; the attempt stays unfinished and can be resumed
-    persistExamState()
-    flushServerSave()
-    pauseClock()
+    suspendAttempt()
     isQuizActive.value = false
     router.push(destination)
   }
@@ -1033,7 +995,6 @@ onBeforeRouteLeave((to, from, next) => {
   if (isQuizActive.value && !pendingNavigationTo.value) {
     showNavigationWarning.value = true
     pendingNavigationTo.value = to.fullPath
-    pendingNavigation.value = () => next()
     next(false)
   } else {
     next()
@@ -1051,9 +1012,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  persistExamState()
-  flushServerSave()
-  pauseClock()
+  suspendAttempt()
   window.removeEventListener('beforeunload', handleBeforeUnload)
   window.removeEventListener('pagehide', saveBeforeLeaving)
   document.removeEventListener('visibilitychange', persistOnHide)

@@ -77,6 +77,21 @@ const byPosition = (questionIds, { answers = {}, flagged = [], currentQuestionId
   }
 }
 
+// Same shape as byPosition, for a migrated legacy (v0) entry, which is already by
+// position: drop anything past the end of the exam's current questions.
+const legacyByPosition = (questionIds, saved) => {
+  const answers = {}
+  for (const [i, option] of Object.entries(saved.answersByIndex || {})) {
+    if (Number(i) < questionIds.length) answers[Number(i)] = option
+  }
+  return {
+    answers,
+    flagged: new Set((saved.flaggedIndexes || []).filter((i) => i < questionIds.length)),
+    currentIndex: Math.min(saved.currentIndex || 0, Math.max(0, questionIds.length - 1)),
+    answeredCount: Object.keys(answers).length
+  }
+}
+
 /**
  * @param {number|string} examId
  * @param {Array<number>} questionIds question ids in the exam's current order
@@ -90,24 +105,8 @@ export function loadAttempt(examId, questionIds) {
   const saved = read(keyFor(examId))
   if (!saved || !Array.isArray(questionIds)) return null
 
-  let positions
-  if (saved.v === 0) {
-    const answers = {}
-    for (const [i, option] of Object.entries(saved.answersByIndex || {})) {
-      if (Number(i) < questionIds.length) answers[Number(i)] = option
-    }
-    positions = {
-      answers,
-      flagged: new Set((saved.flaggedIndexes || []).filter((i) => i < questionIds.length)),
-      currentIndex: Math.min(saved.currentIndex || 0, Math.max(0, questionIds.length - 1)),
-      answeredCount: Object.keys(answers).length
-    }
-  } else {
-    positions = byPosition(questionIds, saved)
-  }
-
   return {
-    ...positions,
+    ...(saved.v === 0 ? legacyByPosition(questionIds, saved) : byPosition(questionIds, saved)),
     elapsedSeconds: Math.max(0, Number(saved.elapsedSeconds) || 0),
     updatedAt: saved.updatedAt,
     attemptId: saved.attemptId || null,
