@@ -1,273 +1,253 @@
 <template>
-    <div class="user-exam-view">
-        <div class="container">
-            <h1 class="page-title">我的考卷</h1>
-            <p class="page-subtitle">管理您的自訂考卷,或建立新的練習考卷</p>
-
-            <!-- Tabs -->
-            <div class="tabs-container">
-                <button class="tab-btn" :class="{ active: activeTab === 'list' }" @click="activeTab = 'list'">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                    我的考卷列表
+    <div class="my-exams">
+        <div class="page-head">
+            <div class="page-title-group">
+                <h1 class="page-title">我的考卷</h1>
+                <span v-if="!loading && exams.length" class="page-count">共 {{ exams.length }} 份</span>
+            </div>
+            <div class="page-actions">
+                <button type="button" class="action action-outline" @click="openMockExamModal">
+                    <i class="bi bi-shuffle" aria-hidden="true"></i>隨機模擬考
                 </button>
-                <button class="tab-btn" @click="router.push('/exams/create')">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="12" y1="18" x2="12" y2="12"></line>
-                        <line x1="9" y1="15" x2="15" y2="15"></line>
-                    </svg>
-                    建立新考卷
-                </button>
-                <button class="tab-btn" @click="openMockExamModal">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                        <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
-                    建立模擬考題
+                <button type="button" class="action" :class="openAttemptExam ? 'action-outline' : 'action-primary'"
+                    @click="router.push('/exams/create')">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i>建立考卷
                 </button>
             </div>
+        </div>
 
-            <!-- Exam List Tab -->
-            <div v-if="activeTab === 'list'" class="tab-content">
-                <div class="exam-list-section">
-                    <div class="section-header">
-                        <h2 class="section-title">我的考卷</h2>
-                        <div class="header-actions">
-                            <button class="btn btn-secondary btn-sm" @click="openPrintModal" :disabled="userExams.length === 0">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                                    <rect x="6" y="14" width="12" height="8"></rect>
-                                </svg>
-                                列印考卷
-                            </button>
-                            <button class="btn btn-secondary btn-sm" @click="loadUserExams" :disabled="loadingExams">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                                    <path d="M3 3v5h5"></path>
-                                </svg>
-                                重新整理
-                            </button>
-                        </div>
+        <div v-if="loading" class="state-panel" role="status">
+            <div class="spinner" aria-hidden="true"></div>
+            <p>載入考卷中…</p>
+        </div>
+
+        <div v-else-if="loadError" class="state-panel" role="alert">
+            <p>{{ loadError }}</p>
+            <button type="button" class="action action-outline" @click="loadExams">重新載入</button>
+        </div>
+
+        <!-- Empty state -->
+        <section v-else-if="!exams.length" class="empty-panel" aria-labelledby="empty-title">
+            <svg class="empty-art" width="200" height="160" viewBox="0 0 200 160" fill="none" aria-hidden="true">
+                <rect x="46" y="26" width="104" height="128" rx="8" class="art-back"></rect>
+                <rect x="30" y="14" width="104" height="128" rx="8" class="art-front"></rect>
+                <path d="M50 42h64M50 60h64M50 78h42" class="art-lines"></path>
+                <circle cx="146" cy="116" r="26" class="art-badge"></circle>
+                <path d="M146 104v24M134 116h24" class="art-plus"></path>
+            </svg>
+            <div class="empty-copy">
+                <h2 id="empty-title">還沒有考卷</h2>
+                <p>從題庫挑題組成自己的考卷，可以限時作答、列印，作答後會記下成績。想先試試手感，也可以從歷屆考卷隨機抽題做一次模擬考。</p>
+                <div class="empty-actions">
+                    <button type="button" class="action action-primary" @click="router.push('/exams/create')">
+                        <i class="bi bi-plus-lg" aria-hidden="true"></i>建立第一份考卷
+                    </button>
+                    <button type="button" class="action action-outline" @click="openMockExamModal">隨機模擬考</button>
+                </div>
+            </div>
+        </section>
+
+        <template v-else>
+            <!-- Unfinished attempt first; otherwise the last exam practised -->
+            <section v-if="openAttemptExam" class="spotlight spotlight-open" aria-labelledby="spotlight-title">
+                <div class="spotlight-main">
+                    <div id="spotlight-title" class="spotlight-label spotlight-label-open">
+                        <i class="bi bi-pause-circle" aria-hidden="true"></i>還沒寫完
                     </div>
-
-                    <div v-if="loadingExams" class="loading-state">
-                        <div class="spinner"></div>
-                        <p>載入考卷中...</p>
+                    <div class="exam-title spotlight-name">{{ openAttemptExam.name }}</div>
+                    <div class="spotlight-meta">
+                        <span>{{ formatWhen(openAttemptExam.open_attempt.updated_at) }} 中斷</span>
+                        <span>進度已自動儲存</span>
                     </div>
-
-                    <div v-else-if="userExams.length === 0" class="empty-state">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                        </svg>
-                        <p>尚未建立任何考卷</p>
-                        <button class="btn btn-primary" @click="activeTab = 'create'">
-                            建立第一份考卷
+                    <div class="spotlight-actions">
+                        <button type="button" class="action action-primary action-lg" @click="openExam(openAttemptExam.id)">
+                            繼續作答（從第 {{ openAttemptExam.open_attempt.current_position }} 題）
                         </button>
+                        <button type="button" class="action action-quiet action-lg" @click="abandonTarget = openAttemptExam">放棄這次作答</button>
                     </div>
+                </div>
+                <div class="spotlight-figure">
+                    <div class="big-number">
+                        <span class="big-value">{{ openAttemptExam.open_attempt.answered_count }}</span>
+                        <span class="big-total">/ {{ openAttemptExam.open_attempt.question_count }}</span>
+                        <span class="big-caption">題已作答</span>
+                    </div>
+                    <div class="bar" aria-hidden="true">
+                        <div class="bar-fill" :style="{ width: percent(openAttemptExam.open_attempt.answered_count, openAttemptExam.open_attempt.question_count) + '%' }"></div>
+                    </div>
+                    <div class="figure-foot">
+                        <span>{{ timeLeftText(openAttemptExam.open_attempt) }}</span>
+                        <span v-if="openAttemptExam.open_attempt.flagged_count">{{ openAttemptExam.open_attempt.flagged_count }} 題標記待複查</span>
+                    </div>
+                </div>
+            </section>
 
-                    <div v-else class="exam-grid">
-                        <div v-for="exam in userExams" :key="exam.id" class="exam-card">
-                            <div class="exam-card-header">
-                                <h3 class="exam-name">{{ exam.name }}</h3>
-                                <div class="exam-meta">
-                                    <span class="meta-item">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <polyline points="12 6 12 12 16 14"></polyline>
-                                        </svg>
-                                        {{ exam.time_limit ? `${exam.time_limit} 分鐘` : '無時間限制' }}
-                                    </span>
-                                    <span class="meta-item">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                            <polyline points="14 2 14 8 20 8"></polyline>
-                                        </svg>
-                                        {{ exam.question_count || 0 }} 題
-                                    </span>
+            <section v-else-if="lastPractisedExam" class="spotlight" aria-labelledby="spotlight-title">
+                <div class="spotlight-main">
+                    <div id="spotlight-title" class="spotlight-label">上次練習的考卷</div>
+                    <div class="exam-title spotlight-name">{{ lastPractisedExam.name }}</div>
+                    <div class="spotlight-meta">
+                        <span>{{ formatDay(lastPractisedExam.last_result.completed_at) }}作答</span>
+                        <span v-if="lastPractisedExam.last_result.duration_seconds">用時 {{ formatDuration(lastPractisedExam.last_result.duration_seconds) }}</span>
+                        <span>{{ lastPractisedExam.question_count }} 題<template v-if="lastPractisedExam.time_limit">，限時 {{ lastPractisedExam.time_limit }} 分鐘</template></span>
+                    </div>
+                    <div class="spotlight-actions">
+                        <button type="button" class="action action-primary action-lg" @click="openExam(lastPractisedExam.id)">再做一次</button>
+                    </div>
+                </div>
+                <div class="spotlight-figure">
+                    <div class="big-number">
+                        <span class="big-value">{{ lastPractisedExam.last_result.correct_count }}</span>
+                        <span class="big-total">/ {{ lastPractisedExam.last_result.total_count }}</span>
+                        <span class="big-caption">答對 {{ percent(lastPractisedExam.last_result.correct_count, lastPractisedExam.last_result.total_count) }}%</span>
+                    </div>
+                    <div class="bar" aria-hidden="true">
+                        <div class="bar-fill" :style="{ width: percent(lastPractisedExam.last_result.correct_count, lastPractisedExam.last_result.total_count) + '%' }"></div>
+                    </div>
+                    <div class="figure-foot">
+                        <span>答錯 {{ lastPractisedExam.last_result.total_count - lastPractisedExam.last_result.correct_count }} 題</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- All exams -->
+            <section class="exam-list" aria-labelledby="list-title">
+                <div class="list-head">
+                    <h2 id="list-title">全部考卷</h2>
+                    <label class="sort">
+                        排序
+                        <select v-model="sortBy">
+                            <option value="created">最近建立</option>
+                            <option value="activity">最近作答</option>
+                            <option value="name">名稱</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="list-columns" aria-hidden="true">
+                    <div>考卷</div><div>題數</div><div>時間</div><div>最近成績</div><div>建立</div><div class="col-actions">動作</div>
+                </div>
+                <ul class="exam-rows">
+                    <li v-for="exam in sortedExams" :key="exam.id" class="exam-row">
+                        <div class="exam-title row-name">{{ exam.name }}</div>
+                        <div class="row-meta">{{ exam.question_count }} 題</div>
+                        <div class="row-meta">{{ exam.time_limit ? `${exam.time_limit} 分鐘` : '不限時' }}</div>
+                        <div class="row-score">
+                            <span v-if="exam.open_attempt" class="chip-open">
+                                <i class="bi bi-pause-fill" aria-hidden="true"></i>寫到第 {{ exam.open_attempt.current_position }} / {{ exam.open_attempt.question_count }} 題
+                            </span>
+                            <template v-else-if="exam.last_result">
+                                <div class="score-line">
+                                    <span>{{ exam.last_result.correct_count }} / {{ exam.last_result.total_count }}（{{ percent(exam.last_result.correct_count, exam.last_result.total_count) }}%）</span>
+                                    <span class="muted">{{ formatShortDate(exam.last_result.completed_at) }}</span>
                                 </div>
-                            </div>
-                            <div class="exam-card-footer">
-                                <span class="exam-date">{{ formatDate(exam.created_at) }}</span>
-                                <div class="exam-actions">
-                                    <button class="btn btn-sm btn-primary" @click="startExam(exam.id)">
-                                        開始作答
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" @click="deleteExam(exam.id)"
-                                        :disabled="deletingExamId === exam.id">
-                                        {{ deletingExamId === exam.id ? '刪除中...' : '刪除' }}
-                                    </button>
+                                <div class="bar bar-thin" aria-hidden="true">
+                                    <div class="bar-fill" :style="{ width: percent(exam.last_result.correct_count, exam.last_result.total_count) + '%' }"></div>
                                 </div>
-                            </div>
+                            </template>
+                            <span v-else class="muted">還沒作答</span>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Create Exam Tab -->
-            <div v-if="activeTab === 'create'" class="tab-content">
-                <!-- Question List Component (Search Mode Only) -->
-                <QuestionList :questions="[]" :selected-question-id="null" :loading="false"
-                    :show-auto-distribute="false" :show-add-question="false" :tags="tags"
-                    :search-results="searchQuestions" :search-loading="searchLoading" :total-search-count="totalCount"
-                    :pending-edits="{}" @search-questions="handleSearchQuestions" @load-tags="loadTags"
-                    @update:selected-ids="handleSelectedIdsChange" />
-
-                <!-- Exam Configuration -->
-                <div class="exam-config-section">
-                    <h2 class="section-title">考卷設定</h2>
-
-                    <div class="config-form">
-                        <div class="form-group">
-                            <label class="form-label">考卷名稱 <span class="required">*</span></label>
-                            <input v-model="examConfig.name" type="text" class="form-input" placeholder="例如：民法總則練習卷"
-                                maxlength="200" />
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">時間限制（分鐘）</label>
-                            <input v-model.number="examConfig.timeLimit" type="number" class="form-input"
-                                placeholder="選填，不填則無時間限制" min="5" max="600" />
-                        </div>
-
-                        <div class="form-actions">
-                            <button class="btn btn-primary btn-lg" @click="createExam"
-                                :disabled="!canCreateExam || creating">
-                                <svg v-if="!creating" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                    <polyline points="14 2 14 8 20 8"></polyline>
-                                    <line x1="12" y1="18" x2="12" y2="12"></line>
-                                    <line x1="9" y1="15" x2="15" y2="15"></line>
-                                </svg>
-                                <span>{{ creating ? '建立中...' : '建立考卷' }}</span>
+                        <div class="row-meta muted">{{ formatDate(exam.created_at) }}</div>
+                        <div class="row-actions">
+                            <button type="button" class="action" :class="exam.open_attempt ? 'action-primary' : 'action-outline'" @click="openExam(exam.id)">
+                                {{ exam.open_attempt ? '繼續作答' : '開始作答' }}
+                            </button>
+                            <button type="button" class="icon-btn" :aria-label="`列印「${exam.name}」`" title="列印" @click="printExam(exam.id)">
+                                <i class="bi bi-printer" aria-hidden="true"></i>
+                            </button>
+                            <button v-if="exam.is_owner" type="button" class="icon-btn" :aria-label="`刪除「${exam.name}」`" title="刪除"
+                                @click="deleteTarget = exam">
+                                <i class="bi bi-trash3" aria-hidden="true"></i>
                             </button>
                         </div>
+                    </li>
+                </ul>
+            </section>
+        </template>
 
-                        <div v-if="errorMessage" class="error-message">
-                            {{ errorMessage }}
-                        </div>
-                    </div>
+        <!-- Confirm: delete an exam the user owns -->
+        <div v-if="deleteTarget" class="overlay" @click.self="closeConfirm">
+            <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="del-title" aria-describedby="del-desc">
+                <h2 id="del-title">刪除這份考卷？</h2>
+                <p id="del-desc">「{{ deleteTarget.name }}」會從你的考卷中移除。題目本身還留在題庫。</p>
+                <p v-if="actionError" class="dialog-error" role="alert">{{ actionError }}</p>
+                <div class="dialog-actions">
+                    <button type="button" class="action action-outline" @click="closeConfirm">取消</button>
+                    <button type="button" class="action action-danger" :disabled="busy" @click="confirmDelete">
+                        {{ busy ? '刪除中…' : '刪除考卷' }}
+                    </button>
                 </div>
             </div>
+        </div>
 
-            <!-- Mock Exam Modal -->
-            <div v-if="showMockExamModal" class="mock-exam-overlay" @click.self="closeMockExamModal">
-                <div class="mock-exam-dialog">
-                    <div class="dialog-header">
-                        <h3>建立模擬考題</h3>
-                        <button class="btn-close" @click="closeMockExamModal" aria-label="關閉">×</button>
-                    </div>
-                    <div class="dialog-body">
-                        <p class="dialog-desc">選擇考卷來源並設定題數，系統將隨機抽取題目組成模擬試卷。</p>
-
-                        <div v-if="loadingAvailableExams" class="loading-exams">
-                            <div class="spinner"></div>
-                            載入考卷中...
-                        </div>
-
-                        <div v-else-if="availableExams.length === 0" class="no-exams-warning">
-                            <p>目前沒有可用的考卷</p>
-                        </div>
-
-                        <div v-else class="exam-select-section">
-                            <h4>選擇考卷來源（可多選）</h4>
-                            <div class="exam-select-list">
-                                <label v-for="exam in availableExams" :key="exam.id" class="exam-select-item"
-                                    :class="{ selected: selectedExamIdsForMock.includes(exam.id) }">
-                                    <input type="checkbox" :value="exam.id" v-model="selectedExamIdsForMock">
-                                    <div class="exam-select-info">
-                                        <span class="exam-select-name">{{ exam.name }}</span>
-                                        <span class="exam-select-meta">{{ exam.question_count || 0 }} 題</span>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="question-count-setting">
-                            <h4>設定題數</h4>
-                            <div class="count-options">
-                                <button v-for="count in [10, 20, 30, 50]" :key="count" class="count-btn"
-                                    :class="{ active: mockQuestionCount === count }"
-                                    @click="mockQuestionCount = count">
-                                    {{ count }} 題
-                                </button>
-                            </div>
-                            <div class="custom-count">
-                                <span>或自訂：</span>
-                                <input type="number" v-model.number="mockQuestionCount" min="1" max="200"
-                                    class="count-input">
-                                <span>題</span>
-                            </div>
-                        </div>
-
-                        <div v-if="totalAvailableQuestions > 0" class="available-count">
-                            選中考卷共有 {{ totalAvailableQuestions }} 題可用
-                        </div>
-                        <div v-else-if="selectedExamIdsForMock.length > 0" class="no-questions-warning">
-                            選中的考卷沒有題目
-                        </div>
-                    </div>
-                    <div class="dialog-footer">
-                        <button class="btn btn-secondary" @click="closeMockExamModal">取消</button>
-                        <button class="btn btn-primary" @click="confirmMockExam"
-                            :disabled="selectedExamIdsForMock.length === 0 || totalAvailableQuestions === 0 || creatingMockExam">
-                            {{ creatingMockExam ? '處理中...' : `建立模擬考題 (${Math.min(mockQuestionCount, totalAvailableQuestions)} 題)` }}
-                        </button>
-                    </div>
+        <!-- Confirm: abandon an unfinished attempt -->
+        <div v-if="abandonTarget" class="overlay" @click.self="closeConfirm">
+            <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="ab-title" aria-describedby="ab-desc">
+                <h2 id="ab-title">放棄這次作答？</h2>
+                <p id="ab-desc">已作答的 {{ abandonTarget.open_attempt.answered_count }} 題會清除，不會計入成績。考卷本身還在，之後可以重新開始。</p>
+                <p v-if="actionError" class="dialog-error" role="alert">{{ actionError }}</p>
+                <div class="dialog-actions">
+                    <button type="button" class="action action-outline" @click="closeConfirm">繼續保留</button>
+                    <button type="button" class="action action-danger" :disabled="busy" @click="confirmAbandon">
+                        {{ busy ? '處理中…' : '放棄作答' }}
+                    </button>
                 </div>
             </div>
+        </div>
 
-            <!-- Print Exam Modal -->
-            <div v-if="showPrintModal" class="mock-exam-overlay" @click.self="closePrintModal">
-                <div class="mock-exam-dialog">
-                    <div class="dialog-header">
-                        <h3>列印考卷</h3>
-                        <button class="btn-close" @click="closePrintModal" aria-label="關閉">×</button>
-                    </div>
-                    <div class="dialog-body">
-                        <p class="dialog-desc">選擇要列印的考卷</p>
+        <!-- Random mock exam -->
+        <div v-if="showMockExamModal" class="overlay" @click.self="closeMockExamModal">
+            <div class="dialog dialog-wide" role="dialog" aria-modal="true" aria-labelledby="mock-title" aria-describedby="mock-desc">
+                <div class="dialog-head">
+                    <h2 id="mock-title" class="exam-title">隨機模擬考</h2>
+                    <button type="button" class="icon-btn" aria-label="關閉" @click="closeMockExamModal">
+                        <i class="bi bi-x-lg" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <p id="mock-desc">從你選的考卷裡隨機抽題，組成一份新的考卷。</p>
 
-                        <div v-if="userExams.length === 0" class="no-exams-warning">
-                            <p>目前沒有可用的考卷</p>
+                <div v-if="loadingAvailableExams" class="state-inline" role="status">載入考卷中…</div>
+                <p v-else-if="!availableExams.length" class="muted">目前沒有可以抽題的考卷。</p>
+                <template v-else>
+                    <fieldset class="field">
+                        <div class="field-head">
+                            <legend>從哪些考卷抽題</legend>
+                            <button type="button" class="action action-quiet action-sm" @click="toggleAllSources">
+                                {{ allSourcesSelected ? '全部取消' : '全選' }}
+                            </button>
                         </div>
-
-                        <div v-else class="exam-select-section">
-                            <div class="exam-select-list">
-                                <label v-for="exam in userExams" :key="exam.id" class="exam-select-item"
-                                    :class="{ selected: selectedExamForPrint === exam.id }">
-                                    <input type="radio" :value="exam.id" v-model="selectedExamForPrint">
-                                    <div class="exam-select-info">
-                                        <span class="exam-select-name">{{ exam.name }}</span>
-                                        <span class="exam-select-meta">{{ exam.question_count || 0 }} 題</span>
-                                    </div>
-                                </label>
-                            </div>
+                        <div class="source-list">
+                            <label v-for="exam in availableExams" :key="exam.id" class="source"
+                                :class="{ selected: selectedExamIdsForMock.includes(exam.id) }">
+                                <input v-model="selectedExamIdsForMock" type="checkbox" :value="exam.id">
+                                <span class="source-name">{{ exam.name }}</span>
+                                <span class="muted">{{ exam.question_count }} 題</span>
+                            </label>
                         </div>
+                    </fieldset>
+
+                    <fieldset class="field">
+                        <legend>抽幾題</legend>
+                        <div class="count-chips">
+                            <button v-for="count in MOCK_COUNTS" :key="count" type="button" class="chip"
+                                :class="{ active: mockQuestionCount === count }" :aria-pressed="mockQuestionCount === count"
+                                @click="mockQuestionCount = count">
+                                {{ count }} 題
+                            </button>
+                        </div>
+                    </fieldset>
+
+                    <div v-if="failedSourceIds.length" class="dialog-error" role="alert">
+                        <span>有 {{ failedSourceIds.length }} 份考卷的題目載入失敗，還不能抽題。</span>
+                        <button type="button" class="action action-quiet action-sm" @click="retryFailedSources">重試</button>
                     </div>
-                    <div class="dialog-footer">
-                        <button class="btn btn-secondary" @click="closePrintModal">取消</button>
-                        <button class="btn btn-primary" @click="confirmPrintExam"
-                            :disabled="!selectedExamForPrint">
-                            列印
-                        </button>
-                    </div>
+                    <p v-else class="mock-summary" aria-live="polite">{{ mockSummary }}</p>
+                </template>
+
+                <div class="dialog-actions dialog-actions-split">
+                    <button type="button" class="action action-outline" @click="closeMockExamModal">取消</button>
+                    <button type="button" class="action action-primary" :disabled="!canDraw" @click="confirmMockExam">
+                        {{ canDraw ? `抽題並建立考卷（${mockDrawCount} 題）` : '抽題並建立考卷' }}
+                    </button>
                 </div>
             </div>
         </div>
@@ -275,389 +255,217 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useExamStore } from '@/stores/examStore'
-import questionService from '@/services/questionService'
-import { useTagStore } from '@/stores/tagStore'
-import QuestionList from '@/components/QuestionList.vue'
+import examService from '@/services/examService'
+import { clearAttempt } from '@/lib/examAttemptStorage'
+import { formatDay, formatWhen, formatSecondsLeft } from '@/lib/attemptFormat'
 
 const router = useRouter()
 const examStore = useExamStore()
-const tagStore = useTagStore()
 
-// Mock Exam Modal state
-const showMockExamModal = ref(false)
-const availableExams = ref([])
-const loadingAvailableExams = ref(false)
-const selectedExamIdsForMock = ref([])
-const mockQuestionCount = ref(20)
-const creatingMockExam = ref(false)
-const examQuestionCache = ref({})
+const MOCK_COUNTS = [10, 20, 30, 50]
 
-// Print Modal state
-const showPrintModal = ref(false)
-const selectedExamForPrint = ref(null)
+const exams = ref([])
+const loading = ref(true)
+const loadError = ref('')
+const sortBy = ref('created')
 
-// Tab state
-const activeTab = ref('list')
+const deleteTarget = ref(null)
+const abandonTarget = ref(null)
+const busy = ref(false)
+const actionError = ref('')
 
-// Exam list data
-const userExams = ref([])
-const loadingExams = ref(false)
-const deletingExamId = ref(null)
+// ---- Data ----------------------------------------------------------------
 
-// Create exam - search state
-const tags = ref([])
-const searchQuestions = ref([])
-const searchLoading = ref(false)
-const totalCount = ref(0)
-const selectedQuestionIds = ref([])
-
-// Create exam - exam config
-const examConfig = ref({
-    name: '',
-    timeLimit: null
-})
-const creating = ref(false)
-const errorMessage = ref('')
-
-// Legacy variables (to be removed after full migration)
-const subjects = ref([])
-const questions = ref([])
-const selectedQuestions = ref(new Set())
-const filters = ref({
-    subject: '',
-    difficulty: '',
-    search: '',
-    tags: [],
-    tag_mode: 'or'
-})
-const currentPage = ref(1)
-const pageSize = ref(20)
-const loading = ref(false)
-
-// Computed
-const canCreateExam = computed(() => {
-    return selectedQuestionIds.value.length > 0 && examConfig.value.name.trim().length > 0
-})
-
-const isAllSelected = computed(() => {
-    if (questions.value.length === 0) return false
-    return questions.value.every(q => selectedQuestions.value.has(q.id))
-})
-
-const paginationState = computed(() => {
-    const totalPages = Math.ceil(totalCount.value / pageSize.value)
-    return {
-        totalPages,
-        totalCount: totalCount.value,
-        hasNext: currentPage.value < totalPages,
-        hasPrev: currentPage.value > 1
-    }
-})
-
-// Methods
-const difficultyLabel = (difficulty) => {
-    const labels = {
-        easy: '簡單',
-        medium: '中等',
-        hard: '困難'
-    }
-    return labels[difficulty] || difficulty
-}
-
-const formatDate = (dateString) => {
-    if (!dateString) return '-'
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat('zh-TW', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
-    }).format(date)
-}
-
-const loadUserExams = async () => {
-    loadingExams.value = true
-    try {
-    const { data } = await examStore.getExams()
-        // 處理分頁回應 (data.results) 或直接陣列回應
-        const exams = Array.isArray(data) ? data : (data?.results || [])
-        // 過濾掉 null 或 undefined 的項目
-        userExams.value = exams.filter(exam => exam && exam.id)
-    } catch (error) {
-        console.error('載入考卷失敗:', error)
-        userExams.value = []
-    } finally {
-        loadingExams.value = false
-    }
-}
-
-const startExam = (examId) => {
-    router.push(`/exams/${examId}/preview`)
-}
-
-// Print Modal methods
-const openPrintModal = () => {
-    showPrintModal.value = true
-    selectedExamForPrint.value = null
-}
-
-const closePrintModal = () => {
-    showPrintModal.value = false
-    selectedExamForPrint.value = null
-}
-
-const confirmPrintExam = () => {
-    if (!selectedExamForPrint.value) return
-    const printUrl = router.resolve({ path: `/admin/exams/${selectedExamForPrint.value}/print` }).href
-    window.open(printUrl, '_blank')
-    closePrintModal()
-}
-
-const deleteExam = async (examId) => {
-    if (!confirm('確定要刪除這份考卷嗎？')) return
-
-    deletingExamId.value = examId
-    try {
-        await examStore.deleteExam(examId)
-        await loadUserExams()
-    } catch (error) {
-        console.error('刪除考卷失敗:', error)
-        alert('刪除考卷失敗，請稍後再試')
-    } finally {
-        deletingExamId.value = null
-    }
-}
-
-// QuestionList event handlers
-const handleSearchQuestions = async (filters, page = 1, pageSize = 20) => {
-    searchLoading.value = true
-    try {
-        const params = {
-            page: page,
-            page_size: pageSize
-        }
-
-        if (filters.subject) params.subject = filters.subject
-        if (filters.difficulty) params.difficulty = filters.difficulty
-        if (filters.search) params.search = filters.search
-        if (filters.tags && filters.tags.length > 0) {
-            params.tags = filters.tags.map(t => t.id).join(',')
-            params.tag_mode = filters.tag_mode
-        }
-        if (filters.source) {
-            params.source = filters.source
-        }
-
-        const { data } = await questionService.getQuestions(params)
-
-        // Transform search results to match format
-        const results = data?.results || data || []
-        searchQuestions.value = results.map(q => ({
-            id: `search-${q.id}`,
-            question: q.id,
-            question_content: q.content || q.question_content,
-            question_subject: q.subject_name || q.subject,
-            question_category: q.category,
-            difficulty: q.difficulty,
-            tags: q.tags,
-            points: 1,
-            order: 0,
-            isSearchResult: true,
-            originalQuestion: q
-        }))
-        totalCount.value = data?.count || results.length
-    } catch (error) {
-        console.error('搜尋題目失敗:', error)
-        searchQuestions.value = []
-        totalCount.value = 0
-    } finally {
-        searchLoading.value = false
-    }
-}
-
-const handleSelectedIdsChange = (ids) => {
-    selectedQuestionIds.value = ids
-}
-
-const loadSubjects = async () => {
-    // Subjects are now handled via question filters
-    // Placeholder - can be populated from question data if needed
-    subjects.value = []
-}
-
-const loadTags = async () => {
-    try {
-        const { data } = await tagStore.getTags()
-        tags.value = Array.isArray(data) ? data : (data?.results || [])
-    } catch (error) {
-        console.error('載入標籤失敗:', error)
-        tags.value = []
-    }
-}
-
-const loadQuestions = async () => {
+const loadExams = async () => {
     loading.value = true
-    errorMessage.value = ''
-
+    loadError.value = ''
     try {
-        const params = {
-            page: currentPage.value,
-            page_size: pageSize.value
-        }
-
-        if (filters.value.subject) {
-            params.subject = filters.value.subject
-        }
-        if (filters.value.difficulty) {
-            params.difficulty = filters.value.difficulty
-        }
-        if (filters.value.search) {
-            params.search = filters.value.search
-        }
-        if (filters.value.tags && filters.value.tags.length > 0) {
-            params.tags = filters.value.tags.map(t => t.id).join(',')
-            params.tag_mode = filters.value.tag_mode
-        }
-
-        const { data } = await questionService.getQuestions(params)
-
-        const results = data?.results || data || []
-        questions.value = results
-        totalCount.value = data?.count || results.length
-    } catch (error) {
-        console.error('載入題目失敗:', error)
-        errorMessage.value = '載入題目失敗，請稍後再試'
+        const { data } = await examService.getMyExams()
+        exams.value = data
+    } catch (err) {
+        console.error('載入考卷失敗:', err)
+        loadError.value = '考卷載入失敗，請確認網路後重新載入。'
     } finally {
         loading.value = false
     }
 }
 
-const resetFilters = () => {
-    filters.value = {
-        subject: '',
-        difficulty: '',
-        search: '',
-        tags: [],
-        tag_mode: 'or'
-    }
-    currentPage.value = 1
-    loadQuestions()
-}
+const time = (value) => (value ? new Date(value).getTime() : 0)
+const lastActivity = (exam) =>
+    Math.max(time(exam.created_at), time(exam.last_result?.completed_at), time(exam.open_attempt?.updated_at))
 
-const toggleQuestion = (question) => {
-    if (selectedQuestions.value.has(question.id)) {
-        selectedQuestions.value.delete(question.id)
-    } else {
-        selectedQuestions.value.add(question.id)
-    }
-    // Trigger reactivity
-    selectedQuestions.value = new Set(selectedQuestions.value)
-}
+// The exam whose `at(exam)` timestamp is latest, among those that have one
+const latestBy = (list, at) =>
+    list.reduce((best, e) => (at(e) && (!best || time(at(e)) > time(at(best))) ? e : best), null)
 
-const toggleSelectAll = () => {
-    if (isAllSelected.value) {
-        // Deselect all on current page
-        questions.value.forEach(q => {
-            selectedQuestions.value.delete(q.id)
-        })
-    } else {
-        // Select all on current page
-        questions.value.forEach(q => {
-            selectedQuestions.value.add(q.id)
-        })
-    }
-    selectedQuestions.value = new Set(selectedQuestions.value)
-}
+// The most recently touched unfinished attempt goes on top
+const openAttemptExam = computed(() => latestBy(exams.value, (e) => e.open_attempt?.updated_at))
 
-const clearSelection = () => {
-    selectedQuestions.value.clear()
-    selectedQuestions.value = new Set(selectedQuestions.value)
-}
+const lastPractisedExam = computed(() => latestBy(exams.value, (e) => e.last_result?.completed_at))
 
-const handlePageChange = (page) => {
-    currentPage.value = page
-    loadQuestions()
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-
-const handlePageSizeChange = (size) => {
-    pageSize.value = size
-    currentPage.value = 1
-    loadQuestions()
-}
-
-const createExam = async () => {
-    if (!canCreateExam.value) {
-        errorMessage.value = '請選擇至少一題並填寫考卷名稱'
-        return
-    }
-
-    creating.value = true
-    errorMessage.value = ''
-
-    try {
-        const payload = {
-            name: examConfig.value.name.trim(),
-            question_ids: selectedQuestionIds.value
-        }
-
-        if (examConfig.value.timeLimit && examConfig.value.timeLimit > 0) {
-            payload.time_limit = examConfig.value.timeLimit
-        }
-
-        const response = await examStore.createCustomExam(payload)
-
-        // Reset form
-        examConfig.value = { name: '', timeLimit: null }
-        selectedQuestionIds.value = []
-
-        // Reload exam list
-        await loadUserExams()
-
-        // Switch to list tab
-        activeTab.value = 'list'
-
-        // Show success message
-        alert('考卷建立成功！')
-    } catch (error) {
-        console.error('建立考卷失敗:', error)
-        errorMessage.value = error.response?.data?.detail || error.response?.data?.error || '建立考卷失敗，請稍後再試'
-    } finally {
-        creating.value = false
-    }
-}
-
-// Computed: total available questions from selected exams
-const totalAvailableQuestions = computed(() => {
-    let total = 0
-    for (const examId of selectedExamIdsForMock.value) {
-        const exam = availableExams.value.find(e => e.id === examId)
-        if (exam) {
-            total += exam.question_count || 0
-        }
-    }
-    return total
+const sortedExams = computed(() => {
+    const list = [...exams.value]
+    if (sortBy.value === 'name') return list.sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'))
+    if (sortBy.value === 'activity') return list.sort((a, b) => lastActivity(b) - lastActivity(a))
+    return list.sort((a, b) => time(b.created_at) - time(a.created_at))
 })
 
-// Mock Exam Modal methods
+// ---- Formatting ------------------------------------------------------------
+
+const percent = (part, whole) => (whole ? Math.round((part / whole) * 100) : 0)
+
+const pad = (n) => String(n).padStart(2, '0')
+
+const formatDate = (value) => {
+    if (!value) return '-'
+    const d = new Date(value)
+    return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())}`
+}
+
+const formatShortDate = (value) => {
+    if (!value) return ''
+    const d = new Date(value)
+    return `${d.getMonth() + 1}/${pad(d.getDate())}`
+}
+
+const formatDuration = (seconds) => {
+    const minutes = Math.round(seconds / 60)
+    return minutes >= 1 ? `${minutes} 分鐘` : `${seconds} 秒`
+}
+
+const timeLeftText = (attempt) => {
+    if (!attempt.time_limit_seconds) return '不限時'
+    const left = Math.max(0, attempt.time_limit_seconds - attempt.elapsed_seconds)
+    return left === 0 ? '時間已用完' : `還剩 ${formatSecondsLeft(left)}`
+}
+
+// ---- Actions ---------------------------------------------------------------
+
+// The exam page asks whether to continue an unfinished attempt
+const openExam = (examId) => router.push(`/exams/${examId}/preview`)
+
+const printExam = (examId) => {
+    const url = router.resolve({ path: `/admin/exams/${examId}/print` }).href
+    window.open(url, '_blank')
+}
+
+// Every way out of a confirmation drops its error, so the next dialog starts clean
+const closeConfirm = () => {
+    deleteTarget.value = null
+    abandonTarget.value = null
+    actionError.value = ''
+}
+
+const confirmDelete = async () => {
+    busy.value = true
+    actionError.value = ''
+    try {
+        await examStore.deleteExam(deleteTarget.value.id)
+        clearAttempt(deleteTarget.value.id)
+        deleteTarget.value = null
+        await loadExams()
+    } catch (err) {
+        console.error('刪除考卷失敗:', err)
+        actionError.value = '刪除失敗，請稍後再試。'
+    } finally {
+        busy.value = false
+    }
+}
+
+const confirmAbandon = async () => {
+    busy.value = true
+    actionError.value = ''
+    try {
+        await examService.abandonExamAttempt(abandonTarget.value.open_attempt.id)
+        clearAttempt(abandonTarget.value.id)
+        abandonTarget.value = null
+        await loadExams()
+    } catch (err) {
+        console.error('放棄作答失敗:', err)
+        actionError.value = '現在連不上伺服器，作答沒有放棄。請確認網路後再試一次。'
+    } finally {
+        busy.value = false
+    }
+}
+
+// ---- Random mock exam --------------------------------------------------------
+
+const showMockExamModal = ref(false)
+const availableExams = ref([])
+const loadingAvailableExams = ref(false)
+const selectedExamIdsForMock = ref([])
+const mockQuestionCount = ref(30)
+
+// Each source exam's question ids, fetched when it is first ticked:
+// { status: 'loading' | 'ready' | 'error', questionIds }
+const sources = ref({})
+
+const loadSource = async (examId) => {
+    sources.value[examId] = { status: 'loading', questionIds: [] }
+    try {
+        const res = await examStore.getExam(examId)
+        const questionIds = (res?.data?.exam_questions || []).map((eq) => eq.question).filter(Boolean)
+        sources.value[examId] = { status: 'ready', questionIds }
+    } catch (err) {
+        console.error(`Failed to fetch exam ${examId}:`, err)
+        sources.value[examId] = { status: 'error', questionIds: [] }
+    }
+}
+
+watch(selectedExamIdsForMock, (ids, prev = []) => {
+    for (const id of ids) {
+        if (!prev.includes(id) && sources.value[id]?.status !== 'ready' && sources.value[id]?.status !== 'loading') loadSource(id)
+    }
+})
+
+const failedSourceIds = computed(() => selectedExamIdsForMock.value.filter((id) => sources.value[id]?.status === 'error'))
+const retryFailedSources = () => failedSourceIds.value.forEach(loadSource)
+
+const sourcesLoading = computed(() =>
+    selectedExamIdsForMock.value.some((id) => !sources.value[id] || sources.value[id].status === 'loading')
+)
+
+// A question in several selected exams counts once
+const mockPoolIds = computed(() => {
+    const ids = new Set()
+    for (const id of selectedExamIdsForMock.value) {
+        for (const q of sources.value[id]?.questionIds || []) ids.add(q)
+    }
+    return ids
+})
+const mockPool = computed(() => mockPoolIds.value.size)
+const mockDrawCount = computed(() => Math.min(mockQuestionCount.value, mockPool.value))
+const canDraw = computed(() => mockPool.value > 0 && !sourcesLoading.value && !failedSourceIds.value.length)
+const allSourcesSelected = computed(() =>
+    availableExams.value.length > 0 && selectedExamIdsForMock.value.length === availableExams.value.length
+)
+
+const mockSummary = computed(() => {
+    if (!selectedExamIdsForMock.value.length) return '先選至少一份考卷。'
+    if (sourcesLoading.value) return '正在計算題數…'
+    if (!mockPool.value) return '選的考卷裡沒有題目。'
+    const note = mockQuestionCount.value > mockPool.value ? `（只有 ${mockPool.value} 題，全部都會抽到）` : ''
+    return `從 ${mockPool.value} 題中隨機抽 ${mockDrawCount.value} 題${note}。重複的題目只算一次。`
+})
+
+const toggleAllSources = () => {
+    selectedExamIdsForMock.value = allSourcesSelected.value ? [] : availableExams.value.map((e) => e.id)
+}
+
 const openMockExamModal = async () => {
     showMockExamModal.value = true
     loadingAvailableExams.value = true
     selectedExamIdsForMock.value = []
-    examQuestionCache.value = {}
-
     try {
-        // Load practice exams (admin + user's own)
+        // Published exams plus the user's own
         const res = await examStore.getPracticeExams({ page_size: 100 })
-        const exams = res.data?.results || res.data || []
-        // Filter to only exams with questions
-        availableExams.value = exams.filter(e => (e.question_count || 0) > 0)
-    } catch (e) {
-        console.error('Failed to load exams:', e)
+        const list = res.data?.results || res.data || []
+        availableExams.value = list.filter((e) => (e.question_count || 0) > 0)
+    } catch (err) {
+        console.error('Failed to load exams:', err)
         availableExams.value = []
     } finally {
         loadingAvailableExams.value = false
@@ -669,945 +477,761 @@ const closeMockExamModal = () => {
     selectedExamIdsForMock.value = []
 }
 
-const confirmMockExam = async () => {
-    if (selectedExamIdsForMock.value.length === 0) return
-
-    creatingMockExam.value = true
-
-    try {
-        // Fetch question IDs from all selected exams
-        const allQuestionIds = []
-
-        for (const examId of selectedExamIdsForMock.value) {
-            try {
-                const examRes = await examStore.getExam(examId)
-                const examQuestions = examRes.data?.exam_questions || []
-                for (const eq of examQuestions) {
-                    if (eq.question && !allQuestionIds.includes(eq.question)) {
-                        allQuestionIds.push(eq.question)
-                    }
-                }
-            } catch (e) {
-                console.error(`Failed to fetch exam ${examId}:`, e)
-            }
-        }
-
-        if (allQuestionIds.length === 0) {
-            alert('選中的考卷沒有題目')
-            return
-        }
-
-        // Shuffle using Fisher-Yates algorithm
-        const shuffled = [...allQuestionIds]
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-        }
-
-        // Take first N questions
-        const count = Math.min(mockQuestionCount.value, shuffled.length)
-        const selectedIds = shuffled.slice(0, count)
-
-        closeMockExamModal()
-
-        // Navigate to create exam page with preload_questions
-        router.push({
-            path: '/exams/create',
-            query: { preload_questions: selectedIds.join(',') }
-        })
-    } catch (e) {
-        console.error('Failed to create mock exam:', e)
-        alert('建立模擬考題失敗')
-    } finally {
-        creatingMockExam.value = false
+// Fisher–Yates, on a copy
+const shuffle = (items) => {
+    const out = [...items]
+    for (let i = out.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[out[i], out[j]] = [out[j], out[i]]
     }
+    return out
 }
 
-// Lifecycle
-onMounted(async () => {
-    await loadUserExams()
-    await Promise.all([
-        loadSubjects(),
-        loadTags()
-    ])
-    // Only load questions when switching to create tab
-    if (activeTab.value === 'create') {
-        await loadQuestions()
-    }
-})
+const confirmMockExam = () => {
+    if (!canDraw.value) return
+    const picked = shuffle(mockPoolIds.value).slice(0, mockQuestionCount.value)
+    closeMockExamModal()
+    // The create page opens with these questions filled in, ready to name and save
+    router.push({ path: '/exams/create', query: { preload_questions: picked.join(',') } })
+}
+
+onMounted(loadExams)
+
+defineExpose({ exams, loadExams })
 </script>
 
 <style scoped>
-.user-exam-view {
-    min-height: 100vh;
-    background: var(--bg-page, var(--bg-page));
-    padding: 32px 0;
-}
-
-.container {
-    max-width: 1200px;
+.my-exams {
+    max-width: 1120px;
     margin: 0 auto;
-    padding: 0 24px;
-}
-
-.page-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--text-primary, var(--text-primary));
-    margin-bottom: 8px;
-}
-
-.page-subtitle {
-    font-size: 16px;
-    color: var(--text-secondary, var(--text-secondary));
-    margin-bottom: 32px;
-}
-
-/* Tabs */
-.tabs-container {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 24px;
-    border-bottom: 2px solid var(--border);
-}
-
-.tab-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    background: transparent;
-    border: none;
-    border-bottom: 3px solid transparent;
-    color: var(--text-secondary, var(--text-secondary));
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: -2px;
-}
-
-.tab-btn:hover {
-    color: var(--primary, var(--primary-text));
-    background: var(--primary-soft, var(--primary-soft));
-}
-
-.tab-btn.active {
-    color: var(--primary, var(--primary-text));
-    border-bottom-color: var(--primary, var(--primary));
-}
-
-.tab-content {
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Exam List Section */
-.exam-list-section {
-    background: var(--surface, var(--surface));
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-}
-
-.section-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--text-primary, var(--text-primary));
-    margin: 0;
-}
-
-.header-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.exam-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 20px;
-}
-
-.exam-card {
+    padding: 32px 16px 48px;
     display: flex;
     flex-direction: column;
-    height: 100%;
-    min-height: 200px;
-    background: var(--bg-page);
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    transition: all 0.2s;
+    gap: 28px;
+    color: var(--text-primary);
 }
 
-.exam-card:hover {
-    border-color: var(--primary, var(--primary));
-    box-shadow: 0 4px 12px rgba(71, 105, 150, 0.15);
-    transform: translateY(-2px);
+.exam-title {
+    font-family: 'Noto Serif TC', 'Source Han Serif TC', 'Songti TC', 'PMingLiU', serif;
+    font-weight: 700;
 }
 
-.exam-card-header {
-    margin-bottom: 16px;
+.muted {
+    color: var(--text-muted);
 }
 
-.exam-name {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--text-primary, var(--text-primary));
-    margin: 0 0 12px 0;
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* ---- Buttons ---- */
+.action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
 }
 
-.exam-meta {
+.action:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.action-lg {
+    min-height: 44px;
+    padding: 0 20px;
+}
+
+.action-sm {
+    min-height: 36px;
+    padding: 0 10px;
+    font-size: 14px;
+}
+
+.action-primary {
+    background: var(--primary);
+    color: var(--on-primary);
+}
+
+.action-primary:hover:not(:disabled) {
+    background: var(--primary-hover);
+}
+
+.action-outline {
+    background: var(--surface);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+}
+
+.action-outline:hover:not(:disabled) {
+    background: var(--surface-hover);
+}
+
+.action-quiet {
+    background: transparent;
+    color: var(--text-secondary);
+}
+
+.action-quiet:hover:not(:disabled) {
+    color: var(--text-primary);
+    background: var(--surface-hover);
+}
+
+.action-danger {
+    background: var(--danger);
+    color: var(--on-primary);
+}
+
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.icon-btn:hover {
+    background: var(--surface-hover);
+    color: var(--text-primary);
+}
+
+/* ---- Page head ---- */
+.page-head {
     display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
     gap: 16px;
     flex-wrap: wrap;
 }
 
-.meta-item {
+.page-title-group {
     display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--text-secondary, var(--text-secondary));
+    align-items: baseline;
+    gap: 14px;
 }
 
-.meta-item svg {
-    flex-shrink: 0;
+.page-title {
+    margin: 0;
+    font-family: 'Noto Serif TC', 'Source Han Serif TC', 'Songti TC', 'PMingLiU', serif;
+    font-size: 32px;
+    font-weight: 700;
 }
 
-.exam-card-footer {
+.page-count {
+    font-size: 15px;
+    color: var(--text-secondary);
+}
+
+.page-actions {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 16px;
-    margin-top: auto;
-    border-top: 1px solid var(--border);
+    gap: 10px;
 }
 
-.exam-date {
-    font-size: 12px;
-    color: var(--text-secondary, var(--text-secondary));
+.page-actions .action {
+    min-height: 44px;
 }
 
-.exam-actions {
-    display: flex;
-    gap: 8px;
-}
-
-/* Filters Section */
-.filters-section {
-    background: var(--surface, var(--surface));
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.filter-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px;
-    margin-bottom: 16px;
-}
-
-.filter-item {
+/* ---- Loading / error / empty ---- */
+.state-panel {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-}
-
-.filter-item-wide {
-    grid-column: span 2;
-}
-
-.filter-label {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-primary, var(--text-primary));
-}
-
-.filter-select,
-.filter-input {
-    padding: 10px 12px;
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    font-size: 14px;
-    background: var(--bg-page);
-    transition: all 0.2s;
-}
-
-.filter-select:focus,
-.filter-input:focus {
-    outline: none;
-    border-color: var(--primary, var(--primary));
-    background: var(--surface);
-    box-shadow: 0 0 0 3px rgba(71, 105, 150, 0.1);
-}
-
-.search-input-wrapper {
-    position: relative;
-    display: flex;
-    gap: 8px;
-}
-
-.search-input-wrapper .filter-input {
-    flex: 1;
-}
-
-.search-btn {
-    padding: 10px 16px;
-    background: var(--primary, var(--primary));
-    color: var(--on-primary);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.search-btn:hover:not(:disabled) {
-    background: var(--primary-hover, var(--primary-hover));
-}
-
-.search-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.filter-row {
-    margin-bottom: 16px;
-}
-
-.filter-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-}
-
-.result-count {
-    font-size: 14px;
-    color: var(--text-secondary, var(--text-secondary));
-    font-weight: 500;
-}
-
-/* Selected Summary */
-.selected-summary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 12px;
-    padding: 16px 24px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 6px rgba(102, 126, 234, 0.2);
-}
-
-.summary-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.summary-text {
-    display: flex;
     align-items: center;
     gap: 12px;
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.summary-text svg {
-    flex-shrink: 0;
-}
-
-/* Questions Section */
-.questions-section {
-    background: var(--surface, var(--surface));
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.selection-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.loading-state,
-.empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     padding: 64px 24px;
-    color: var(--text-secondary, var(--text-secondary));
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    color: var(--text-secondary);
 }
 
 .spinner {
-    width: 48px;
-    height: 48px;
-    border: 4px solid var(--border);
-    border-top-color: var(--primary, var(--primary));
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--surface-muted);
+    border-top-color: var(--primary);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 16px;
+    animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
 }
 
-.empty-state svg {
-    color: #cbd5e1;
-    margin-bottom: 16px;
+@media (prefers-reduced-motion: reduce) {
+    .spinner { animation-duration: 2.4s; }
 }
 
-.empty-state p {
+.empty-panel {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 1fr);
+    gap: 48px;
+    align-items: center;
+    padding: 48px 56px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+.empty-art .art-back { fill: var(--surface-muted); stroke: var(--border-strong); stroke-width: 2; }
+.empty-art .art-front { fill: var(--surface); stroke: var(--border-strong); stroke-width: 2; }
+.empty-art .art-lines { stroke: var(--border-strong); stroke-width: 3; stroke-linecap: round; }
+.empty-art .art-badge { fill: var(--primary); }
+.empty-art .art-plus { stroke: var(--on-primary); stroke-width: 3.5; stroke-linecap: round; }
+
+.empty-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 560px;
+}
+
+.empty-copy h2 {
+    margin: 0;
+    font-family: 'Noto Serif TC', 'Source Han Serif TC', 'Songti TC', 'PMingLiU', serif;
+    font-size: 26px;
+}
+
+.empty-copy p {
+    margin: 0;
     font-size: 16px;
-    margin-bottom: 16px;
+    line-height: 1.8;
+    color: var(--text-secondary);
 }
 
-.questions-list {
+.empty-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+/* ---- Spotlight ---- */
+.spotlight {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 40px;
+    align-items: center;
+    padding: 28px 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+.spotlight-open {
+    border: 2px solid var(--primary);
+}
+
+.spotlight-main {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+}
+
+.spotlight-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.spotlight-label-open {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    color: var(--primary-text);
+}
+
+.spotlight-name {
+    font-size: 26px;
+    line-height: 1.35;
+}
+
+.spotlight-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.spotlight-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.spotlight-figure {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.question-card {
+.big-number {
     display: flex;
-    gap: 16px;
-    padding: 16px;
-    border: 2px solid var(--border);
-    border-radius: 10px;
-    background: var(--bg-page);
-    transition: all 0.2s;
+    align-items: baseline;
+    gap: 6px;
+    font-family: 'Noto Serif TC', 'Source Han Serif TC', 'Songti TC', 'PMingLiU', serif;
+    font-variant-numeric: tabular-nums;
 }
 
-.question-card:hover {
-    border-color: var(--border-strong);
+.big-value {
+    font-size: 64px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.big-total {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.big-caption {
+    margin-left: auto;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text-secondary);
+}
+
+.bar {
+    height: 8px;
+    border-radius: 999px;
+    background: var(--surface-muted);
+    overflow: hidden;
+}
+
+.bar-thin {
+    height: 6px;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--primary);
+}
+
+.figure-foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---- List ---- */
+.exam-list {
     background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
 }
 
-.question-card.selected {
-    border-color: var(--primary, var(--primary));
-    background: var(--primary-soft, var(--primary-soft));
+.list-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
 }
 
-.question-checkbox {
-    flex-shrink: 0;
-    padding-top: 2px;
+.list-head h2 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
 }
 
-.question-checkbox input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
+.sort {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.sort select {
+    height: 36px;
+    padding: 0 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text-primary);
+    font: inherit;
+    font-size: 14px;
+}
+
+.list-columns,
+.exam-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 72px 96px 210px 104px 196px;
+    gap: 16px;
+    align-items: center;
+    padding: 0 24px;
+}
+
+.list-columns {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: var(--surface-muted);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.col-actions {
+    text-align: right;
+}
+
+.exam-rows {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.exam-row {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    border-top: 1px solid var(--border);
+    font-variant-numeric: tabular-nums;
+}
+
+.row-name {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.row-meta {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.row-score {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.score-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.chip-open {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--primary-soft);
+    color: var(--primary-text);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.row-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+/* ---- Dialogs ---- */
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: var(--overlay);
+}
+
+.dialog {
+    width: 100%;
+    max-width: 440px;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: var(--surface-raised);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+.dialog-wide {
+    max-width: 560px;
+}
+
+.dialog h2 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.dialog p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+.dialog .dialog-error {
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--danger-soft);
+    color: var(--danger);
+    font-size: 14px;
+}
+
+div.dialog-error {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    line-height: 1.6;
+}
+
+.dialog-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dialog-head h2 {
+    font-size: 22px;
+}
+
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.dialog-actions-split {
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.field {
+    margin: 4px 0 0;
+    padding: 0;
+    border: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field legend {
+    padding: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.field-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.source-list {
+    display: flex;
+    flex-direction: column;
+    max-height: 290px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.source {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 0 16px;
     cursor: pointer;
-    accent-color: var(--primary, var(--primary));
+    font-size: 15px;
+    font-variant-numeric: tabular-nums;
 }
 
-.question-content {
+.source + .source {
+    border-top: 1px solid var(--border);
+}
+
+.source.selected {
+    background: var(--primary-soft);
+}
+
+.source input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: var(--primary);
+}
+
+.source-name {
     flex: 1;
     min-width: 0;
 }
 
-.question-header {
+.count-chips {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 8px;
-}
-
-.question-text {
-    font-size: 15px;
-    color: var(--text-primary, var(--text-primary));
-    line-height: 1.6;
-    cursor: pointer;
-    display: block;
-}
-
-.question-meta {
-    display: flex;
-    gap: 8px;
     flex-wrap: wrap;
-}
-
-.meta-badge {
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.meta-badge.subject {
-    background: var(--primary-soft);
-    color: var(--primary-text);
-}
-
-.meta-badge.difficulty.easy {
-    background: var(--success-soft);
-    color: var(--success);
-}
-
-.meta-badge.difficulty.medium {
-    background: var(--warning-soft);
-    color: var(--warning);
-}
-
-.meta-badge.difficulty.hard {
-    background: var(--danger-soft);
-    color: var(--danger);
-}
-
-.question-tags {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-}
-
-.tag {
-    padding: 3px 8px;
-    background: var(--primary-soft);
-    color: #4f46e5;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 500;
-}
-
-/* Exam Config Section */
-.exam-config-section {
-    background: var(--surface, var(--surface));
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.config-form {
-    max-width: 600px;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-label {
-    display: block;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-primary, var(--text-primary));
-    margin-bottom: 8px;
-}
-
-.required {
-    color: var(--danger);
-}
-
-.form-input {
-    width: 100%;
-    padding: 12px 14px;
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    font-size: 14px;
-    background: var(--bg-page);
-    transition: all 0.2s;
-}
-
-.form-input:focus {
-    outline: none;
-    border-color: var(--primary, var(--primary));
-    background: var(--surface);
-    box-shadow: 0 0 0 3px rgba(71, 105, 150, 0.1);
-}
-
-.form-actions {
-    margin-top: 24px;
-}
-
-.error-message {
-    margin-top: 16px;
-    padding: 12px 16px;
-    background: var(--danger-soft);
-    color: var(--danger);
-    border-radius: 8px;
-    font-size: 14px;
-}
-
-/* Buttons */
-.btn {
-    display: inline-flex;
-    align-items: center;
     gap: 8px;
-    padding: 10px 18px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
 }
 
-.btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.btn-primary {
-    background: var(--primary, var(--primary));
-    color: var(--on-primary);
-    box-shadow: 0 2px 4px rgba(71, 105, 150, 0.2);
-}
-
-.btn-primary:hover:not(:disabled) {
-    background: var(--primary-hover, var(--primary-hover));
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(71, 105, 150, 0.3);
-}
-
-.btn-secondary {
-    background: var(--surface-muted);
-    color: var(--text-primary, var(--text-primary));
-}
-
-.btn-secondary:hover:not(:disabled) {
-    background: var(--surface-hover);
-}
-
-.btn-ghost {
+.chip {
+    min-width: 76px;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border-strong);
     background: transparent;
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.btn-ghost:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.5);
-}
-
-.btn-danger {
-    background: var(--danger-soft);
-    color: var(--danger);
-    border: 1px solid var(--danger);
-}
-
-.btn-danger:hover:not(:disabled) {
-    background: var(--danger);
-    color: var(--on-primary);
-    border-color: var(--danger);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
-}
-
-.btn-sm {
-    padding: 6px 12px;
-    font-size: 13px;
-}
-
-.btn-lg {
-    padding: 14px 28px;
-    font-size: 16px;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .filter-item-wide {
-        grid-column: span 1;
-    }
-
-    .page-title {
-        font-size: 24px;
-    }
-
-    .filters-section,
-    .questions-section,
-    .exam-config-section,
-    .exam-list-section {
-        padding: 16px;
-    }
-
-    .summary-content {
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-start;
-    }
-
-    .question-card {
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .exam-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .exam-card-footer {
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-start;
-    }
-
-    .exam-actions {
-        width: 100%;
-        justify-content: flex-end;
-    }
-}
-
-/* Mock Exam Modal Styles */
-.mock-exam-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 20px;
-}
-
-.mock-exam-dialog {
-    background: var(--surface);
-    border-radius: 16px;
-    width: 100%;
-    max-width: 560px;
-    max-height: 80vh;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-}
-
-.dialog-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 24px;
-    border-bottom: 1px solid var(--border);
-}
-
-.dialog-header h3 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--text-primary, var(--text-primary));
-}
-
-.btn-close {
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: var(--text-muted);
+    color: var(--text-primary);
+    font: inherit;
+    font-size: 15px;
+    font-variant-numeric: tabular-nums;
     cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 4px;
-    transition: all 0.2s;
 }
 
-.btn-close:hover {
-    background: var(--surface-muted);
+.chip.active {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: var(--on-primary);
+    font-weight: 500;
+}
+
+.dialog .mock-summary {
+    font-size: 14px;
+}
+
+.state-inline {
+    padding: 24px 0;
     color: var(--text-secondary);
 }
 
-.dialog-body {
-    padding: 24px;
-    overflow-y: auto;
-    flex: 1;
+/* ---- Tablet / phone ---- */
+@media (max-width: 960px) {
+    .spotlight {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 20px;
+    }
+
+    .list-columns {
+        display: none;
+    }
+
+    /* Each exam becomes a stacked block: name, then 題數 + 時間 on one line,
+       then the latest score, then the actions. The created date is dropped. */
+    .exam-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 14px;
+        padding: 16px;
+    }
+
+    .row-name {
+        flex: 0 0 100%;
+        white-space: normal;
+    }
+
+    .exam-row > .row-meta:nth-child(5) {
+        display: none;
+    }
+
+    .row-score {
+        flex: 0 0 100%;
+    }
+
+    .row-actions {
+        flex: 0 0 100%;
+        justify-content: flex-start;
+    }
+
+    .row-actions .action {
+        min-height: 44px;
+    }
+
+    .icon-btn {
+        width: 44px;
+        height: 44px;
+    }
 }
 
-.dialog-desc {
-    color: var(--text-secondary, var(--text-secondary));
-    margin-bottom: 20px;
-    font-size: 14px;
-}
+@media (max-width: 640px) {
+    .my-exams {
+        padding-top: 20px;
+        gap: 20px;
+    }
 
-.exam-select-section {
-    margin-bottom: 24px;
-}
+    .page-title {
+        font-size: 26px;
+    }
 
-.exam-select-section h4,
-.question-count-setting h4 {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary, var(--text-primary));
-    margin: 0 0 12px 0;
-}
+    .page-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 
-.exam-select-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-height: 290px;
-    overflow-y: auto;
-    padding: 4px;
-}
+    .spotlight {
+        padding: 18px;
+    }
 
-.exam-select-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    border: 2px solid var(--border);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
+    .spotlight-name {
+        font-size: 19px;
+    }
 
-.exam-select-item:hover {
-    border-color: var(--primary, var(--primary));
-    background: var(--primary-soft, var(--primary-soft));
-}
+    .big-value {
+        font-size: 44px;
+    }
 
-.exam-select-item.selected {
-    border-color: var(--primary, var(--primary));
-    background: var(--primary-soft, var(--primary-soft));
-}
+    .big-total {
+        font-size: 20px;
+    }
 
-.exam-select-item input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--primary, var(--primary));
-}
+    .spotlight-actions .action {
+        flex: 1 1 100%;
+    }
 
-.exam-select-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: start;
-}
+    .empty-panel {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 20px;
+        padding: 28px 20px;
+        justify-items: center;
+    }
 
-.exam-select-name {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-primary, var(--text-primary));
-}
+    .empty-art {
+        width: 140px;
+        height: 112px;
+    }
 
-.exam-select-meta {
-    font-size: 13px;
-    color: var(--text-secondary, var(--text-secondary));
+    .list-head {
+        padding: 16px;
+    }
 }
-
-.question-count-setting {
-    margin-bottom: 20px;
-}
-
-.count-options {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-}
-
-.count-btn {
-    padding: 8px 16px;
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    background: var(--surface);
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-primary, var(--text-primary));
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.count-btn:hover {
-    border-color: var(--primary, var(--primary));
-}
-
-.count-btn.active {
-    border-color: var(--primary, var(--primary));
-    background: var(--primary, var(--primary));
-    color: var(--on-primary);
-}
-
-.custom-count {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: var(--text-secondary, var(--text-secondary));
-}
-
-.count-input {
-    width: 80px;
-    padding: 8px 12px;
-    border: 2px solid var(--border);
-    border-radius: 6px;
-    font-size: 14px;
-    text-align: center;
-}
-
-.count-input:focus {
-    outline: none;
-    border-color: var(--primary, var(--primary));
-}
-
-.available-count {
-    padding: 12px 16px;
-    background: var(--success-soft);
-    color: var(--success);
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.no-exams-warning,
-.no-questions-warning {
-    padding: 16px;
-    background: var(--warning-soft);
-    color: var(--warning);
-    border-radius: 8px;
-    font-size: 14px;
-    text-align: center;
-}
-
-.loading-exams {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 32px;
-    color: var(--text-secondary, var(--text-secondary));
-}
-
-.dialog-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    padding: 16px 24px;
-    border-top: 1px solid var(--border);
-}
-
-/* Dark Mode Overrides */
 </style>
-
