@@ -363,8 +363,14 @@ const totalQuestions = computed(() => exam.value?.exam_questions?.length || 0)
 
 const questionIds = computed(() => (exam.value?.exam_questions || []).map((eq) => eq.question))
 
-// null when the exam has no time limit
+// The limit the server attempt started with (null: none), so editing the exam doesn't
+// change the time of a sitting already under way. undefined: no server attempt.
+const attemptTimeLimitSeconds = ref(undefined)
+
+// null when there is no time limit
 const timeLimitSeconds = computed(() => {
+  const snapshot = savedAttempt.value ? savedAttempt.value.timeLimitSeconds : attemptTimeLimitSeconds.value
+  if (snapshot !== undefined) return snapshot
   const minutes = Number(exam.value?.time_limit)
   return Number.isFinite(minutes) && minutes > 0 ? minutes * 60 : null
 })
@@ -509,8 +515,8 @@ const loadSavedAttempt = async () => {
   }
 
   let local = loadAttempt(examId, questionIds.value)
-  // Progress left on this browser by a different account is not this user's
-  if (local?.userId && currentUserId.value && local.userId !== currentUserId.value) local = null
+  // Progress left on this browser by a different account (or with no one signed in) is not this user's
+  if (local?.userId && local.userId !== currentUserId.value) local = null
 
   let server = null
   let serverReachable = true
@@ -525,7 +531,11 @@ const loadSavedAttempt = async () => {
     // Answers made on this device that never reached the server (e.g. offline) win,
     // but time used only moves forward.
     if (local && local.attemptId === server.attemptId && new Date(local.updatedAt) > new Date(server.updatedAt)) {
-      return { ...local, elapsedSeconds: Math.max(local.elapsedSeconds, server.elapsedSeconds) }
+      return {
+        ...local,
+        elapsedSeconds: Math.max(local.elapsedSeconds, server.elapsedSeconds),
+        timeLimitSeconds: server.timeLimitSeconds
+      }
     }
     return server
   }
@@ -543,8 +553,10 @@ const openServerAttempt = async () => {
   try {
     const { data } = await examService.startExamAttempt(exam.value.id)
     attemptId.value = data?.id || null
+    attemptTimeLimitSeconds.value = data?.id ? (data.time_limit_seconds ?? null) : undefined
   } catch (err) {
     attemptId.value = null
+    attemptTimeLimitSeconds.value = undefined
     console.warn('Could not start the attempt on the server; progress stays on this device', err)
   }
   syncState.value = attemptId.value ? 'synced' : 'local'
@@ -607,6 +619,7 @@ const applySavedAttempt = () => {
   userAnswers.value = { ...saved.answers }
   flaggedQuestions.value = new Set(saved.flagged)
   currentQuestionIndex.value = saved.currentIndex
+  attemptTimeLimitSeconds.value = saved.timeLimitSeconds
   savedAttempt.value = null
   showResumePrompt.value = false
   return saved
@@ -775,9 +788,23 @@ const submitExam = async (autoSubmit = false) => {
   saveResultsToBackend(score, correct, total, durationSeconds, wrongQuestionIds)
 }
 
+// An attempt started offline has no server attempt yet: open one before saving the
+// result, so a retry after a lost response returns the first result instead of adding
+// another. Still unreachable: the result is saved without one.
+const ensureSubmittedAttempt = async () => {
+  if (submittedAttemptId.value) return
+  try {
+    const { data } = await examService.startExamAttempt(exam.value.id)
+    submittedAttemptId.value = data?.id || null
+  } catch (err) {
+    console.warn('Could not open a server attempt for the result', err)
+  }
+}
+
 // Separate function to save results to backend (non-blocking)
 const saveResultsToBackend = async (score, correct, total, durationSeconds, wrongQuestionIds) => {
   try {
+    await ensureSubmittedAttempt()
     await examStore.saveExamResult({
       exam_id: exam.value.id,
       score,
@@ -803,6 +830,7 @@ const retrySubmission = async () => {
   if (!examResults.value) return
   
   try {
+    await ensureSubmittedAttempt()
     await examStore.saveExamResult({
       exam_id: exam.value.id,
       score: examResults.value.score,
@@ -922,7 +950,8 @@ const persistExamState = () => {
   const savedAt = saveAttempt(exam.value.id, {
     ...currentProgress(),
     attemptId: attemptId.value,
-    userId: currentUserId.value
+    userId: currentUserId.value,
+    timeLimitSeconds: attemptTimeLimitSeconds.value
   })
   if (savedAt) lastSavedAt.value = savedAt
   scheduleServerSave()

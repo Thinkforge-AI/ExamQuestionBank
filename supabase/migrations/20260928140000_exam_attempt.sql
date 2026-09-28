@@ -200,6 +200,8 @@ $$;
 -- save_exam_result gains p_attempt_id: the result is written and the attempt is
 -- closed in one transaction. Submitting the same attempt twice (e.g. a retry
 -- after a dropped response) returns the first result instead of adding another.
+-- The attempt must be for the same exam. One that was abandoned elsewhere, or no
+-- longer exists, doesn't stop the result being saved: the exam was finished here.
 DROP FUNCTION IF EXISTS public.save_exam_result(bigint, text, numeric, integer, integer, integer, jsonb, bigint[]);
 
 CREATE OR REPLACE FUNCTION public.save_exam_result(
@@ -230,6 +232,10 @@ BEGIN
     SELECT * INTO v_attempt FROM public.exam_attempt
     WHERE id = p_attempt_id AND user_id = current_user_id
     FOR UPDATE;
+
+    IF v_attempt.id IS NOT NULL AND v_attempt.exam_id IS DISTINCT FROM p_exam_id THEN
+      RAISE EXCEPTION 'Attempt belongs to another exam' USING ERRCODE = '22023';
+    END IF;
 
     IF v_attempt.status = 'submitted' AND v_attempt.result_id IS NOT NULL THEN
       RETURN json_build_object('id', v_attempt.result_id, 'success', true, 'duplicate', true);

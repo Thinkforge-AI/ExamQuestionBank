@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { loadAttempt, saveAttempt, clearAttempt } from './examAttemptStorage'
+import { loadAttempt, saveAttempt, clearAttempt, fromServerAttempt } from './examAttemptStorage'
 
 const QUESTIONS = [101, 102, 103, 104]
 
@@ -34,6 +34,19 @@ describe('examAttemptStorage', () => {
     expect(loaded.elapsedSeconds).toBe(754)
     expect(loaded.answeredCount).toBe(2)
     expect(typeof loaded.updatedAt).toBe('string')
+  })
+
+  it('keeps the time limit a server attempt started with', () => {
+    const state = { questionIds: QUESTIONS, answers: {}, flagged: [], currentIndex: 0, elapsedSeconds: 0 }
+    saveAttempt(1, { ...state, attemptId: 'att-1', timeLimitSeconds: 1800 })
+    saveAttempt(2, { ...state, attemptId: 'att-2', timeLimitSeconds: null })
+    saveAttempt(3, state)
+    expect(loadAttempt(1, QUESTIONS).timeLimitSeconds).toBe(1800)
+    expect(loadAttempt(2, QUESTIONS).timeLimitSeconds).toBeNull() // no limit
+    expect(loadAttempt(3, QUESTIONS)).not.toHaveProperty('timeLimitSeconds') // no server attempt
+
+    expect(fromServerAttempt({ id: 'att-1', time_limit_seconds: 1800 }, QUESTIONS).timeLimitSeconds).toBe(1800)
+    expect(fromServerAttempt({ id: 'att-1', time_limit_seconds: null }, QUESTIONS).timeLimitSeconds).toBeNull()
   })
 
   it('keeps each exam separate', () => {

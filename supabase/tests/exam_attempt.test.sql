@@ -4,7 +4,7 @@ BEGIN;
 CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 SET search_path = public, extensions;
 
-SELECT plan(22);
+SELECT plan(23);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures: two users, a published 30-minute exam with three questions, and a
@@ -106,6 +106,9 @@ SELECT is((SELECT count(*) FROM public.exam_result WHERE exam_id = 900100)::int,
 INSERT INTO ctx SELECT 'a2', (public.start_exam_attempt(900100)->>'id');
 SELECT isnt((SELECT value FROM ctx WHERE key = 'a2'), (SELECT value FROM ctx WHERE key = 'a1'),
   'after submitting, starting again opens a new attempt');
+
+SELECT throws_ok(format($$ SELECT public.save_exam_result(900200, 'Private exam of B', 0, 0, 0, 0, NULL, NULL, %L) $$,
+  (SELECT value FROM ctx WHERE key = 'a2')), '22023', NULL, 'a result cannot close an attempt of another exam');
 
 SELECT public.abandon_exam_attempt((SELECT value FROM ctx WHERE key = 'a2')::uuid);
 SELECT ok(public.get_exam_attempt(900100) IS NULL, 'an abandoned attempt is no longer open');
