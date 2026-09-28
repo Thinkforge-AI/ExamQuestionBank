@@ -594,11 +594,14 @@ const launchQuiz = () => {
   persistExamState()
 }
 
+// Restore the saved attempt's answers, position, attempt id and time used
 const applySavedAttempt = () => {
   const saved = savedAttempt.value
   userAnswers.value = { ...saved.answers }
   flaggedQuestions.value = new Set(saved.flagged)
   currentQuestionIndex.value = saved.currentIndex
+  attemptId.value = saved.attemptId
+  startClock(saved.elapsedSeconds)
   savedAttempt.value = null
   showResumePrompt.value = false
   return saved
@@ -608,9 +611,7 @@ const resumeAttempt = async () => {
   const saved = applySavedAttempt()
   showResults.value = false
   isQuizActive.value = true
-  startClock(saved.elapsedSeconds)
   quizMessage.value = `已接著上次的進度，從第 ${saved.currentIndex + 1} 題開始`
-  attemptId.value = saved.attemptId
   syncState.value = saved.attemptId ? 'synced' : 'local'
   persistExamState()
   // Progress that only existed on this device gets an attempt on the server now
@@ -620,9 +621,7 @@ const resumeAttempt = async () => {
 
 // The saved attempt has no time left: grade what was answered.
 const submitSavedAttempt = () => {
-  const saved = applySavedAttempt()
-  attemptId.value = saved.attemptId
-  startClock(saved.elapsedSeconds)
+  applySavedAttempt()
   submitExam(true)
 }
 
