@@ -149,6 +149,7 @@
       </div>
 
       <div v-for="item in filteredQuestions" :key="item.id" class="search-question-item"
+        :data-question-id="item.id"
         :class="{ selected: selectedIds.includes(item.id) }" @click="toggleCheck(item.id)">
         <input type="checkbox" :checked="selectedIds.includes(item.id)" class="search-question-checkbox" @click.stop
           @change="toggleCheck(item.id)" />
@@ -300,6 +301,15 @@ const props = defineProps({
     type: Object,
     default: null
   },
+  // External control of search paging, e.g. restored from the URL (for practice mode)
+  searchPage: {
+    type: Number,
+    default: null
+  },
+  searchPageSizeValue: {
+    type: Number,
+    default: null
+  },
   // Exclude specific question IDs from display (for modal mode)
   excludeIds: {
     type: Array,
@@ -343,6 +353,14 @@ watch(() => props.externalFilters, (newFilters) => {
     searchFilters.value = { ...searchFilters.value, ...newFilters }
   }
 }, { immediate: true, deep: true })
+
+watch(() => props.searchPage, (page) => {
+  if (page) searchCurrentPage.value = page
+}, { immediate: true })
+
+watch(() => props.searchPageSizeValue, (size) => {
+  if (size) searchPageSize.value = size
+}, { immediate: true })
 
 // Set viewMode to 'search' in practice/modal mode
 watch(() => props.mode, (mode) => {

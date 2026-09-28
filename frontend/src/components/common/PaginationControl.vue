@@ -1,67 +1,67 @@
 <template>
-    <nav v-if="paginationState.totalPages > 0" class="pagination-wrapper">
+    <nav v-if="paginationState.totalPages > 0" class="pagination-wrapper" aria-label="分頁" :aria-busy="isLoading">
         <div class="pagination-info">
-            <span class="text-muted">
-                共 {{ paginationState.totalCount }} 筆 | 第 {{ currentPage }} / {{ paginationState.totalPages }} 頁
+            <span class="text-muted" aria-live="polite">
+                共 {{ paginationState.totalCount }} 筆 | 第 {{ page }} / {{ paginationState.totalPages }} 頁
             </span>
-            <select :value="pageSize" class="form-select form-select-sm page-size-select" @change="onPageSizeChange">
-                <option :value="10">每頁 10 筆</option>
-                <option :value="20">每頁 20 筆</option>
-                <option :value="50">每頁 50 筆</option>
-                <option :value="100">每頁 100 筆</option>
+            <select :value="pageSize" class="form-select form-select-sm page-size-select" aria-label="每頁筆數"
+                @change="onPageSizeChange">
+                <option v-for="size in PAGE_SIZES" :key="size" :value="size">每頁 {{ size }} 筆</option>
             </select>
         </div>
 
         <ul class="pagination mb-0">
-            <li class="page-item" :class="{ disabled: !paginationState.hasPrev || isLoading }">
-                <button class="page-link" :disabled="!paginationState.hasPrev || isLoading"
-                    @click="$emit('page-change', 1)" title="第一頁">
+            <li class="page-item" :class="{ disabled: !canPrev }">
+                <button type="button" class="page-link" :disabled="!canPrev" aria-label="第一頁" title="第一頁"
+                    @click="goTo(1)">
                     <span aria-hidden="true">&laquo;</span>
                 </button>
             </li>
-            <li class="page-item" :class="{ disabled: !paginationState.hasPrev || isLoading }">
-                <button class="page-link" :disabled="!paginationState.hasPrev || isLoading"
-                    @click="$emit('page-change', currentPage - 1)" title="上一頁">
+            <li class="page-item" :class="{ disabled: !canPrev }">
+                <button type="button" class="page-link" :disabled="!canPrev" aria-label="上一頁" title="上一頁"
+                    @click="goTo(page - 1)">
                     <span aria-hidden="true">&lsaquo;</span>
                 </button>
             </li>
 
-            <!-- Page Numbers -->
-            <li v-for="page in visiblePages" :key="page" class="page-item"
-                :class="{ active: page === currentPage, disabled: isLoading || typeof page !== 'number' }">
-                <button class="page-link" :disabled="isLoading || typeof page !== 'number'"
-                    @click="typeof page === 'number' ? $emit('page-change', page) : null">
-                    {{ page }}
+            <li v-for="item in visiblePages" :key="item.key" class="page-item"
+                :class="{ active: item.page === page, gap: item.page === null }">
+                <span v-if="item.page === null" class="page-gap" aria-hidden="true">…</span>
+                <button v-else type="button" class="page-link" :disabled="isLoading"
+                    :aria-current="item.page === page ? 'page' : undefined" :aria-label="`第 ${item.page} 頁`"
+                    @click="goTo(item.page)">
+                    {{ item.page }}
                 </button>
             </li>
 
-            <li class="page-item" :class="{ disabled: !paginationState.hasNext || isLoading }">
-                <button class="page-link" :disabled="!paginationState.hasNext || isLoading"
-                    @click="$emit('page-change', currentPage + 1)" title="下一頁">
+            <li class="page-item" :class="{ disabled: !canNext }">
+                <button type="button" class="page-link" :disabled="!canNext" aria-label="下一頁" title="下一頁"
+                    @click="goTo(page + 1)">
                     <span aria-hidden="true">&rsaquo;</span>
                 </button>
             </li>
-            <li class="page-item" :class="{ disabled: !paginationState.hasNext || isLoading }">
-                <button class="page-link" :disabled="!paginationState.hasNext || isLoading"
-                    @click="$emit('page-change', paginationState.totalPages)" title="最後一頁">
+            <li class="page-item" :class="{ disabled: !canNext }">
+                <button type="button" class="page-link" :disabled="!canNext" aria-label="最後一頁" title="最後一頁"
+                    @click="goTo(paginationState.totalPages)">
                     <span aria-hidden="true">&raquo;</span>
                 </button>
             </li>
         </ul>
 
-        <div class="page-jumper">
-            <span class="text-muted me-2">跳至</span>
-            <input v-model.number="jumpToPage" type="number" class="form-control form-control-sm" :min="1"
-                :max="paginationState.totalPages" @keyup.enter="handlePageJump" placeholder="頁碼" />
-            <button class="btn btn-sm btn-secondary" :disabled="isLoading || !isValidJumpPage" @click="handlePageJump">
+        <form class="page-jumper" @submit.prevent="handlePageJump">
+            <label :for="jumpInputId" class="text-muted">跳至</label>
+            <input :id="jumpInputId" v-model.number="jumpToPage" type="number" inputmode="numeric"
+                class="form-control form-control-sm" :min="1" :max="paginationState.totalPages" placeholder="頁碼" />
+            <button type="submit" class="btn btn-sm btn-secondary" :disabled="isLoading || !isValidJumpPage">
                 前往
             </button>
-        </div>
+        </form>
     </nav>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, useId } from 'vue'
+import { buildPageWindow } from '@/lib/pageWindow'
 
 interface PaginationState {
     hasNext: boolean
@@ -82,47 +82,35 @@ const emit = defineEmits<{
     (e: 'size-change', size: number): void
 }>()
 
+const PAGE_SIZES = [10, 20, 50, 100]
+
+const jumpInputId = useId()
 const jumpToPage = ref<number | null>(null)
 
-// Calculate visible pages for pagination (e.g., 1 ... 4 5 6 ... 10)
-const visiblePages = computed(() => {
+// Out-of-range input from the parent (e.g. a stale URL) is shown as the nearest real page.
+const page = computed(() =>
+    Math.min(Math.max(1, Math.trunc(props.currentPage) || 1), Math.max(1, props.paginationState.totalPages))
+)
+const canPrev = computed(() => page.value > 1 && !props.isLoading)
+const canNext = computed(() => page.value < props.paginationState.totalPages && !props.isLoading)
+
+const goTo = (target: number) => {
     const total = props.paginationState.totalPages
-    const current = props.currentPage
-    const delta = 2
-    const range = []
-    const rangeWithDots = []
-    let l
+    if (props.isLoading || target < 1 || target > total || target === page.value) return
+    emit('page-change', target)
+}
 
-    range.push(1)
-
-    if (total <= 1) return range
-
-    for (let i = current - delta; i <= current + delta; i++) {
-        if (i < total && i > 1) {
-            range.push(i)
-        }
-    }
-    range.push(total)
-
-    for (let i of range) {
-        if (l) {
-            if (i - l === 2) {
-                rangeWithDots.push(l + 1)
-            } else if (i - l !== 1) {
-                rangeWithDots.push('...')
-            }
-        }
-        rangeWithDots.push(i)
-        l = i
-    }
-
-    return rangeWithDots
-})
+const visiblePages = computed(() =>
+    buildPageWindow(page.value, props.paginationState.totalPages).map((p: number | null, i: number) => ({
+        page: p,
+        key: p === null ? `gap-${i}` : `page-${p}`
+    }))
+)
 
 const isValidJumpPage = computed(() => {
     if (!jumpToPage.value) return false
-    const page = Number(jumpToPage.value)
-    return Number.isInteger(page) && page >= 1 && page <= props.paginationState.totalPages
+    const target = Number(jumpToPage.value)
+    return Number.isInteger(target) && target >= 1 && target <= props.paginationState.totalPages
 })
 
 const onPageSizeChange = (event: Event) => {
@@ -132,7 +120,7 @@ const onPageSizeChange = (event: Event) => {
 
 const handlePageJump = () => {
     if (isValidJumpPage.value && jumpToPage.value) {
-        emit('page-change', jumpToPage.value)
+        goTo(jumpToPage.value)
         jumpToPage.value = null
     }
 }
@@ -232,6 +220,21 @@ const handlePageJump = () => {
     transform: translateY(-1px);
 }
 
+.page-link,
+.pagination-info .text-muted {
+    font-variant-numeric: tabular-nums;
+}
+
+.page-gap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 40px;
+    color: var(--text-muted);
+    user-select: none;
+}
+
 .page-item.active .page-link {
     background: var(--primary, var(--primary));
     border-color: var(--primary, var(--primary));
@@ -239,6 +242,7 @@ const handlePageJump = () => {
     box-shadow: 0 2px 4px rgba(71, 105, 150, 0.2);
 }
 
+.page-link:disabled,
 .page-item.disabled .page-link {
     cursor: not-allowed;
     opacity: 0.4;
@@ -253,11 +257,13 @@ const handlePageJump = () => {
     display: flex;
     align-items: center;
     gap: 8px;
+    margin: 0;
 }
 
 .page-jumper .text-muted {
     font-size: 14px;
     color: var(--text-secondary, var(--text-secondary));
+    white-space: nowrap;
 }
 
 .page-jumper input {
