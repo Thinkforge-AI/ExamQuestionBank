@@ -857,13 +857,11 @@ const handleKeyboardNavigation = (event) => {
     case '2':
     case '3':
     case '4':
-    case '5':
-      const optionIndex = parseInt(event.key) - 1
-      const options = currentQuestionOptions.value
-      if (options[optionIndex]) {
-        selectAnswer(options[optionIndex].id)
-      }
+    case '5': {
+      const option = currentQuestionOptions.value[Number(event.key) - 1]
+      if (option) selectAnswer(option.id)
       break
+    }
   }
 }
 
