@@ -336,18 +336,24 @@ const examService = {
   },
 
   /**
-   * Save progress of an open attempt.
+   * Save progress of an open attempt, as the page `writerId`. `claim` takes the
+   * attempt over from whichever page wrote it last (continuing it from the resume
+   * prompt); otherwise a save from a page that isn't the writer fails with an
+   * error whose `conflict` is true: the attempt is being continued elsewhere.
    * With `keepalive`, the request is sent with fetch keepalive so it still goes out
    * while the page is being hidden or closed.
    */
-  async saveAttemptProgress(attemptId, progress, { keepalive = false } = {}) {
+  async saveAttemptProgress(attemptId, progress, { writerId, claim = false, keepalive = false } = {}) {
     const body = {
       p_attempt_id: attemptId,
       p_answers: progress.answers || {},
       p_flagged: progress.flagged || [],
       p_current_question_id: progress.currentQuestionId ?? null,
-      p_elapsed_seconds: Math.max(0, Math.floor(progress.elapsedSeconds || 0))
+      p_elapsed_seconds: Math.max(0, Math.floor(progress.elapsedSeconds || 0)),
+      p_writer_id: writerId,
+      p_claim: claim
     }
+    const failed = (message, conflict) => Object.assign(new Error(message), { conflict })
     if (keepalive && cachedAccessToken) {
       // Issued synchronously (no await before fetch) so it survives the page closing
       const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/rpc/save_attempt_progress`, {
@@ -360,11 +366,11 @@ const examService = {
         },
         body: JSON.stringify(body)
       })
-      if (!res.ok) throw new Error(`save_attempt_progress failed: ${res.status}`)
+      if (!res.ok) throw failed(`save_attempt_progress failed: ${res.status}`, res.status === 409)
       return { data: await res.json() }
     }
     const { data, error } = await supabase.rpc('save_attempt_progress', body)
-    if (error) throw new Error(error.message)
+    if (error) throw failed(error.message, error.code === 'PT409')
     return { data }
   },
 

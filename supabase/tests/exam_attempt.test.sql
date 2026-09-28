@@ -4,7 +4,7 @@ BEGIN;
 CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 SET search_path = public, extensions;
 
-SELECT plan(23);
+SELECT plan(28);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures: two users, a published 30-minute exam with three questions, and a
@@ -60,17 +60,28 @@ SELECT is((public.start_exam_attempt(900100)->>'id'), (SELECT value FROM ctx WHE
 SELECT throws_ok($$ SELECT public.start_exam_attempt(900200) $$, 'P0002', 'Exam not found',
   'cannot start another user''s private exam');
 
-SELECT lives_ok(format($$ SELECT public.save_attempt_progress(%L, '{"900001": 7}', ARRAY[900002]::bigint[], 900002, 100) $$,
+SELECT lives_ok(format($$ SELECT public.save_attempt_progress(%L, '{"900001": 7}', ARRAY[900002]::bigint[], 900002, 100, 'aaaaaaaa-0000-0000-0000-000000000001') $$,
   (SELECT value FROM ctx WHERE key = 'a1')), 'saving progress works');
 SELECT is((public.get_exam_attempt(900100)->'answers')::text, '{"900001": 7}', 'answers are saved');
 
-SELECT is((public.save_attempt_progress((SELECT value FROM ctx WHERE key = 'a1')::uuid, '{}', '{}', 900001, 40)->>'elapsed_seconds')::int,
+SELECT is((public.save_attempt_progress((SELECT value FROM ctx WHERE key = 'a1')::uuid, '{}', '{}', 900001, 40, 'aaaaaaaa-0000-0000-0000-000000000001')->>'elapsed_seconds')::int,
   100, 'time used never goes backwards (a stale copy cannot wind the clock back)');
-SELECT is((public.save_attempt_progress((SELECT value FROM ctx WHERE key = 'a1')::uuid, '{"900001": 7}', '{}', 900001, 99999)->>'elapsed_seconds')::int,
+SELECT is((public.save_attempt_progress((SELECT value FROM ctx WHERE key = 'a1')::uuid, '{"900001": 7}', '{}', 900001, 99999, 'aaaaaaaa-0000-0000-0000-000000000001')->>'elapsed_seconds')::int,
   1800, 'time used is capped at the time limit');
 
-SELECT throws_ok(format($$ SELECT public.save_attempt_progress(%L, '[1,2]', '{}', NULL, 0) $$,
+SELECT throws_ok(format($$ SELECT public.save_attempt_progress(%L, '[1,2]', '{}', NULL, 0, 'aaaaaaaa-0000-0000-0000-000000000001') $$,
   (SELECT value FROM ctx WHERE key = 'a1')), '22023', NULL, 'answers must be a JSON object');
+
+-- One page at a time: the one that last continued the attempt
+SELECT throws_ok(format($$ SELECT public.save_attempt_progress(%L, '{}', '{}', NULL, 0, 'bbbbbbbb-0000-0000-0000-000000000002') $$,
+  (SELECT value FROM ctx WHERE key = 'a1')), 'PT409', NULL, 'another page cannot save over the writer');
+SELECT lives_ok(format($$ SELECT public.save_attempt_progress(%L, '{"900002": 8}', '{}', 900002, 0, 'bbbbbbbb-0000-0000-0000-000000000002', true) $$,
+  (SELECT value FROM ctx WHERE key = 'a1')), 'continuing on another page claims the attempt');
+SELECT throws_ok(format($$ SELECT public.save_attempt_progress(%L, '{"900001": 7}', '{}', 900001, 0, 'aaaaaaaa-0000-0000-0000-000000000001') $$,
+  (SELECT value FROM ctx WHERE key = 'a1')), 'PT409', NULL, 'the old page can no longer save (a stale tab cannot erase newer answers)');
+SELECT is((public.get_exam_attempt(900100)->'answers')::text, '{"900002": 8}', 'the newer answers are kept');
+SELECT lives_ok(format($$ SELECT public.save_attempt_progress(%L, '{"900002": 8}', '{}', 900002, 0, 'bbbbbbbb-0000-0000-0000-000000000002') $$,
+  (SELECT value FROM ctx WHERE key = 'a1')), 'the new writer keeps saving');
 
 SELECT throws_ok($$ INSERT INTO public.exam_attempt (user_id, exam_id) VALUES ('11111111-1111-1111-1111-111111111111', 900100) $$,
   '42501', NULL, 'the table cannot be written directly');
@@ -82,8 +93,8 @@ SELECT set_config('request.jwt.claims', '{"sub":"22222222-2222-2222-2222-2222222
 
 SELECT ok(public.get_exam_attempt(900100) IS NULL, 'another user does not see the attempt');
 SELECT is((SELECT count(*) FROM public.exam_attempt)::int, 0, 'row level security hides other users'' attempts');
-SELECT throws_ok(format($$ SELECT public.save_attempt_progress(%L, '{}', '{}', NULL, 0) $$,
-  (SELECT value FROM ctx WHERE key = 'a1')), 'P0002', NULL, 'another user cannot save into the attempt');
+SELECT throws_ok(format($$ SELECT public.save_attempt_progress(%L, '{}', '{}', NULL, 0, 'cccccccc-0000-0000-0000-000000000003', true) $$,
+  (SELECT value FROM ctx WHERE key = 'a1')), 'P0002', NULL, 'another user cannot save into the attempt, even claiming it');
 
 -- ---------------------------------------------------------------------------
 -- A submits: the attempt closes, and a retry does not add a second result
