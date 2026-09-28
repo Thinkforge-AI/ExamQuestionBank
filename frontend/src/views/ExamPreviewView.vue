@@ -764,53 +764,37 @@ const submitExam = async (autoSubmit = false) => {
   quizMessage.value = autoSubmit ? '時間到！測驗已自動提交' : '測驗已提交'
   
   // Save results to backend in background (non-blocking)
-  saveResultsToBackend(score, correct, total, durationSeconds, wrongQuestionIds)
+  saveResultsToBackend()
 }
 
-// Separate function to save results to backend (non-blocking)
-const saveResultsToBackend = async (score, correct, total, durationSeconds, wrongQuestionIds) => {
+// Save the graded examResults. On failure the results stay on screen and the
+// submission error modal offers a retry. Returns whether the save succeeded.
+const saveResultsToBackend = async () => {
+  const results = examResults.value
+  if (!results) return false
   try {
     await examStore.saveExamResult({
       exam_id: exam.value.id,
-      score,
-      correct_count: correct,
-      total_count: total,
-      duration_seconds: durationSeconds,
-      wrong_question_ids: wrongQuestionIds,
+      score: results.score,
+      correct_count: results.correct,
+      total_count: results.total,
+      duration_seconds: results.duration,
+      wrong_question_ids: results.wrongQuestionIds,
+      // Same attempt on every retry: a retry after a lost response doesn't create a second result
       attempt_id: submittedAttemptId.value
     })
+    return true
   } catch (err) {
     console.error('Failed to save exam result:', err)
-    // Show submission error modal but results are already shown
-    const friendlyError = createUserFriendlyError(err)
-    submissionErrorMessage.value = friendlyError.message
+    submissionErrorMessage.value = createUserFriendlyError(err).message
     showSubmissionError.value = true
+    return false
   }
 }
 
-// Retry submission
 const retrySubmission = async () => {
   showSubmissionError.value = false
-  
-  if (!examResults.value) return
-  
-  try {
-    await examStore.saveExamResult({
-      exam_id: exam.value.id,
-      score: examResults.value.score,
-      correct_count: examResults.value.correct,
-      total_count: examResults.value.total,
-      duration_seconds: examResults.value.duration,
-      wrong_question_ids: examResults.value.wrongQuestionIds,
-      // Same attempt: a retry after a lost response doesn't create a second result
-      attempt_id: submittedAttemptId.value
-    })
-    quizMessage.value = '成績已成功保存'
-  } catch (err) {
-    const friendlyError = createUserFriendlyError(err)
-    submissionErrorMessage.value = friendlyError.message
-    showSubmissionError.value = true
-  }
+  if (await saveResultsToBackend()) quizMessage.value = '成績已成功保存'
 }
 
 const dismissSubmissionError = () => {
