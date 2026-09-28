@@ -5,6 +5,12 @@
  */
 import { supabase } from '@/lib/supabase'
 
+// Latest access token, kept in memory so a save can be sent synchronously while
+// the page is being hidden or closed (there is no time to await getSession then).
+let cachedAccessToken = null
+supabase.auth.getSession().then(({ data }) => { cachedAccessToken = data?.session?.access_token || null })
+supabase.auth.onAuthStateChange((_event, session) => { cachedAccessToken = session?.access_token || null })
+
 const toNumber = (value) => {
   const num = Number(value)
   return Number.isFinite(num) ? num : null
@@ -306,10 +312,73 @@ const examService = {
       p_total_count: resultData.total_count || 0,
       p_duration_seconds: resultData.duration_seconds || null,
       p_answers_json: resultData.answers || null,
-      p_wrong_question_ids: resultData.wrong_question_ids || null
+      p_wrong_question_ids: resultData.wrong_question_ids || null,
+      p_attempt_id: resultData.attempt_id || null
     })
     if (error) throw new Error(error.message)
     return { data }
+  },
+
+  // ---- Resumable attempts (exam_attempt) ----------------------------------
+
+  // The caller's unfinished attempt for this exam, or null
+  async getExamAttempt(examId) {
+    const { data, error } = await supabase.rpc('get_exam_attempt', { p_exam_id: Number(examId) })
+    if (error) throw new Error(error.message)
+    return { data: data || null }
+  },
+
+  // Start an attempt, or get the one already open for this exam
+  async startExamAttempt(examId) {
+    const { data, error } = await supabase.rpc('start_exam_attempt', { p_exam_id: Number(examId) })
+    if (error) throw new Error(error.message)
+    return { data }
+  },
+
+  /**
+   * Save progress of an open attempt.
+   * With `keepalive`, the request is sent with fetch keepalive so it still goes out
+   * while the page is being hidden or closed.
+   */
+  async saveAttemptProgress(attemptId, progress, { keepalive = false } = {}) {
+    const body = {
+      p_attempt_id: attemptId,
+      p_answers: progress.answers || {},
+      p_flagged: progress.flagged || [],
+      p_current_question_id: progress.currentQuestionId ?? null,
+      p_elapsed_seconds: Math.max(0, Math.floor(progress.elapsedSeconds || 0))
+    }
+    if (keepalive && cachedAccessToken) {
+      // Issued synchronously (no await before fetch) so it survives the page closing
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/rpc/save_attempt_progress`, {
+        method: 'POST',
+        keepalive: true,
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${cachedAccessToken}`
+        },
+        body: JSON.stringify(body)
+      })
+      if (!res.ok) throw new Error(`save_attempt_progress failed: ${res.status}`)
+      return { data: await res.json() }
+    }
+    const { data, error } = await supabase.rpc('save_attempt_progress', body)
+    if (error) throw new Error(error.message)
+    return { data }
+  },
+
+  // Abandon an unfinished attempt (give up / start over)
+  async abandonExamAttempt(attemptId) {
+    const { error } = await supabase.rpc('abandon_exam_attempt', { p_attempt_id: attemptId })
+    if (error) throw new Error(error.message)
+    return { data: null }
+  },
+
+  // Id of the signed-in user, used to keep one user's local progress from another's
+  async getCurrentUserId() {
+    const { data: { session } } = await supabase.auth.getSession()
+    return session?.user?.id || null
   },
 
   // Get exam results

@@ -19,7 +19,12 @@ vi.mock('@/services/examService', () => ({
     getExam: vi.fn(),
     startExam: vi.fn(),
     saveExamResult: vi.fn(),
-    addBookmark: vi.fn()
+    addBookmark: vi.fn(),
+    getExamAttempt: vi.fn(),
+    startExamAttempt: vi.fn(),
+    saveAttemptProgress: vi.fn(),
+    abandonExamAttempt: vi.fn(),
+    getCurrentUserId: vi.fn()
   }
 }))
 
@@ -140,7 +145,12 @@ describe('ExamPreviewView Integration Tests', () => {
     examService.getExam.mockResolvedValue({ data: mockExam })
     examService.startExam.mockResolvedValue({ data: { success: true } })
     examService.saveExamResult.mockResolvedValue({ data: { success: true } })
-    
+    examService.getExamAttempt.mockResolvedValue({ data: null })
+    examService.startExamAttempt.mockResolvedValue({ data: { id: 'att-new' } })
+    examService.saveAttemptProgress.mockResolvedValue({ data: {} })
+    examService.abandonExamAttempt.mockResolvedValue({ data: null })
+    examService.getCurrentUserId.mockResolvedValue('user-1')
+
     questionService.getQuestion.mockImplementation((id) => {
       return Promise.resolve({ data: mockQuestionDetails[id] })
     })
@@ -387,45 +397,276 @@ describe('ExamPreviewView Integration Tests', () => {
   })
 
   describe('State Persistence', () => {
-    it('should persist exam state to localStorage', async () => {
-      await mountComponent()
-      const startButton = wrapper.find('button[aria-label="Start exam"]')
-      await startButton.trigger('click')
-      await flushPromises()
-      
-      expect(localStorage.setItem).toHaveBeenCalled()
-    })
-
-    it('should restore exam state from localStorage', async () => {
-      // Setup saved state
-      const savedState = {
+    // An unfinished attempt on question 2 (id 102), with question 1 answered and 10 minutes used
+    const saveUnfinishedAttempt = (overrides = {}) => {
+      localStorage.store['exam-attempt:1'] = JSON.stringify({
+        v: 1,
         examId: 1,
-        userAnswers: { 0: 2 },
-        currentQuestionIndex: 1,
-        isQuizActive: true,
-        startTime: Date.now(),
-        timestamp: new Date().toISOString()
-      }
-      localStorage.getItem.mockReturnValue(JSON.stringify(savedState))
-      
-      await mountComponent()
-      
-      // Should show restored message
-      expect(wrapper.text()).toContain('已恢復上次的作答進度')
-    })
+        answers: { 101: 2 },
+        flagged: [102],
+        currentQuestionId: 102,
+        elapsedSeconds: 600,
+        updatedAt: new Date().toISOString(),
+        ...overrides
+      })
+    }
 
-    it('should clear persisted state after submission', async () => {
+    const findButton = (text) => wrapper.findAll('button').find((b) => b.text().includes(text))
+
+    it('should persist the attempt per exam', async () => {
       await mountComponent()
       const startButton = wrapper.find('button[aria-label="Start exam"]')
       await startButton.trigger('click')
       await flushPromises()
-      
+
+      expect(localStorage.setItem).toHaveBeenCalledWith('exam-attempt:1', expect.any(String))
+      const saved = JSON.parse(localStorage.store['exam-attempt:1'])
+      expect(saved.elapsedSeconds).toBe(0)
+      expect(saved.currentQuestionId).toBe(101)
+    })
+
+    it('should save answers by question id', async () => {
+      await mountComponent()
+      await wrapper.find('button[aria-label="Start exam"]').trigger('click')
+      await flushPromises()
+      wrapper.vm.userAnswers[0] = 2
+      await wrapper.find('button[aria-label="Next question"]').trigger('click')
+
+      const saved = JSON.parse(localStorage.store['exam-attempt:1'])
+      expect(saved.answers).toEqual({ 101: 2 })
+      expect(saved.currentQuestionId).toBe(102)
+    })
+
+    it('should ask before resuming instead of resuming silently', async () => {
+      saveUnfinishedAttempt()
+      await mountComponent()
+
+      expect(wrapper.find('.testing-interface').exists()).toBe(false)
+      expect(wrapper.text()).toContain('上次的作答還沒寫完')
+      expect(wrapper.text()).toContain('1 / 3 題')
+      expect(wrapper.text()).toContain('20 分鐘') // 30 min limit − 10 min used
+      expect(wrapper.text()).toContain('第 2 題')
+    })
+
+    it('should continue from the saved question with the saved answers', async () => {
+      saveUnfinishedAttempt()
+      await mountComponent()
+
+      await findButton('繼續作答').trigger('click')
+      await flushPromises()
+
+      expect(wrapper.find('.testing-interface').exists()).toBe(true)
+      expect(wrapper.text()).toContain('第 2 / 3 題')
+      expect(wrapper.vm.userAnswers).toEqual({ 0: 2 })
+      expect(examService.startExam).not.toHaveBeenCalled()
+    })
+
+    it('should reopen the prompt from the start button after dismissing it', async () => {
+      saveUnfinishedAttempt()
+      await mountComponent()
+
+      await findButton('先不要').trigger('click')
+      expect(wrapper.text()).not.toContain('上次的作答還沒寫完')
+
+      const startButton = wrapper.find('button[aria-label="Start exam"]')
+      expect(startButton.text()).toBe('繼續上次的作答')
+      await startButton.trigger('click')
+      expect(wrapper.text()).toContain('上次的作答還沒寫完')
+    })
+
+    it('should confirm before clearing progress to start over', async () => {
+      saveUnfinishedAttempt()
+      await mountComponent()
+
+      await findButton('重新開始').trigger('click')
+      expect(wrapper.text()).toContain('清除進度並重新開始？')
+      expect(localStorage.removeItem).not.toHaveBeenCalledWith('exam-attempt:1')
+
+      await findButton('清除並重新開始').trigger('click')
+      await flushPromises()
+
+      expect(localStorage.removeItem).toHaveBeenCalledWith('exam-attempt:1')
+      expect(wrapper.text()).toContain('第 1 / 3 題')
+      expect(wrapper.vm.userAnswers).toEqual({})
+    })
+
+    it('should offer to grade an attempt whose time is used up', async () => {
+      global.confirm = vi.fn(() => true)
+      saveUnfinishedAttempt({ elapsedSeconds: 30 * 60 })
+      await mountComponent()
+
+      expect(wrapper.text()).toContain('上次作答的時間已經用完')
+      expect(findButton('繼續作答')).toBeUndefined()
+
+      await findButton('交卷').trigger('click')
+      await flushPromises()
+
+      expect(wrapper.find('.results-panel').exists()).toBe(true)
+      expect(examService.saveExamResult).toHaveBeenCalled()
+    })
+
+    it('should clear the saved attempt on submission', async () => {
+      await mountComponent()
+      const startButton = wrapper.find('button[aria-label="Start exam"]')
+      await startButton.trigger('click')
+      await flushPromises()
+
       global.confirm = vi.fn(() => true)
       const submitButton = wrapper.find('button[aria-label="Submit exam"]')
       await submitButton.trigger('click')
       await flushPromises()
-      
-      expect(localStorage.removeItem).toHaveBeenCalledWith('exam-preview-state')
+
+      expect(localStorage.removeItem).toHaveBeenCalledWith('exam-attempt:1')
+      expect(localStorage.store['exam-attempt:1']).toBeUndefined()
+    })
+  })
+
+  describe('Server Sync', () => {
+    const findButton = (text) => wrapper.findAll('button').find((b) => b.text().includes(text))
+    const minutesAgo = (m) => new Date(Date.now() - m * 60_000).toISOString()
+
+    // On question 3 with questions 1–2 answered and 5 minutes used, saved on another device
+    const serverAttempt = (overrides = {}) => ({
+      id: 'att-9',
+      exam_id: 1,
+      status: 'in_progress',
+      answers: { 101: 2, 102: 5 },
+      flagged: [],
+      current_question_id: 103,
+      elapsed_seconds: 300,
+      time_limit_seconds: 1800,
+      updated_at: minutesAgo(10),
+      ...overrides
+    })
+
+    const hideTab = () => {
+      Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'hidden' })
+      document.dispatchEvent(new Event('visibilitychange'))
+    }
+
+    afterEach(() => {
+      Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'visible' })
+    })
+
+    it('offers an attempt saved on another device', async () => {
+      examService.getExamAttempt.mockResolvedValue({ data: serverAttempt() })
+      await mountComponent()
+
+      const prompt = wrapper.find('.resume-modal').text()
+      expect(prompt).toContain('2 / 3 題')
+      expect(prompt).toContain('25 分鐘')
+      expect(prompt).toContain('第 3 題')
+
+      await findButton('繼續作答').trigger('click')
+      await flushPromises()
+
+      expect(wrapper.text()).toContain('第 3 / 3 題')
+      expect(examService.startExamAttempt).not.toHaveBeenCalled()
+      expect(examService.saveAttemptProgress).toHaveBeenCalledWith('att-9', expect.objectContaining({
+        answers: { 101: 2, 102: 5 }, currentQuestionId: 103
+      }), { keepalive: false })
+    })
+
+    it('drops this device\'s copy of an attempt that was finished elsewhere', async () => {
+      localStorage.store['exam-attempt:1'] = JSON.stringify({
+        v: 1, examId: 1, attemptId: 'att-old', userId: 'user-1', answers: { 101: 2 }, flagged: [],
+        currentQuestionId: 102, elapsedSeconds: 60, updatedAt: minutesAgo(1)
+      })
+      await mountComponent()
+
+      expect(wrapper.find('.resume-modal').exists()).toBe(false)
+      expect(localStorage.store['exam-attempt:1']).toBeUndefined()
+      expect(wrapper.find('button[aria-label="Start exam"]').text()).toBe('開始測驗')
+    })
+
+    it('prefers newer answers from this device but keeps the larger time used', async () => {
+      examService.getExamAttempt.mockResolvedValue({ data: serverAttempt({ elapsed_seconds: 600, updated_at: minutesAgo(30) }) })
+      localStorage.store['exam-attempt:1'] = JSON.stringify({
+        v: 1, examId: 1, attemptId: 'att-9', userId: 'user-1', answers: { 101: 2, 102: 5, 103: 8 }, flagged: [],
+        currentQuestionId: 103, elapsedSeconds: 120, updatedAt: minutesAgo(1)
+      })
+      await mountComponent()
+
+      const prompt = wrapper.find('.resume-modal').text()
+      expect(prompt).toContain('3 / 3 題')
+      expect(prompt).toContain('20 分鐘') // 30 − max(10, 2)
+    })
+
+    it('ignores progress another account left on this browser', async () => {
+      localStorage.store['exam-attempt:1'] = JSON.stringify({
+        v: 1, examId: 1, attemptId: null, userId: 'someone-else', answers: { 101: 2 }, flagged: [],
+        currentQuestionId: 101, elapsedSeconds: 60, updatedAt: minutesAgo(1)
+      })
+      await mountComponent()
+
+      expect(wrapper.find('.resume-modal').exists()).toBe(false)
+    })
+
+    it('starts the attempt on the server and links the result on submit', async () => {
+      global.confirm = vi.fn(() => true)
+      await mountComponent()
+      await wrapper.find('button[aria-label="Start exam"]').trigger('click')
+      await flushPromises()
+
+      expect(examService.startExamAttempt).toHaveBeenCalledWith(1)
+      expect(JSON.parse(localStorage.store['exam-attempt:1']).attemptId).toBe('att-new')
+
+      await wrapper.find('button[aria-label="Submit exam"]').trigger('click')
+      await flushPromises()
+
+      expect(examService.saveExamResult).toHaveBeenCalledWith(expect.objectContaining({ attempt_id: 'att-new' }))
+    })
+
+    it('sends progress right away when the tab is hidden', async () => {
+      await mountComponent()
+      await wrapper.find('button[aria-label="Start exam"]').trigger('click')
+      await flushPromises()
+      examService.saveAttemptProgress.mockClear()
+
+      hideTab()
+      await flushPromises()
+
+      expect(examService.saveAttemptProgress).toHaveBeenCalledWith('att-new', expect.any(Object), { keepalive: true })
+    })
+
+    it('keeps progress on this device and says so when the server is unreachable', async () => {
+      examService.startExamAttempt.mockRejectedValue(new Error('Network Error'))
+      await mountComponent()
+      await wrapper.find('button[aria-label="Start exam"]').trigger('click')
+      await flushPromises()
+
+      expect(wrapper.find('.testing-interface').exists()).toBe(true)
+      expect(wrapper.text()).toContain('進度先存在這台裝置')
+      expect(localStorage.store['exam-attempt:1']).toBeDefined()
+    })
+
+    it('closes the old attempt on the server before starting over', async () => {
+      examService.getExamAttempt.mockResolvedValue({ data: serverAttempt() })
+      await mountComponent()
+
+      await findButton('重新開始').trigger('click')
+      await findButton('清除並重新開始').trigger('click')
+      await flushPromises()
+
+      expect(examService.abandonExamAttempt).toHaveBeenCalledWith('att-9')
+      expect(examService.startExamAttempt).toHaveBeenCalled()
+      expect(examService.abandonExamAttempt.mock.invocationCallOrder[0])
+        .toBeLessThan(examService.startExamAttempt.mock.invocationCallOrder[0])
+      expect(wrapper.text()).toContain('第 1 / 3 題')
+    })
+
+    it('does not start over when the old attempt cannot be closed', async () => {
+      examService.getExamAttempt.mockResolvedValue({ data: serverAttempt() })
+      examService.abandonExamAttempt.mockRejectedValue(new Error('Network Error'))
+      await mountComponent()
+
+      await findButton('重新開始').trigger('click')
+      await findButton('清除並重新開始').trigger('click')
+      await flushPromises()
+
+      expect(wrapper.text()).toContain('連不上伺服器，進度沒有清除')
+      expect(wrapper.find('.testing-interface').exists()).toBe(false)
+      expect(examService.startExamAttempt).not.toHaveBeenCalled()
     })
   })
 
