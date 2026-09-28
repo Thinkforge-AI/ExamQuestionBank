@@ -431,25 +431,32 @@ const closeMockExamModal = () => {
     selectedExamIdsForMock.value = []
 }
 
+// Fisher–Yates, on a copy
+const shuffle = (items) => {
+    const out = [...items]
+    for (let i = out.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[out[i], out[j]] = [out[j], out[i]]
+    }
+    return out
+}
+
 const confirmMockExam = async () => {
     if (!mockPool.value) return
     creatingMockExam.value = true
     try {
+        const examIds = selectedExamIdsForMock.value
+        // Fetched together; an exam that fails to load just adds no questions
+        const loaded = await Promise.allSettled(examIds.map((examId) => examStore.getExam(examId)))
         const ids = new Set()
-        for (const examId of selectedExamIdsForMock.value) {
-            try {
-                const { data } = await examStore.getExam(examId)
-                for (const eq of data?.exam_questions || []) if (eq.question) ids.add(eq.question)
-            } catch (err) {
-                console.error(`Failed to fetch exam ${examId}:`, err)
+        loaded.forEach((res, i) => {
+            if (res.status === 'rejected') {
+                console.error(`Failed to fetch exam ${examIds[i]}:`, res.reason)
+                return
             }
-        }
-        const shuffled = [...ids]
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1))
-            ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-        }
-        const picked = shuffled.slice(0, mockQuestionCount.value)
+            for (const eq of res.value?.data?.exam_questions || []) if (eq.question) ids.add(eq.question)
+        })
+        const picked = shuffle(ids).slice(0, mockQuestionCount.value)
         if (!picked.length) return
         closeMockExamModal()
         // The create page opens with these questions filled in, ready to name and save
