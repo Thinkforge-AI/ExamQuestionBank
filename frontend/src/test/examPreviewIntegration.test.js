@@ -564,7 +564,7 @@ describe('ExamPreviewView Integration Tests', () => {
       expect(examService.startExamAttempt).not.toHaveBeenCalled()
       expect(examService.saveAttemptProgress).toHaveBeenCalledWith('att-9', expect.objectContaining({
         answers: { 101: 2, 102: 5 }, currentQuestionId: 103
-      }), { keepalive: false })
+      }), expect.objectContaining({ claim: true, keepalive: false, writerId: expect.any(String) }))
     })
 
     it('drops this device\'s copy of an attempt that was finished elsewhere', async () => {
@@ -602,6 +602,43 @@ describe('ExamPreviewView Integration Tests', () => {
       expect(wrapper.find('.resume-modal').exists()).toBe(false)
     })
 
+    it('ignores progress an account left on this browser once no one is signed in', async () => {
+      examService.getCurrentUserId.mockResolvedValue(null)
+      localStorage.store['exam-attempt:1'] = JSON.stringify({
+        v: 1, examId: 1, attemptId: null, userId: 'user-1', answers: { 101: 2 }, flagged: [],
+        currentQuestionId: 101, elapsedSeconds: 60, updatedAt: minutesAgo(1)
+      })
+      await mountComponent()
+
+      expect(wrapper.find('.resume-modal').exists()).toBe(false)
+    })
+
+    it('keeps the time limit the attempt started with after the exam is edited', async () => {
+      examService.getExam.mockResolvedValue({ data: { ...mockExam, time_limit: 60 } })
+      examService.getExamAttempt.mockResolvedValue({ data: serverAttempt() }) // started with 30 minutes
+      await mountComponent()
+
+      expect(wrapper.find('.resume-modal').text()).toContain('25 分鐘') // 30 − 5, not 60 − 5
+      await findButton('繼續作答').trigger('click')
+      await flushPromises()
+      expect(JSON.parse(localStorage.store['exam-attempt:1']).timeLimitSeconds).toBe(1800)
+    })
+
+    it('links a result to a server attempt even when the sitting started offline', async () => {
+      global.confirm = vi.fn(() => true)
+      examService.startExamAttempt.mockRejectedValueOnce(new Error('Network Error'))
+      await mountComponent()
+      await wrapper.find('button[aria-label="Start exam"]').trigger('click')
+      await flushPromises()
+      expect(wrapper.text()).toContain('進度先存在這台裝置')
+
+      await wrapper.find('button[aria-label="Submit exam"]').trigger('click')
+      await flushPromises()
+
+      // Back online: the attempt is opened now, so a retried submission can't save twice
+      expect(examService.saveExamResult).toHaveBeenCalledWith(expect.objectContaining({ attempt_id: 'att-new' }))
+    })
+
     it('starts the attempt on the server and links the result on submit', async () => {
       global.confirm = vi.fn(() => true)
       await mountComponent()
@@ -626,7 +663,7 @@ describe('ExamPreviewView Integration Tests', () => {
       hideTab()
       await flushPromises()
 
-      expect(examService.saveAttemptProgress).toHaveBeenCalledWith('att-new', expect.any(Object), { keepalive: true })
+      expect(examService.saveAttemptProgress).toHaveBeenCalledWith('att-new', expect.any(Object), expect.objectContaining({ keepalive: true }))
     })
 
     it('keeps progress on this device and says so when the server is unreachable', async () => {
@@ -638,6 +675,71 @@ describe('ExamPreviewView Integration Tests', () => {
       expect(wrapper.find('.testing-interface').exists()).toBe(true)
       expect(wrapper.text()).toContain('進度先存在這台裝置')
       expect(localStorage.store['exam-attempt:1']).toBeDefined()
+    })
+
+    it("continues a sitting started offline as the server's attempt when it is newer", async () => {
+      examService.getExamAttempt.mockResolvedValue({ data: serverAttempt({ updated_at: minutesAgo(30) }) })
+      localStorage.store['exam-attempt:1'] = JSON.stringify({
+        v: 1, examId: 1, attemptId: null, userId: 'user-1', answers: { 101: 2, 102: 5, 103: 8 }, flagged: [],
+        currentQuestionId: 103, elapsedSeconds: 120, updatedAt: minutesAgo(1)
+      })
+      await mountComponent()
+
+      expect(wrapper.find('.resume-modal').text()).toContain('3 / 3 題')
+      await findButton('繼續作答').trigger('click')
+      await flushPromises()
+
+      expect(examService.startExamAttempt).not.toHaveBeenCalled()
+      expect(examService.saveAttemptProgress).toHaveBeenCalledWith('att-9', expect.objectContaining({
+        answers: { 101: 2, 102: 5, 103: 8 }, elapsedSeconds: 300
+      }), expect.objectContaining({ claim: true }))
+    })
+
+    describe('when another tab or device continues the attempt', () => {
+      const conflict = () => Object.assign(new Error('Attempt is being continued elsewhere'), { conflict: true })
+
+      const startThenLoseIt = async () => {
+        await mountComponent()
+        await wrapper.find('button[aria-label="Start exam"]').trigger('click')
+        await flushPromises()
+        examService.saveAttemptProgress.mockRejectedValue(conflict())
+        hideTab() // sends progress now
+        await flushPromises()
+      }
+
+      it('stops here instead of overwriting the newer answers', async () => {
+        await startThenLoseIt()
+
+        expect(wrapper.text()).toContain('這次作答在別的地方接著寫了')
+        const saves = examService.saveAttemptProgress.mock.calls.length
+        hideTab()
+        await flushPromises()
+        expect(examService.saveAttemptProgress.mock.calls.length).toBe(saves)
+      })
+
+      it('can load the progress saved elsewhere', async () => {
+        await startThenLoseIt()
+        examService.getExamAttempt.mockResolvedValue({ data: serverAttempt({ id: 'att-new' }) })
+
+        await findButton('載入最新的進度').trigger('click')
+        await flushPromises()
+
+        expect(wrapper.find('.testing-interface').exists()).toBe(false)
+        const prompt = wrapper.find('.resume-modal').text()
+        expect(prompt).toContain('2 / 3 題') // the other device's answers, not this page's
+        expect(prompt).toContain('第 3 題')
+      })
+
+      it("can keep this page's progress by taking the attempt back", async () => {
+        await startThenLoseIt()
+        examService.saveAttemptProgress.mockReset().mockResolvedValue({ data: {} })
+
+        await findButton('改用這裡的進度繼續').trigger('click')
+        await flushPromises()
+
+        expect(wrapper.text()).not.toContain('這次作答在別的地方接著寫了')
+        expect(examService.saveAttemptProgress).toHaveBeenCalledWith('att-new', expect.any(Object), expect.objectContaining({ claim: true }))
+      })
     })
 
     it('closes the old attempt on the server before starting over', async () => {

@@ -8,6 +8,11 @@
 -- not a start timestamp: the timer is paused while the user is away.
 -- An in-progress attempt never expires; it ends when submitted or abandoned.
 --
+-- Only one page writes an attempt at a time: the one that last continued it.
+-- Each exam page has a random writer id; continuing an attempt from the resume
+-- prompt claims it, and saves from any other page (an old tab, another device)
+-- are then refused, so a stale copy can't overwrite newer answers.
+--
 -- All writes go through the SECURITY DEFINER functions below. Each one takes
 -- the user from auth.uid() (never from an argument), and none is executable
 -- by anon or PUBLIC.
@@ -18,8 +23,8 @@ CREATE TABLE IF NOT EXISTS public.exam_attempt (
   exam_id             bigint NOT NULL REFERENCES public.exam (id) ON DELETE CASCADE,
   status              text NOT NULL DEFAULT 'in_progress'
                         CHECK (status IN ('in_progress', 'submitted', 'abandoned')),
-  -- Question order when the attempt started, so later edits to the exam
-  -- don't shift an attempt that is already under way.
+  -- Question order when the attempt started. The client maps answers by question
+  -- id onto the exam's current questions, so this is a record, not the source.
   question_ids        bigint[] NOT NULL DEFAULT '{}',
   answers             jsonb NOT NULL DEFAULT '{}'::jsonb
                         CHECK (jsonb_typeof(answers) = 'object'),   -- { "<question_id>": <option_id> }
@@ -30,7 +35,9 @@ CREATE TABLE IF NOT EXISTS public.exam_attempt (
   result_id           bigint REFERENCES public.exam_result (id) ON DELETE SET NULL,
   started_at          timestamptz NOT NULL DEFAULT now(),
   updated_at          timestamptz NOT NULL DEFAULT now(),
-  finished_at         timestamptz
+  finished_at         timestamptz,
+  -- The page (tab/device) that last continued the attempt; see save_attempt_progress
+  writer_id           uuid
 );
 
 COMMENT ON TABLE public.exam_attempt IS 'One sitting of an exam; in_progress rows can be resumed';
@@ -136,14 +143,19 @@ END;
 $$;
 
 
--- Save progress. Time used only moves forward and never past the limit, so a
--- stale copy from another tab or device can't wind the clock back.
+-- Save progress. Time used only moves forward and never past the limit.
+-- p_writer_id is the calling page. A page may save while it is the attempt's
+-- writer (or no page has saved yet); p_claim takes the attempt over, which is
+-- what continuing it from the resume prompt does. Any other page gets PT409
+-- (HTTP 409): the attempt is being continued elsewhere.
 CREATE OR REPLACE FUNCTION public.save_attempt_progress(
   p_attempt_id uuid,
   p_answers jsonb,
   p_flagged bigint[],
   p_current_question_id bigint,
-  p_elapsed_seconds integer
+  p_elapsed_seconds integer,
+  p_writer_id uuid,
+  p_claim boolean DEFAULT false
 )
 RETURNS json
 LANGUAGE plpgsql
@@ -158,6 +170,9 @@ BEGIN
   IF p_answers IS NULL OR jsonb_typeof(p_answers) <> 'object' THEN
     RAISE EXCEPTION 'answers must be a JSON object' USING ERRCODE = '22023';
   END IF;
+  IF p_writer_id IS NULL THEN
+    RAISE EXCEPTION 'writer id is required' USING ERRCODE = '22023';
+  END IF;
 
   UPDATE public.exam_attempt a SET
     answers = p_answers,
@@ -167,11 +182,17 @@ BEGIN
       GREATEST(a.elapsed_seconds, COALESCE(p_elapsed_seconds, 0)),
       COALESCE(a.time_limit_seconds, 2147483647)
     ),
+    writer_id = p_writer_id,
     updated_at = now()
   WHERE a.id = p_attempt_id AND a.user_id = v_uid AND a.status = 'in_progress'
+    AND (p_claim OR a.writer_id IS NULL OR a.writer_id = p_writer_id)
   RETURNING * INTO v_attempt;
 
   IF v_attempt.id IS NULL THEN
+    IF EXISTS (SELECT 1 FROM public.exam_attempt
+               WHERE id = p_attempt_id AND user_id = v_uid AND status = 'in_progress') THEN
+      RAISE EXCEPTION 'Attempt is being continued elsewhere' USING ERRCODE = 'PT409';
+    END IF;
     RAISE EXCEPTION 'Attempt not found or already finished' USING ERRCODE = 'P0002';
   END IF;
 
@@ -200,6 +221,8 @@ $$;
 -- save_exam_result gains p_attempt_id: the result is written and the attempt is
 -- closed in one transaction. Submitting the same attempt twice (e.g. a retry
 -- after a dropped response) returns the first result instead of adding another.
+-- The attempt must be for the same exam. One that was abandoned elsewhere, or no
+-- longer exists, doesn't stop the result being saved: the exam was finished here.
 DROP FUNCTION IF EXISTS public.save_exam_result(bigint, text, numeric, integer, integer, integer, jsonb, bigint[]);
 
 CREATE OR REPLACE FUNCTION public.save_exam_result(
@@ -230,6 +253,10 @@ BEGIN
     SELECT * INTO v_attempt FROM public.exam_attempt
     WHERE id = p_attempt_id AND user_id = current_user_id
     FOR UPDATE;
+
+    IF v_attempt.id IS NOT NULL AND v_attempt.exam_id IS DISTINCT FROM p_exam_id THEN
+      RAISE EXCEPTION 'Attempt belongs to another exam' USING ERRCODE = '22023';
+    END IF;
 
     IF v_attempt.status = 'submitted' AND v_attempt.result_id IS NOT NULL THEN
       RETURN json_build_object('id', v_attempt.result_id, 'success', true, 'duplicate', true);
@@ -268,13 +295,13 @@ $$;
 REVOKE ALL ON FUNCTION public.exam_attempt_json(public.exam_attempt) FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.get_exam_attempt(bigint) FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION public.start_exam_attempt(bigint) FROM PUBLIC, anon;
-REVOKE ALL ON FUNCTION public.save_attempt_progress(uuid, jsonb, bigint[], bigint, integer) FROM PUBLIC, anon;
+REVOKE ALL ON FUNCTION public.save_attempt_progress(uuid, jsonb, bigint[], bigint, integer, uuid, boolean) FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION public.abandon_exam_attempt(uuid) FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION public.save_exam_result(bigint, text, numeric, integer, integer, integer, jsonb, bigint[], uuid) FROM PUBLIC, anon;
 
 GRANT EXECUTE ON FUNCTION public.get_exam_attempt(bigint) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.start_exam_attempt(bigint) TO authenticated;
-GRANT EXECUTE ON FUNCTION public.save_attempt_progress(uuid, jsonb, bigint[], bigint, integer) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.save_attempt_progress(uuid, jsonb, bigint[], bigint, integer, uuid, boolean) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.abandon_exam_attempt(uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.save_exam_result(bigint, text, numeric, integer, integer, integer, jsonb, bigint[], uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.exam_attempt_json(public.exam_attempt) TO service_role;

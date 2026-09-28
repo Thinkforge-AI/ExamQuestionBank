@@ -275,6 +275,27 @@
       </div>
     </div>
 
+    <!-- Another tab or device continued this attempt: stop here rather than overwrite it -->
+    <div
+      v-if="takenOver"
+      class="modal-overlay"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="taken-over-title"
+      aria-describedby="taken-over-desc"
+    >
+      <div class="modal-content resume-modal">
+        <h3 id="taken-over-title">這次作答在別的地方接著寫了</h3>
+        <p id="taken-over-desc">
+          另一個分頁或裝置繼續了這次作答，這裡的進度可能比較舊。為了不蓋掉那邊的答案，這裡先停下來，也暫停計時。
+        </p>
+        <div class="resume-actions">
+          <button class="btn btn-primary" @click="loadLatestAttempt">載入最新的進度</button>
+          <button class="btn btn-secondary" @click="keepThisAttempt">改用這裡的進度繼續</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Submission Error Modal -->
     <div
       v-if="showSubmissionError"
@@ -355,6 +376,12 @@ const currentUserId = ref(null)
 const syncState = ref(null) // 'synced' | 'local'
 let serverSaveTimer = null
 
+// This page, as a writer of the attempt. Continuing an attempt from the resume prompt
+// claims it; once another tab or device claims it, this page's saves are refused.
+const writerId = crypto.randomUUID()
+let claimOnNextSave = false
+const takenOver = ref(false)
+
 // Time actually spent answering; pauses while the page is hidden or left
 const { elapsedSeconds, start: startClock, pause: pauseClock, sync: syncClock } = useExamClock()
 
@@ -363,8 +390,14 @@ const totalQuestions = computed(() => exam.value?.exam_questions?.length || 0)
 
 const questionIds = computed(() => (exam.value?.exam_questions || []).map((eq) => eq.question))
 
-// null when the exam has no time limit
+// The limit the server attempt started with (null: none), so editing the exam doesn't
+// change the time of a sitting already under way. undefined: no server attempt.
+const attemptTimeLimitSeconds = ref(undefined)
+
+// null when there is no time limit
 const timeLimitSeconds = computed(() => {
+  const snapshot = savedAttempt.value ? savedAttempt.value.timeLimitSeconds : attemptTimeLimitSeconds.value
+  if (snapshot !== undefined) return snapshot
   const minutes = Number(exam.value?.time_limit)
   return Number.isFinite(minutes) && minutes > 0 ? minutes * 60 : null
 })
@@ -491,8 +524,8 @@ const loadSavedAttempt = async () => {
   }
 
   let local = loadAttempt(examId, questionIds.value)
-  // Progress left on this browser by a different account is not this user's
-  if (local?.userId && currentUserId.value && local.userId !== currentUserId.value) local = null
+  // Progress left on this browser by a different account (or with no one signed in) is not this user's
+  if (local?.userId && local.userId !== currentUserId.value) local = null
 
   let server = null
   let serverReachable = true
@@ -504,10 +537,17 @@ const loadSavedAttempt = async () => {
   }
 
   if (server) {
-    // Answers made on this device that never reached the server (e.g. offline) win,
-    // but time used only moves forward.
-    if (local && local.attemptId === server.attemptId && new Date(local.updatedAt) > new Date(server.updatedAt)) {
-      return { ...local, elapsedSeconds: Math.max(local.elapsedSeconds, server.elapsedSeconds) }
+    // Answers made on this device that never reached the server (e.g. offline) win when
+    // newer, but time used only moves forward. That includes a sitting started offline,
+    // before this device had a server attempt: it carries on as the server's attempt.
+    const unsynced = local && (local.attemptId === server.attemptId || !local.attemptId)
+    if (unsynced && new Date(local.updatedAt) > new Date(server.updatedAt)) {
+      return {
+        ...local,
+        attemptId: server.attemptId,
+        elapsedSeconds: Math.max(local.elapsedSeconds, server.elapsedSeconds),
+        timeLimitSeconds: server.timeLimitSeconds
+      }
     }
     return server
   }
@@ -525,8 +565,10 @@ const openServerAttempt = async () => {
   try {
     const { data } = await examService.startExamAttempt(exam.value.id)
     attemptId.value = data?.id || null
+    attemptTimeLimitSeconds.value = data?.id ? (data.time_limit_seconds ?? null) : undefined
   } catch (err) {
     attemptId.value = null
+    attemptTimeLimitSeconds.value = undefined
     console.warn('Could not start the attempt on the server; progress stays on this device', err)
   }
   syncState.value = attemptId.value ? 'synced' : 'local'
@@ -591,6 +633,7 @@ const applySavedAttempt = () => {
   flaggedQuestions.value = new Set(saved.flagged)
   currentQuestionIndex.value = saved.currentIndex
   attemptId.value = saved.attemptId
+  attemptTimeLimitSeconds.value = saved.timeLimitSeconds
   startClock(saved.elapsedSeconds)
   savedAttempt.value = null
   showResumePrompt.value = false
@@ -603,6 +646,7 @@ const resumeAttempt = async () => {
   isQuizActive.value = true
   quizMessage.value = `已接著上次的進度，從第 ${saved.currentIndex + 1} 題開始`
   syncState.value = saved.attemptId ? 'synced' : 'local'
+  claimOnNextSave = true // continuing here takes the attempt over from any other tab or device
   persistExamState()
   // Progress that only existed on this device gets an attempt on the server now
   if (!attemptId.value) await openServerAttempt()
@@ -756,12 +800,26 @@ const submitExam = async (autoSubmit = false) => {
   saveResultsToBackend()
 }
 
+// An attempt started offline has no server attempt yet: open one before saving the
+// result, so a retry after a lost response returns the first result instead of adding
+// another. Still unreachable: the result is saved without one.
+const ensureSubmittedAttempt = async () => {
+  if (submittedAttemptId.value) return
+  try {
+    const { data } = await examService.startExamAttempt(exam.value.id)
+    submittedAttemptId.value = data?.id || null
+  } catch (err) {
+    console.warn('Could not open a server attempt for the result', err)
+  }
+}
+
 // Save the graded examResults. On failure the results stay on screen and the
 // submission error modal offers a retry. Returns whether the save succeeded.
 const saveResultsToBackend = async () => {
   const results = examResults.value
   if (!results) return false
   try {
+    await ensureSubmittedAttempt()
     await examStore.saveExamResult({
       exam_id: exam.value.id,
       score: results.score,
@@ -876,12 +934,14 @@ const currentProgress = () => ({
 })
 
 const persistExamState = () => {
-  if (!exam.value || !isQuizActive.value) return
+  if (!exam.value || !isQuizActive.value || takenOver.value) return
   syncClock()
   const savedAt = saveAttempt(exam.value.id, {
     ...currentProgress(),
     attemptId: attemptId.value,
-    userId: currentUserId.value
+    userId: currentUserId.value,
+    writerId,
+    timeLimitSeconds: attemptTimeLimitSeconds.value
   })
   if (savedAt) lastSavedAt.value = savedAt
   scheduleServerSave()
@@ -896,20 +956,54 @@ const scheduleServerSave = () => {
 const flushServerSave = async ({ keepalive = false } = {}) => {
   clearTimeout(serverSaveTimer)
   serverSaveTimer = null
-  if (!exam.value || !isQuizActive.value) return
+  if (!exam.value || !isQuizActive.value || takenOver.value) return
   if (!attemptId.value) {
     if (keepalive) return
     await openServerAttempt() // e.g. it failed while offline; try again
     if (!attemptId.value) return
   }
   const progress = toServerProgress(currentProgress())
+  const claim = claimOnNextSave
   try {
-    await examService.saveAttemptProgress(attemptId.value, progress, { keepalive })
+    await examService.saveAttemptProgress(attemptId.value, progress, { writerId, claim, keepalive })
+    if (claim) claimOnNextSave = false
     syncState.value = 'synced'
   } catch (err) {
+    if (err.conflict) {
+      stopForTakeover()
+      return
+    }
     syncState.value = 'local'
     console.warn('Could not save progress to the server; it is kept on this device', err)
   }
+}
+
+// Another tab or device continued the attempt. Stop answering and counting time here
+// until the user picks which progress to keep.
+const stopForTakeover = () => {
+  if (takenOver.value) return
+  clearTimeout(serverSaveTimer)
+  pauseClock()
+  takenOver.value = true
+}
+
+// Discard this page's (older) progress and offer the attempt as saved elsewhere.
+const loadLatestAttempt = async () => {
+  isQuizActive.value = false
+  takenOver.value = false
+  // This page's own copy on this device would otherwise look newer than the server's
+  if (loadAttempt(exam.value.id, questionIds.value)?.writerId === writerId) clearAttempt(exam.value.id)
+  savedAttempt.value = await loadSavedAttempt()
+  showResumePrompt.value = !!savedAttempt.value
+}
+
+// Keep going with this page's progress: take the attempt back, overwriting the other.
+const keepThisAttempt = async () => {
+  takenOver.value = false
+  claimOnNextSave = true
+  startClock(elapsedSeconds.value)
+  persistExamState()
+  await flushServerSave()
 }
 
 // Save the time used every 10 seconds, and whenever the page is hidden or closed

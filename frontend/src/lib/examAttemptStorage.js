@@ -97,8 +97,9 @@ const legacyByPosition = (questionIds, saved) => {
  * @param {Array<number>} questionIds question ids in the exam's current order
  * @returns {null | { answers: Record<number, number>, flagged: Set<number>, currentIndex: number,
  *   elapsedSeconds: number, updatedAt: string, answeredCount: number,
- *   attemptId: string|null, userId: string|null }}
- *   answers/flagged/currentIndex are by position in `questionIds`.
+ *   attemptId: string|null, userId: string|null, writerId: string|null, timeLimitSeconds?: number|null }}
+ *   answers/flagged/currentIndex are by position in `questionIds`. timeLimitSeconds is the
+ *   limit the server attempt started with (null: none); absent when there is no server attempt.
  */
 export function loadAttempt(examId, questionIds) {
   migrateLegacy()
@@ -110,7 +111,9 @@ export function loadAttempt(examId, questionIds) {
     elapsedSeconds: Math.max(0, Number(saved.elapsedSeconds) || 0),
     updatedAt: saved.updatedAt,
     attemptId: saved.attemptId || null,
-    userId: saved.userId || null
+    userId: saved.userId || null,
+    writerId: saved.writerId || null, // the page that saved it
+    ...(saved.timeLimitSeconds !== undefined && { timeLimitSeconds: saved.timeLimitSeconds })
   }
 }
 
@@ -128,7 +131,9 @@ export function fromServerAttempt(attempt, questionIds) {
     elapsedSeconds: Math.max(0, Number(attempt.elapsed_seconds) || 0),
     updatedAt: attempt.updated_at,
     attemptId: attempt.id,
-    userId: null
+    userId: null,
+    writerId: null,
+    timeLimitSeconds: attempt.time_limit_seconds ?? null
   }
 }
 
@@ -152,7 +157,8 @@ export function toServerProgress({ questionIds, answers, flagged, currentIndex, 
 /**
  * @param {number|string} examId
  * @param {{ questionIds: number[], answers: Record<number, number>, flagged: Set<number>|number[],
- *   currentIndex: number, elapsedSeconds: number, attemptId?: string|null, userId?: string|null }} state
+ *   currentIndex: number, elapsedSeconds: number, attemptId?: string|null, userId?: string|null,
+ *   writerId?: string|null, timeLimitSeconds?: number|null }} state
  *   answers/flagged/currentIndex by position
  * @returns {string|null} the save time (ISO), or null if storage is unavailable
  */
@@ -164,6 +170,8 @@ export function saveAttempt(examId, state) {
     ...toServerProgress(state),
     attemptId: state.attemptId || null,
     userId: state.userId || null,
+    writerId: state.writerId || null,
+    timeLimitSeconds: state.timeLimitSeconds, // left out of the JSON when undefined
     updatedAt
   })
   return ok ? updatedAt : null
