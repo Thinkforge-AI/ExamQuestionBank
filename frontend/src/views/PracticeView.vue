@@ -45,7 +45,8 @@
                     <QuestionList ref="questionListRef" mode="practice" :show-header="false" :show-mode-toggle="false"
                         :show-source-filter="true" :tags="tagOptions" :search-results="searchResults"
                         :search-loading="isSearching" :total-search-count="searchTotalCount"
-                        :external-filters="searchFilters" @search-questions="handleQuestionListSearch"
+                        :external-filters="searchFilters" :search-page="searchPage"
+                        :search-page-size-value="searchPageSize" @search-questions="handleQuestionListSearch"
                         @load-tags="loadTags" @update:selected-ids="handleSelectedIdsChange"
                         @item-action="handleQuestionItemAction">
                         <!-- Custom toolbar buttons for practice mode -->
@@ -810,8 +811,86 @@ const loadTags = async () => {
     }
 }
 
+// ---- Search state <-> URL ------------------------------------------------
+// The question search lives in the URL (?tab=questions&page=3&size=50&q=…),
+// so refresh, a copied link, and browser Back/Forward all reopen the same page.
+const PAGE_SIZES = [10, 20, 50, 100]
+const DEFAULT_PAGE_SIZE = 20
+const SOURCES = ['all', 'wrong', 'bookmark']
+const RETURN_KEY = 'practice:return-to'
+
+const firstQuery = (value) => (Array.isArray(value) ? value[0] : value) ?? ''
+
+const parseSearchQuery = (query) => {
+    const page = parseInt(firstQuery(query.page), 10)
+    const size = parseInt(firstQuery(query.size), 10)
+    const source = firstQuery(query.source)
+    return {
+        page: Number.isInteger(page) && page > 0 ? page : 1,
+        size: PAGE_SIZES.includes(size) ? size : DEFAULT_PAGE_SIZE,
+        search: String(firstQuery(query.q)),
+        subject: String(firstQuery(query.subject)),
+        difficulty: String(firstQuery(query.difficulty)),
+        source: SOURCES.includes(source) ? source : 'all'
+    }
+}
+
+// Only non-default values are written, so a plain /practice URL stays clean.
+const buildSearchQuery = ({ page, size, search, subject, difficulty, source }) => {
+    const query = { ...route.query }
+    for (const key of ['page', 'size', 'q', 'subject', 'difficulty', 'source']) delete query[key]
+    if (page > 1) query.page = String(page)
+    if (size !== DEFAULT_PAGE_SIZE) query.size = String(size)
+    if (search) query.q = search
+    if (subject) query.subject = subject
+    if (difficulty) query.difficulty = difficulty
+    if (source && source !== 'all') query.source = source
+    return query
+}
+
+const searchStateKey = (state) => JSON.stringify(state)
+
+// Push a history entry for a meaningful change (new page, new filters).
+const navigateSearch = (state) => {
+    const query = buildSearchQuery(state)
+    const current = parseSearchQuery(route.query)
+    if (searchStateKey(current) === searchStateKey(parseSearchQuery(query))) {
+        // Same URL (e.g. pressing Search again): just refresh the results.
+        searchQuestions(state.page)
+        return
+    }
+    router.push({ path: '/practice', query })
+}
+
+// Remember which question the user opened so returning lands on it again.
+const rememberReturnPosition = (questionId) => {
+    try {
+        sessionStorage.setItem(RETURN_KEY, JSON.stringify({ path: route.fullPath, id: questionId }))
+    } catch {
+        // Storage unavailable: the page still restores via the URL, just not the scroll position.
+    }
+}
+
+const restoreReturnPosition = async () => {
+    let saved = null
+    try {
+        saved = JSON.parse(sessionStorage.getItem(RETURN_KEY) || 'null')
+    } catch {
+        return
+    }
+    if (!saved || saved.path !== route.fullPath) return
+    sessionStorage.removeItem(RETURN_KEY)
+    await nextTick()
+    const el = document.querySelector(`.search-question-item[data-question-id="${CSS.escape(String(saved.id))}"]`)
+    if (!el) return
+    el.scrollIntoView({ block: 'center' })
+    el.querySelector('.search-question-actions button, input[type="checkbox"]')?.focus({ preventScroll: true })
+}
+
 // Search functions
+let searchRequestId = 0
 const searchQuestions = async (page = 1) => {
+    const requestId = ++searchRequestId
     isSearching.value = true
     showSearchResults.value = true
     searchPage.value = page
@@ -834,8 +913,9 @@ const searchQuestions = async (page = 1) => {
             params.tag_mode = searchFilters.value.tag_mode
         }
 
-        console.log('Search params:', params)
         const res = await questionService.getQuestions(params)
+        // A newer search started while this one was in flight: drop the stale result.
+        if (requestId !== searchRequestId) return
 
         if (res.data?.results) {
             searchResults.value = res.data.results
@@ -852,35 +932,24 @@ const searchQuestions = async (page = 1) => {
         // Reset selection on new search
         if (page === 1) selectedQuestionIds.value = []
 
+        // A stale link (e.g. ?page=40 after questions were removed): go to the last real page,
+        // which is page 1 when nothing matches.
+        const lastPage = Math.max(1, Math.ceil(searchTotalCount.value / searchPageSize.value))
+        if (page > lastPage) {
+            router.replace({ path: '/practice', query: { ...route.query, page: lastPage > 1 ? String(lastPage) : undefined } })
+            return
+        }
+
+        restoreReturnPosition()
     } catch (e) {
+        if (requestId !== searchRequestId) return
         console.error('搜尋題目失敗:', e)
         searchResults.value = []
         searchTotalCount.value = 0
     } finally {
-        isSearching.value = false
+        if (requestId === searchRequestId) isSearching.value = false
     }
 }
-
-const goToSearchPage = (page) => {
-    if (page >= 1) {
-        searchQuestions(page)
-    }
-}
-
-const handlePageSizeChange = (size) => {
-    searchPageSize.value = size
-    searchQuestions(1)
-}
-
-const searchPaginationState = computed(() => {
-    const totalPages = Math.ceil(searchTotalCount.value / searchPageSize.value) || 1
-    return {
-        totalPages,
-        totalCount: searchTotalCount.value,
-        hasNext: searchPage.value < totalPages,
-        hasPrev: searchPage.value > 1
-    }
-})
 
 const resetSearch = () => {
     searchFilters.value = {
@@ -900,11 +969,45 @@ const resetSearch = () => {
 
 // Handler functions for QuestionList component
 const handleQuestionListSearch = (filters, page, pageSize) => {
-    // Update local filter state from component
+    // Tags aren't in the URL yet, so keep them in local state.
     searchFilters.value = { ...searchFilters.value, ...filters }
-    searchPageSize.value = pageSize
-    searchQuestions(page)
+    const next = {
+        page,
+        size: pageSize,
+        search: filters.search ?? searchFilters.value.search,
+        subject: filters.subject ?? searchFilters.value.subject,
+        difficulty: filters.difficulty ?? searchFilters.value.difficulty,
+        source: filters.source ?? searchFilters.value.source
+    }
+    // New filters or page size make the old page meaningless: start from page 1.
+    const current = parseSearchQuery(route.query)
+    const filtersChanged = ['search', 'subject', 'difficulty', 'source'].some((k) => (next[k] || '') !== (current[k] || ''))
+    if (filtersChanged || next.size !== current.size) next.page = 1
+    navigateSearch(next)
 }
+
+// Apply the URL to the search whenever it changes (first load, Back/Forward, links).
+let loadedSearchKey = null
+watch(
+    () => [currentTab.value, route.path, route.query],
+    () => {
+        if (route.path !== '/practice' || currentTab.value !== 'questions') return
+        const state = parseSearchQuery(route.query)
+        const key = searchStateKey(state)
+        if (key === loadedSearchKey) return
+        loadedSearchKey = key
+        searchFilters.value = {
+            ...searchFilters.value,
+            search: state.search,
+            subject: state.subject,
+            difficulty: state.difficulty,
+            source: state.source
+        }
+        searchPageSize.value = state.size
+        searchQuestions(state.page)
+    },
+    { immediate: true }
+)
 
 const handleSelectedIdsChange = (ids) => {
     selectedQuestionIds.value = ids
@@ -1236,6 +1339,7 @@ const getDifficultyLabel = (difficulty) => {
 }
 
 const startSingleQuizFromSearch = (question) => {
+    rememberReturnPosition(question.id)
     // Navigate to the question practice page
     router.push({
         name: 'QuestionPractice',
@@ -1758,11 +1862,7 @@ onMounted(() => {
     checkExtension()
     setTimeout(checkExtension, 1000)
     setTimeout(checkExtension, 3000)
-
-    // Trigger initial search if on questions tab
-    if (currentTab.value === 'questions') {
-        searchQuestions(1)
-    }
+    // The initial question search is driven by the route watcher above.
 })
 
 onUnmounted(() => {
