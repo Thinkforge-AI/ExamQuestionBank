@@ -932,9 +932,10 @@ const searchQuestions = async (page = 1) => {
         // Reset selection on new search
         if (page === 1) selectedQuestionIds.value = []
 
-        // A stale link (e.g. ?page=40 after questions were removed): go to the last real page.
+        // A stale link (e.g. ?page=40 after questions were removed): go to the last real page,
+        // which is page 1 when nothing matches.
         const lastPage = Math.max(1, Math.ceil(searchTotalCount.value / searchPageSize.value))
-        if (page > lastPage && searchTotalCount.value > 0) {
+        if (page > lastPage) {
             router.replace({ path: '/practice', query: { ...route.query, page: lastPage > 1 ? String(lastPage) : undefined } })
             return
         }

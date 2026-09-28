@@ -110,6 +110,11 @@ describe('PaginationControl', () => {
     expect(idle.emitted('page-change')).toBeUndefined()
   })
 
+  it('locks the page size while loading', () => {
+    expect(mountAt(5, 10, { isLoading: true }).find('select').attributes('disabled')).toBeDefined()
+    expect(mountAt(5, 10).find('select').attributes('disabled')).toBeUndefined()
+  })
+
   it('shows an out-of-range page as the last real page', () => {
     const wrapper = mountAt(99, 10)
     expect(wrapper.find('[aria-current="page"]').text()).toBe('10')

@@ -5,7 +5,7 @@
                 共 {{ paginationState.totalCount }} 筆 | 第 {{ page }} / {{ paginationState.totalPages }} 頁
             </span>
             <select :value="pageSize" class="form-select form-select-sm page-size-select" aria-label="每頁筆數"
-                @change="onPageSizeChange">
+                :disabled="isLoading" @change="onPageSizeChange">
                 <option v-for="size in PAGE_SIZES" :key="size" :value="size">每頁 {{ size }} 筆</option>
             </select>
         </div>

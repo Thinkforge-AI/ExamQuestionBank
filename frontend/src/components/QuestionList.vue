@@ -470,7 +470,9 @@ const handleResetFilters = () => {
     question_type: '',
     search: '',
     tags: [],
-    tag_mode: 'or'
+    tag_mode: 'or',
+    // The source (e.g. ?source=wrong from a link) has no control of its own, so reset clears it too
+    source: 'all'
   }
   searchCurrentPage.value = 1
   handleSearch()
