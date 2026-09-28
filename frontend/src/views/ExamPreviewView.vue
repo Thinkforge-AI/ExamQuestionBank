@@ -942,6 +942,14 @@ const persistOnHide = () => {
   if (document.visibilityState === 'hidden') saveBeforeLeaving()
 }
 
+// Save and stop the clock when leaving within the app; the attempt stays unfinished
+// and can be resumed. flushServerSave reads the progress before its first await.
+const suspendAttempt = () => {
+  persistExamState()
+  flushServerSave()
+  pauseClock()
+}
+
 // Error handling
 const createUserFriendlyError = (err) => {
   let message = '發生未預期的錯誤，請稍後再試。'
@@ -994,10 +1002,7 @@ const confirmNavigation = () => {
   
   // Navigate to the saved destination
   if (destination) {
-    // Save and pause first; the attempt stays unfinished and can be resumed
-    persistExamState()
-    flushServerSave()
-    pauseClock()
+    suspendAttempt()
     isQuizActive.value = false
     router.push(destination)
   }
@@ -1026,9 +1031,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  persistExamState()
-  flushServerSave()
-  pauseClock()
+  suspendAttempt()
   window.removeEventListener('beforeunload', handleBeforeUnload)
   window.removeEventListener('pagehide', saveBeforeLeaving)
   document.removeEventListener('visibilitychange', persistOnHide)
