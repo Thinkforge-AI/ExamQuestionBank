@@ -159,10 +159,10 @@
           />
 
           <ResultsActions
-            :results="normalizedResultsForActions"
+            :results="normalizedResults"
             :exam-name="exam.name"
             @retake-exam="handleRetakeExam"
-            @return-to-list="handleReturnToList"
+            @return-to-list="goBack"
             @questions-bookmarked="handleQuestionsBookmarked"
             @flashcards-created="handleFlashcardsCreated"
           />
@@ -190,7 +190,7 @@
 
         <!-- Footer Actions (Preview Mode) -->
         <footer v-if="!isQuizActive && !showResults" class="actions">
-          <button class="btn" @click="handleGoBack" aria-label="Go back">返回</button>
+          <button class="btn" @click="goBack" aria-label="Go back">返回</button>
         </footer>
       </div>
 
@@ -337,7 +337,6 @@ const examResults = ref(null)
 const isLoading = ref(false)
 const showExplanations = ref(false)
 const showNavigationWarning = ref(false)
-const pendingNavigation = ref(null)
 const errorBoundaryRef = ref(null)
 const showSubmissionError = ref(false)
 const submissionErrorMessage = ref('')
@@ -444,7 +443,7 @@ const normalizedCurrentQuestion = computed(() => {
   }
 })
 
-// Normalize results for ScoreDisplay and ResultsBreakdown
+// Normalize results for ScoreDisplay, ResultsBreakdown and ResultsActions
 const normalizedResults = computed(() => {
   if (!examResults.value) return null
   return {
@@ -456,15 +455,6 @@ const normalizedResults = computed(() => {
     duration: examResults.value.duration || 0,
     details: examResults.value.details || [],
     wrongQuestionIds: examResults.value.wrongQuestionIds || []
-  }
-})
-
-// Normalize results for ResultsActions (needs string examId)
-const normalizedResultsForActions = computed(() => {
-  if (!normalizedResults.value) return null
-  return {
-    ...normalizedResults.value,
-    examId: exam.value?.id?.toString() || ''
   }
 })
 
@@ -822,11 +812,7 @@ const handleRetakeExam = () => {
   handleStartExam()
 }
 
-const handleReturnToList = () => {
-  router.back()
-}
-
-const handleGoBack = () => {
+const goBack = () => {
   router.back()
 }
 
@@ -989,7 +975,6 @@ const pendingNavigationTo = ref(null)
 
 const cancelNavigation = () => {
   showNavigationWarning.value = false
-  pendingNavigation.value = null
   pendingNavigationTo.value = null
 }
 
@@ -997,7 +982,6 @@ const confirmNavigation = () => {
   showNavigationWarning.value = false
   // Save the destination before clearing
   const destination = pendingNavigationTo.value
-  pendingNavigation.value = null
   pendingNavigationTo.value = null
   
   // Navigate to the saved destination
@@ -1013,7 +997,6 @@ onBeforeRouteLeave((to, from, next) => {
   if (isQuizActive.value && !pendingNavigationTo.value) {
     showNavigationWarning.value = true
     pendingNavigationTo.value = to.fullPath
-    pendingNavigation.value = () => next()
     next(false)
   } else {
     next()
