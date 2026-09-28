@@ -56,7 +56,7 @@
                     </div>
                     <div class="exam-title spotlight-name">{{ openAttemptExam.name }}</div>
                     <div class="spotlight-meta">
-                        <span>{{ formatWhen(openAttemptExam.open_attempt.updated_at) }}中斷</span>
+                        <span>{{ formatWhen(openAttemptExam.open_attempt.updated_at) }} 中斷</span>
                         <span>進度已自動儲存</span>
                     </div>
                     <div class="spotlight-actions">
@@ -256,6 +256,7 @@ import { useRouter } from 'vue-router'
 import { useExamStore } from '@/stores/examStore'
 import examService from '@/services/examService'
 import { clearAttempt } from '@/lib/examAttemptStorage'
+import { formatDay, formatWhen, formatSecondsLeft } from '@/lib/attemptFormat'
 
 const router = useRouter()
 const examStore = useExamStore()
@@ -328,20 +329,6 @@ const formatShortDate = (value) => {
     return `${d.getMonth() + 1}/${pad(d.getDate())}`
 }
 
-const isToday = (d) => d.toDateString() === new Date().toDateString()
-
-// "9 月 26 日"
-const formatDay = (value) => {
-    const d = new Date(value)
-    return isToday(d) ? '今天' : `${d.getMonth() + 1} 月 ${d.getDate()} 日`
-}
-
-// "今天 14:32 " / "9 月 26 日 14:32 "
-const formatWhen = (value) => {
-    const d = new Date(value)
-    return `${formatDay(value)} ${pad(d.getHours())}:${pad(d.getMinutes())} `
-}
-
 const formatDuration = (seconds) => {
     const minutes = Math.round(seconds / 60)
     return minutes >= 1 ? `${minutes} 分鐘` : `${seconds} 秒`
@@ -350,8 +337,7 @@ const formatDuration = (seconds) => {
 const timeLeftText = (attempt) => {
     if (!attempt.time_limit_seconds) return '不限時'
     const left = Math.max(0, attempt.time_limit_seconds - attempt.elapsed_seconds)
-    if (left === 0) return '時間已用完'
-    return left >= 60 ? `還剩 ${Math.floor(left / 60)} 分鐘` : `還剩 ${left} 秒`
+    return left === 0 ? '時間已用完' : `還剩 ${formatSecondsLeft(left)}`
 }
 
 // ---- Actions ---------------------------------------------------------------

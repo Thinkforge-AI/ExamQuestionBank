@@ -230,7 +230,7 @@
       <div class="modal-content resume-modal">
         <template v-if="!confirmingRestart">
           <h3 id="resume-title">{{ savedAttemptTimeUp ? '上次作答的時間已經用完' : '上次的作答還沒寫完' }}</h3>
-          <p id="resume-desc">{{ savedAttemptWhen }}離開，進度都有保存。</p>
+          <p id="resume-desc">{{ savedAttemptWhen }} 離開，進度都有保存。</p>
           <dl class="resume-facts">
             <div>
               <dt>已作答</dt>
@@ -304,6 +304,7 @@ import questionService from '@/services/questionService'
 import examService from '@/services/examService'
 import { useExamClock } from '@/composables/useExamClock'
 import { loadAttempt, saveAttempt, clearAttempt, fromServerAttempt, toServerProgress } from '@/lib/examAttemptStorage'
+import { formatWhen, formatSecondsLeft } from '@/lib/attemptFormat'
 
 // Import components
 import ExamHeader from '@/components/exam/ExamHeader.vue'
@@ -376,19 +377,10 @@ const savedAttemptTimeUp = computed(() =>
 const savedAttemptTimeLeft = computed(() => {
   if (!savedAttempt.value) return ''
   if (!timeLimitSeconds.value) return '不限時'
-  const left = Math.max(0, timeLimitSeconds.value - savedAttempt.value.elapsedSeconds)
-  return left >= 60 ? `${Math.floor(left / 60)} 分鐘` : `${left} 秒`
+  return formatSecondsLeft(Math.max(0, timeLimitSeconds.value - savedAttempt.value.elapsedSeconds))
 })
 
-// "今天 14:32" / "9 月 26 日 14:32"
-const savedAttemptWhen = computed(() => {
-  const at = savedAttempt.value?.updatedAt ? new Date(savedAttempt.value.updatedAt) : null
-  if (!at || Number.isNaN(at.getTime())) return ''
-  const time = at.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false })
-  const today = new Date()
-  const sameDay = at.toDateString() === today.toDateString()
-  return sameDay ? `今天 ${time} ` : `${at.getMonth() + 1} 月 ${at.getDate()} 日 ${time} `
-})
+const savedAttemptWhen = computed(() => formatWhen(savedAttempt.value?.updatedAt))
 
 const currentQuestion = computed(() => {
   if (!exam.value) return null
