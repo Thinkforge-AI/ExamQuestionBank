@@ -12,7 +12,6 @@ const route = useRoute()
 const tabs = [
   { name: '首頁', path: '/', key: 'landing', icon: 'bi-house-door' },
   { name: '練習模式', path: '/practice', key: 'practice', icon: 'bi-pencil-square' },
-  { name: '討論區', path: '/discussions', key: 'discussions', icon: 'bi-chat-dots' },
   { name: '快閃卡', path: '/flashcard', key: 'flashcard', icon: 'bi-card-text' },
   { name: '筆記', path: '/notes', key: 'notes', icon: 'bi-journal-bookmark' },
   { name: '我的考卷', path: '/user-exam', key: 'user-exam', icon: 'bi-journal-text' },

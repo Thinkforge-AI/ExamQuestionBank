@@ -160,7 +160,6 @@
 ExamQuestionBank/
 ├── ExamQuestionBank/          # Django 後端
 │   ├── analytics/             # 學習數據分析模組
-│   ├── discussions/           # 討論區（預備功能）
 │   ├── exams/                 # 考試與模擬考管理
 │   ├── flashcards/            # 閃卡系統（含 Spaced Repetition）
 │   ├── gamification/          # 遊戲化功能（預備功能）
@@ -224,11 +223,7 @@ ExamQuestionBank/
    - 後端已建立 `gamification` app 與相關資料模型
    - 規劃：成就系統、排行榜、學習里程碑
 
-3. **討論區與學習社群**  
-   - 後端已建立 `discussions` app
-   - 規劃：題目討論、學習筆記分享、考生交流
-
-4. **訂閱與付費機制**  
+3. **訂閱與付費機制**  
    - 後端已建立訂閱管理系統（`users/subscription_views.py`）
    - 規劃：會員分級、進階功能解鎖
 
