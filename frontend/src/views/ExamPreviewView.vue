@@ -850,7 +850,7 @@ defineExpose({
 <style scoped>
 .exam-preview-container {
   min-height: 100vh;
-  background: #f9fafb;
+  background: var(--bg-page);
 }
 
 .exam-preview {
@@ -861,8 +861,8 @@ defineExpose({
 
 .quiz-message {
   margin: 16px 0;
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--warning-soft);
+  color: var(--warning);
   padding: 12px 16px;
   border-radius: 8px;
   font-weight: 500;
@@ -870,7 +870,7 @@ defineExpose({
 
 /* Testing Interface */
 .testing-interface {
-  background: #fff;
+  background: var(--surface);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   overflow: hidden;
@@ -881,8 +881,8 @@ defineExpose({
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  background: #f8fafc;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--bg-page);
+  border-bottom: 1px solid var(--border);
 }
 
 .testing-info {
@@ -892,12 +892,12 @@ defineExpose({
 }
 
 .testing-info strong {
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 16px;
 }
 
 .testing-info span {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
@@ -909,8 +909,8 @@ defineExpose({
 
 .testing-sidebar {
   padding: 16px;
-  background: #f8fafc;
-  border-right: 1px solid #e5e7eb;
+  background: var(--bg-page);
+  border-right: 1px solid var(--border);
 }
 
 .testing-main {
@@ -925,7 +925,7 @@ defineExpose({
   justify-content: flex-end;
   margin-top: auto;
   padding-top: 24px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border);
 }
 
 /* Results Panel */
@@ -943,7 +943,7 @@ defineExpose({
 }
 
 .question-card {
-  background: white;
+  background: var(--surface);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
@@ -955,7 +955,7 @@ defineExpose({
 }
 
 .question-card:focus {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
@@ -963,7 +963,7 @@ defineExpose({
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
-  color: #4b5563;
+  color: var(--text-secondary);
 }
 
 .question-card .order {
@@ -971,12 +971,12 @@ defineExpose({
 }
 
 .question-card .points {
-  color: #2563eb;
+  color: var(--primary-text);
   font-weight: 500;
 }
 
 .question-card .content {
-  color: #1f2937;
+  color: var(--text-primary);
   line-height: 1.6;
   margin: 0 0 12px 0;
 }
@@ -984,7 +984,7 @@ defineExpose({
 .question-meta {
   display: flex;
   gap: 12px;
-  color: #9ca3af;
+  color: var(--text-muted);
   font-size: 13px;
 }
 
@@ -1013,17 +1013,17 @@ defineExpose({
 }
 
 .btn:focus {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
 .btn-primary {
-  background: #2563eb;
-  color: white;
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #1d4ed8;
+  background: var(--primary-hover);
 }
 
 .btn-secondary {
@@ -1036,13 +1036,13 @@ defineExpose({
 }
 
 .btn-flagged {
-  background: #fff7ed;
+  background: var(--warning-soft);
   color: #ea580c;
   border: 1px solid #f97316;
 }
 
 .btn-flagged:hover:not(:disabled) {
-  background: #ffedd5;
+  background: var(--warning-soft);
 }
 
 .btn i {
@@ -1053,7 +1053,7 @@ defineExpose({
 .empty-state {
   text-align: center;
   padding: 60px;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 /* Modal */
@@ -1068,7 +1068,7 @@ defineExpose({
 }
 
 .modal-content {
-  background: white;
+  background: var(--surface);
   padding: 24px;
   border-radius: 12px;
   max-width: 400px;
@@ -1078,11 +1078,11 @@ defineExpose({
 
 .modal-content h3 {
   margin: 0 0 12px 0;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .modal-content p {
-  color: #6b7280;
+  color: var(--text-secondary);
   margin: 0 0 20px 0;
   line-height: 1.5;
 }
@@ -1095,13 +1095,13 @@ defineExpose({
 
 /* Error Modal */
 .error-modal h3 {
-  color: #dc2626;
+  color: var(--danger);
 }
 
 .error-hint {
   font-size: 14px;
-  color: #059669;
-  background: #ecfdf5;
+  color: var(--success);
+  background: var(--success-soft);
   padding: 8px 12px;
   border-radius: 6px;
   margin-bottom: 16px;
@@ -1115,7 +1115,7 @@ defineExpose({
   
   .testing-sidebar {
     border-right: none;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border);
     display: flex;
     gap: 16px;
     flex-wrap: wrap;
@@ -1217,7 +1217,7 @@ defineExpose({
 /* Focus Visible */
 .btn:focus-visible,
 .question-card:focus-visible {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 </style>

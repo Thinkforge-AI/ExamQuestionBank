@@ -258,8 +258,8 @@ onUnmounted(() => {
            <!-- Settings / Logout -->
           <div class="drawer-actions">
             <div class="drawer-action-item">
-              <span>深色模式</span>
-              <ThemeToggle />
+              <span>外觀</span>
+              <ThemeToggle block />
             </div>
             <button v-if="isAuthenticated" class="btn btn-logout full-width mt-4" @click="handleLogout(); showMobileMenu = false">
               <i class="bi bi-box-arrow-right me-2"></i> 登出
@@ -278,122 +278,7 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-:global(:root) {
-  /* Light Mode - Professional Slate & Steel */
-  --bg-page: #F8FAFC;
-  --surface: #FFFFFF;
-  --surface-muted: #E2E8F0;
-  --nav-surface: #FFFFFF;
-  --nav-border: rgba(15, 23, 42, 0.08);
-  --nav-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
-  
-  /* Primary: Professional Slate Blue */
-  --primary: #476996;
-  --primary-hover: #35527a;
-  --primary-soft: #EEF2FF;
-  
-  /* Text */
-  --text-primary: #1E293B;
-  --text-secondary: #64748B;
-  
-  /* Status Colors */
-  --success: #22c55e;
-  --success-soft: #dcfce7;
-  --warning: #f59e0b;
-  --warning-soft: #fef3c7;
-  --destructive: #ef4444;
-  --destructive-soft: #fee2e2;
-  
-  /* Borders & Shadows */
-  --border: #CBD5E1;
-  --shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -1px rgba(15, 23, 42, 0.06);
-  --shadow-hover: 0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -2px rgba(15, 23, 42, 0.05);
-  --shadow-card: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
-  --radius: 12px;
-  
-  /* Gradient tokens */
-  --gradient-hero: linear-gradient(135deg, var(--nav-surface) 0%, rgba(71, 105, 150, 0.05) 18%, #EEF2FF 55%, #E2E8F0 100%);
-  --gradient-card: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
-  
-  /* Enhanced Shadows */
-  --shadow-elegant: 0 4px 20px -2px rgba(15, 23, 42, 0.08), 0 2px 8px -2px rgba(15, 23, 42, 0.04);
-  --shadow-glow: 0 0 20px rgba(71, 105, 150, 0.15);
-  
-  /* Glass Effect (disabled: use solid surfaces) */
-  --glass-bg: var(--surface);
-  --glass-border: var(--border);
-  
-  /* Icon Color Palettes */
-  --icon-blue-bg: #eff6ff;
-  --icon-blue-fg: #3b82f6;
-  --icon-green-bg: #ecfdf5;
-  --icon-green-fg: #10b981;
-  --icon-purple-bg: #f5f3ff;
-  --icon-purple-fg: #8b5cf6;
-  --icon-orange-bg: #fff7ed;
-  --icon-orange-fg: #f97316;
-  --icon-amber-bg: #fffbeb;
-  --icon-amber-fg: #f59e0b;
-
-  /* Mobile-First Breakpoints */
-  --bp-phone-plus: 480px;
-  --bp-tablet-sm: 640px;
-  --bp-tablet: 768px;
-  --bp-tablet-lg: 1024px;
-  --bp-desktop: 1200px;
-}
-
 /* Dark Mode */
-:global(.dark) {
-  --bg-page: #0f172a;
-  --surface: #1e293b;
-  --surface-muted: #334155;
-  --nav-surface: #1e293b;
-  --nav-border: rgba(255, 255, 255, 0.1);
-  --nav-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-  
-  --primary: #60a5fa;
-  --primary-hover: #3b82f6;
-  --primary-soft: #1e3a5f;
-  
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  
-  --success: #4ade80;
-  --success-soft: #14532d;
-  --warning: #fbbf24;
-  --warning-soft: #713f12;
-  --destructive: #f87171;
-  --destructive-soft: #7f1d1d;
-  
-  --border: #334155;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-  --shadow-hover: 0 20px 40px -10px rgba(96, 165, 250, 0.15), 0 8px 16px -4px rgba(0, 0, 0, 0.3);
-  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
-  
-  --gradient-hero: linear-gradient(135deg, var(--nav-surface) 0%, rgba(96, 165, 250, 0.08) 18%, #1e293b 55%, #0f172a 100%);
-  --gradient-card: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-  
-  /* Enhanced Shadows (Dark) */
-  --shadow-elegant: 0 4px 20px -2px rgba(0, 0, 0, 0.3), 0 2px 8px -2px rgba(0, 0, 0, 0.2);
-  --shadow-glow: 0 0 20px rgba(96, 165, 250, 0.2);
-  
-  /* Glass Effect (Dark) - Disabled for solid surfaces */
-  --glass-bg: var(--surface);
-  --glass-border: var(--border);
-  
-  /* Icon Color Palettes (Dark) */
-  --icon-blue-bg: rgba(59, 130, 246, 0.15);
-  --icon-blue-fg: #60a5fa;
-  --icon-green-bg: rgba(16, 185, 129, 0.15);
-  --icon-green-fg: #34d399;
-  --icon-purple-bg: rgba(139, 92, 246, 0.15);
-  --icon-purple-fg: #a78bfa;
-  --icon-orange-bg: rgba(249, 115, 22, 0.15);
-  --icon-orange-fg: #fb923c;
-  --icon-amber-bg: rgba(245, 158, 11, 0.15);
-  --icon-amber-fg: #fbbf24;
-}
 
 .app-container {
   min-height: 100vh;
@@ -779,9 +664,11 @@ main.main-content {
 
 .drawer-action-item {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 8px;
   padding: 8px 0;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--text-secondary);
 }
 
@@ -836,11 +723,6 @@ main.main-content {
 
 /* Glass Effect */
 :global(.glass) {
-  background: var(--surface);
-  border: 1px solid var(--border);
-}
-
-:global(.dark .glass) {
   background: var(--surface);
   border: 1px solid var(--border);
 }
@@ -1066,11 +948,6 @@ main.main-content {
   font-size: 12px;
 }
 
-:global(.dark .check-circle) {
-  background: rgba(34, 197, 94, 0.15);
-  color: #4ade80;
-}
-
 /* ============================================
    ICON-BOX COMPONENT
    ============================================ */
@@ -1151,7 +1028,7 @@ main.main-content {
   left: 50%;
   transform: translateX(-50%);
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-  color: #fff;
+  color: var(--on-primary);
   padding: 6px 16px;
   border-radius: 20px;
   font-size: 12px;
@@ -1177,177 +1054,36 @@ main.main-content {
    ============================================ */
 
 /* Cards and Surfaces */
-:global(.dark) .analytics-card,
-:global(.dark) .overview-card,
-:global(.dark) .exam-card,
-:global(.dark) .mode-card,
-:global(.dark) .feature-card,
-:global(.dark) .stat-card,
-:global(.dark) .chart-card,
-:global(.dark) .results-card,
-:global(.dark) .wrong-card,
-:global(.dark) .trend-card,
-:global(.dark) .pricing-card,
-:global(.dark) .exam-item,
-:global(.dark) .flashcard-item,
-:global(.dark) .question-item,
-:global(.dark) .card {
-  background: var(--surface) !important;
-  border-color: var(--border) !important;
-  color: var(--text-primary) !important;
-}
 
 /* Form Inputs */
-:global(.dark) input,
-:global(.dark) select,
-:global(.dark) textarea {
-  background: var(--surface) !important;
-  border-color: var(--border) !important;
-  color: var(--text-primary) !important;
-}
-
-:global(.dark) input::placeholder,
-:global(.dark) textarea::placeholder {
-  color: var(--text-secondary) !important;
-}
 
 /* Search filters and controls */
-:global(.dark) .search-filter,
-:global(.dark) .filter-section,
-:global(.dark) .search-box,
-:global(.dark) .filter-bar {
-  background: var(--surface-muted) !important;
-  border-color: var(--border) !important;
-}
 
 /* Table rows and list items */
-:global(.dark) .trend-item,
-:global(.dark) .results-table-row,
-:global(.dark) .question-row,
-:global(.dark) .search-item,
-:global(.dark) .list-item,
-:global(.dark) .hot-item {
-  background: var(--surface) !important;
-  border-color: var(--border) !important;
-  color: var(--text-primary) !important;
-}
-
-:global(.dark) .trend-item:hover,
-:global(.dark) .results-table-row:hover,
-:global(.dark) .question-row:hover,
-:global(.dark) .hot-item:hover {
-  background: var(--surface-muted) !important;
-}
 
 /* Table headers */
-:global(.dark) .trend-list-header,
-:global(.dark) .results-table-header,
-:global(.dark) .table-header {
-  background: var(--surface-muted) !important;
-  color: var(--text-secondary) !important;
-  border-color: var(--border) !important;
-}
 
 /* Progress bars */
-:global(.dark) .progress-bar,
-:global(.dark) .accuracy-bar-container,
-:global(.dark) .score-bar-container {
-  background: var(--surface-muted) !important;
-}
 
 /* Modal/Dialog backgrounds */
-:global(.dark) .modal-content,
-:global(.dark) .dialog-body,
-:global(.dark) .mock-exam-dialog {
-  background: var(--surface) !important;
-  border-color: var(--border) !important;
-  color: var(--text-primary) !important;
-}
 
 /* Tabs */
-:global(.dark) .tabs button,
-:global(.dark) .results-tabs button {
-  color: var(--text-secondary) !important;
-  background: transparent !important;
-}
-
-:global(.dark) .tabs button.active,
-:global(.dark) .results-tabs button.active {
-  color: var(--primary) !important;
-  background: var(--primary-soft) !important;
-}
 
 /* Badges and Tags */
-:global(.dark) .badge,
-:global(.dark) .tag,
-:global(.dark) .status-tag {
-  background: var(--surface-muted) !important;
-  color: var(--text-primary) !important;
-}
 
 /* Empty states */
-:global(.dark) .empty-chart,
-:global(.dark) .empty-results,
-:global(.dark) .empty-state {
-  color: var(--text-secondary) !important;
-}
 
 /* Pagination */
-:global(.dark) .pagination-controls,
-:global(.dark) .pagination-buttons button {
-  background: var(--surface) !important;
-  border-color: var(--border) !important;
-  color: var(--text-primary) !important;
-}
 
 /* QuestionList specific - white rows issue */
-:global(.dark) .question-list-item,
-:global(.dark) .search-result-item {
-  background: var(--surface) !important;
-  border-color: var(--border) !important;
-}
 
 /* Landing page - pricing cards */
-:global(.dark) .pricing-plan,
-:global(.dark) .plan-card {
-  background: var(--surface) !important;
-  border-color: var(--border) !important;
-  color: var(--text-primary) !important;
-}
-
-:global(.dark) .pricing-plan ul li,
-:global(.dark) .plan-features li {
-  color: var(--text-secondary) !important;
-}
 
 /* Alert box */
-:global(.dark) .alert {
-  background: var(--surface-muted) !important;
-  border-color: var(--border) !important;
-}
 
 /* Review header in flashcard */
-:global(.dark) .review-header {
-  background: var(--surface) !important;
-  border-color: var(--border) !important;
-}
 
 /* AI Essay Analysis cards */
-:global(.dark) .analysis-card,
-:global(.dark) .essay-card,
-:global(.dark) .chat-card {
-  background: var(--surface) !important;
-  border-color: var(--border) !important;
-  color: var(--text-primary) !important;
-}
 
 /* Admin page - override white backgrounds */
-:global(.dark) .admin-card,
-:global(.dark) .admin-section,
-:global(.dark) .data-table,
-:global(.dark) .form-group {
-  background: var(--surface) !important;
-  border-color: var(--border) !important;
-  color: var(--text-primary) !important;
-}
 </style>

@@ -573,13 +573,13 @@ onMounted(() => {
 }
 
 .alert.error {
-  background: #fdf1f1;
+  background: var(--danger-soft);
   color: #9a1b1b;
   border: 1px solid #f3d6d6;
 }
 
 .alert.success {
-  background: #ecf8f1;
+  background: var(--success-soft);
   color: #1f6a3b;
   border: 1px solid #cef3e8;
 }
@@ -640,10 +640,10 @@ onMounted(() => {
   gap: 20px;
   margin-bottom: 30px;
   padding: 20px 24px;
-  background: white;
+  background: var(--surface);
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
 }
 
 .progress-info {
@@ -656,7 +656,7 @@ onMounted(() => {
 .progress-text {
   font-weight: 700;
   font-size: 16px;
-  color: #1e293b;
+  color: var(--text-primary);
   min-width: 70px;
   white-space: nowrap;
 }
@@ -664,7 +664,7 @@ onMounted(() => {
 .progress-bar {
   flex: 1;
   height: 10px;
-  background: #e5e7eb;
+  background: var(--surface-hover);
   border-radius: 10px;
   overflow: hidden;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
@@ -672,7 +672,7 @@ onMounted(() => {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #476996 0%, #35527a 100%);
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-hover) 100%);
   border-radius: 10px;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 0 10px rgba(71, 105, 150, 0.4);
@@ -683,11 +683,11 @@ onMounted(() => {
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: white;
-  border: 2px solid #e5e7eb;
+  background: var(--surface);
+  border: 2px solid var(--border);
   border-radius: 12px;
   cursor: pointer;
-  color: #64748b;
+  color: var(--text-secondary);
   font-weight: 600;
   font-size: 15px;
   transition: all 0.3s ease;
@@ -695,9 +695,9 @@ onMounted(() => {
 }
 
 .btn-exit:hover {
-  background: #EEF2FF;
-  border-color: #476996;
-  color: #476996;
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary-text);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(71, 105, 150, 0.2);
 }
@@ -845,43 +845,15 @@ onMounted(() => {
 
 /* Toolbar Info Button */
 .toolbar-btn-info {
-  background: #e0f2fe;
+  background: var(--primary-soft);
   color: #0369a1;
 }
 
 .toolbar-btn-info:hover {
-  background: #bae6fd;
+  background: var(--primary-soft);
   color: #0284c7;
   transform: translateY(-1px);
 }
 
 /* Dark Mode Overrides */
-:global(.dark) .stat-card,
-:global(.dark) .stats-section,
-:global(.dark) .exam-info,
-:global(.dark) .review-header {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-    color: var(--text-primary) !important;
-}
-
-:global(.dark) .toolbar-btn-info {
-    background: var(--primary-soft) !important;
-    color: var(--primary) !important;
-}
-
-:global(.dark) .flashcard-swiper-container {
-    background: var(--bg-page) !important;
-}
-
-:global(.dark) .rating-btn {
-    background: var(--surface-muted) !important;
-    border-color: var(--border) !important;
-    color: var(--text-primary) !important;
-}
-
-:global(.dark) .rating-btn:hover {
-    background: var(--primary-soft) !important;
-    border-color: var(--primary) !important;
-}
 </style>

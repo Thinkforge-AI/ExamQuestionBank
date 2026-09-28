@@ -70,26 +70,17 @@ function handleSubmit() {
 
 <style scoped>
 .answer-form-mvp {
-  background: var(--bg-primary, white);
-  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--bg-primary, var(--surface));
+  border: 1px solid var(--border-color, var(--border));
   border-radius: 12px;
   padding: 1.25rem;
-}
-
-.dark .answer-form-mvp {
-  background: var(--bg-secondary, #1f2937);
-  border-color: var(--border-color-dark, #374151);
 }
 
 .form-title {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary, var(--text-primary));
   margin: 0 0 1rem 0;
-}
-
-.dark .form-title {
-  color: var(--text-primary-dark, #f9fafb);
 }
 
 .form-group {
@@ -100,21 +91,15 @@ function handleSubmit() {
 .form-group textarea {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: var(--bg-secondary, #f9fafb);
-  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--bg-secondary, var(--bg-page));
+  border: 1px solid var(--border-color, var(--border));
   border-radius: 8px;
   font-size: 1rem;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary, var(--text-primary));
   transition: all 0.2s ease;
   resize: vertical;
   min-height: 120px;
   box-sizing: border-box;
-}
-
-.dark .form-group textarea {
-  background: var(--bg-tertiary, #374151);
-  border-color: var(--border-color-dark, #4b5563);
-  color: var(--text-primary-dark, #f9fafb);
 }
 
 .form-group textarea:focus {
@@ -124,7 +109,7 @@ function handleSubmit() {
 }
 
 .form-group textarea.error {
-  border-color: #ef4444;
+  border-color: var(--danger);
 }
 
 .char-count {
@@ -132,18 +117,18 @@ function handleSubmit() {
   right: 0.5rem;
   bottom: -1.25rem;
   font-size: 0.75rem;
-  color: var(--text-tertiary, #9ca3af);
+  color: var(--text-tertiary, var(--text-muted));
 }
 
 .char-count.warning {
-  color: #f59e0b;
+  color: var(--warning);
 }
 
 .error-msg {
   display: block;
   margin-top: 0.25rem;
   font-size: 0.875rem;
-  color: #ef4444;
+  color: var(--danger);
 }
 
 .form-actions {
@@ -159,8 +144,8 @@ function handleSubmit() {
   gap: 0.5rem;
   min-width: 120px;
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
+  background: linear-gradient(135deg, var(--success), #059669);
+  color: var(--on-primary);
   border: none;
   border-radius: 8px;
   font-weight: 600;

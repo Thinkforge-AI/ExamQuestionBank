@@ -378,7 +378,7 @@ function formatDate(isoString) {
   top: 0;
   height: 100%;
   height: 100dvh;
-  background: white;
+  background: var(--surface);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
   z-index: 2;
@@ -489,7 +489,7 @@ function formatDate(isoString) {
 
 .note-card {
   transition: transform 0.2s, box-shadow 0.2s;
-  border: 1px solid var(--border, #e2e8f0);
+  border: 1px solid var(--border, var(--border));
 }
 
 .note-card:hover {

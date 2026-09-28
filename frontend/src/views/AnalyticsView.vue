@@ -639,7 +639,7 @@ onMounted(loadData)
 <style scoped>
 .analytics-view {
   min-height: calc(100vh - 140px);
-  background: var(--bg-soft, #f8fafc);
+  background: var(--bg-soft, var(--bg-page));
   padding: 24px 0;
 }
 
@@ -677,7 +677,7 @@ onMounted(loadData)
 .loading {
   text-align: center;
   padding: 60px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 /* Overview Cards */
@@ -763,11 +763,11 @@ onMounted(loadData)
 }
 
 .overview-change.positive {
-  color: #059669;
+  color: var(--success);
 }
 
 .overview-change.negative {
-  color: #dc2626;
+  color: var(--danger);
 }
 
 .overview-change.neutral {
@@ -849,8 +849,8 @@ onMounted(loadData)
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-page);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 8px 12px;
   flex: 1;
@@ -863,7 +863,7 @@ onMounted(loadData)
 }
 
 .search-filter i {
-  color: #94a3b8;
+  color: var(--text-muted);
   font-size: 14px;
 }
 
@@ -877,7 +877,7 @@ onMounted(loadData)
 }
 
 .search-input::placeholder {
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
 .sort-control {
@@ -894,10 +894,10 @@ onMounted(loadData)
 
 .sort-control select {
   padding: 8px 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 13px;
-  background: #fff;
+  background: var(--surface);
   cursor: pointer;
   color: var(--text-primary);
 }
@@ -912,7 +912,7 @@ onMounted(loadData)
   grid-template-columns: 2fr 1.5fr 1fr 1fr 60px;
   gap: 12px;
   padding: 10px 16px;
-  background: #f8fafc;
+  background: var(--bg-page);
   border-radius: 8px;
   font-size: 12px;
   font-weight: 600;
@@ -930,7 +930,7 @@ onMounted(loadData)
   margin-bottom: 8px;
   align-items: center;
   transition: all 0.2s;
-  background: #fff;
+  background: var(--surface);
 }
 
 .trend-item.clickable-row {
@@ -969,8 +969,8 @@ onMounted(loadData)
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #eff6ff, #dbeafe);
-  color: #2563eb;
+  background: linear-gradient(135deg, var(--primary-soft), var(--primary-soft));
+  color: var(--primary-text);
   font-weight: 700;
   font-size: 12px;
   display: grid;
@@ -1008,7 +1008,7 @@ onMounted(loadData)
 .accuracy-bar-container {
   flex: 1;
   height: 8px;
-  background: #e5e7eb;
+  background: var(--surface-hover);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -1020,7 +1020,7 @@ onMounted(loadData)
 }
 
 .accuracy-bar.high {
-  background: linear-gradient(90deg, #22c55e, #16a34a);
+  background: linear-gradient(90deg, var(--success), var(--success));
 }
 
 .accuracy-bar.medium {
@@ -1028,7 +1028,7 @@ onMounted(loadData)
 }
 
 .accuracy-bar.low {
-  background: linear-gradient(90deg, #ef4444, #dc2626);
+  background: linear-gradient(90deg, var(--danger), var(--danger));
 }
 
 .accuracy-value {
@@ -1038,7 +1038,7 @@ onMounted(loadData)
 }
 
 .accuracy-value.high {
-  color: #16a34a;
+  color: var(--success);
 }
 
 .accuracy-value.medium {
@@ -1046,7 +1046,7 @@ onMounted(loadData)
 }
 
 .accuracy-value.low {
-  color: #dc2626;
+  color: var(--danger);
 }
 
 .col-delta,
@@ -1071,30 +1071,30 @@ onMounted(loadData)
 }
 
 .delta-badge.up {
-  background: #ecfdf5;
-  color: #059669;
+  background: var(--success-soft);
+  color: var(--success);
 }
 
 .delta-badge.down {
-  background: #fef2f2;
-  color: #dc2626;
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
 .delta-badge.neutral {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--surface-muted);
+  color: var(--text-secondary);
 }
 
 .delta-badge.new {
-  background: #eff6ff;
-  color: #2563eb;
+  background: var(--primary-soft);
+  color: var(--primary-text);
 }
 
 .btn-action {
   width: 36px;
   height: 36px;
-  border: 1px solid #e2e8f0;
-  background: #fff;
+  border: 1px solid var(--border);
+  background: var(--surface);
   border-radius: 8px;
   cursor: pointer;
   display: grid;
@@ -1105,7 +1105,7 @@ onMounted(loadData)
 
 .btn-action:hover {
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
   border-color: var(--primary);
 }
 
@@ -1158,7 +1158,7 @@ onMounted(loadData)
   width: 32px;
   height: 32px;
   border: 1px solid var(--border);
-  background: #fff;
+  background: var(--surface);
   border-radius: 8px;
   display: grid;
   place-items: center;
@@ -1170,7 +1170,7 @@ onMounted(loadData)
 
 .btn-page:hover:not(:disabled) {
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
   border-color: var(--primary);
 }
 
@@ -1188,10 +1188,10 @@ onMounted(loadData)
 
 .page-size-select {
   padding: 6px 10px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 12px;
-  background: #fff;
+  background: var(--surface);
   cursor: pointer;
 }
 
@@ -1223,14 +1223,14 @@ onMounted(loadData)
   margin: 0 10px;
   border: 1px solid #e6e8ed;
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .hot-item:hover {
   border-color: #fca5a5;
-  background: linear-gradient(135deg, #fef2f2 0%, #fff 100%);
+  background: linear-gradient(135deg, var(--danger-soft) 0%, var(--surface) 100%);
   transform: translateX(4px);
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1);
 }
@@ -1247,8 +1247,8 @@ onMounted(loadData)
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #fef2f2, #fee2e2);
-  color: #dc2626;
+  background: linear-gradient(135deg, var(--danger-soft), var(--danger-soft));
+  color: var(--danger);
   font-weight: 800;
   font-size: 13px;
   display: grid;
@@ -1290,12 +1290,12 @@ onMounted(loadData)
 
 .hot-count {
   font-weight: 700;
-  color: #dc2626;
+  color: var(--danger);
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 14px;
-  background: #fef2f2;
+  background: var(--danger-soft);
   padding: 6px 12px;
   border-radius: 20px;
   flex-shrink: 0;
@@ -1310,7 +1310,7 @@ onMounted(loadData)
 
 .hot-item:hover .hot-arrow {
   opacity: 1;
-  color: #dc2626;
+  color: var(--danger);
   transform: translateX(4px);
 }
 
@@ -1323,7 +1323,7 @@ onMounted(loadData)
 .results-tabs button {
   padding: 6px 14px;
   border: 1px solid var(--border);
-  background: #fff;
+  background: var(--surface);
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
@@ -1333,12 +1333,12 @@ onMounted(loadData)
 }
 
 .results-tabs button:hover {
-  background: #f8fafc;
+  background: var(--bg-page);
 }
 
 .results-tabs button.active {
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
   border-color: var(--primary);
 }
 
@@ -1352,7 +1352,7 @@ onMounted(loadData)
   grid-template-columns: 50px 1fr 140px 100px 40px;
   gap: 12px;
   padding: 10px 16px;
-  background: #f8fafc;
+  background: var(--bg-page);
   border-radius: 8px;
   font-size: 12px;
   font-weight: 600;
@@ -1370,7 +1370,7 @@ onMounted(loadData)
   margin-bottom: 8px;
   align-items: center;
   transition: all 0.2s;
-  background: #fff;
+  background: var(--surface);
 }
 
 .results-table-row.clickable-row {
@@ -1425,13 +1425,13 @@ onMounted(loadData)
 }
 
 .rank-badge.pass {
-  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-  color: #059669;
+  background: linear-gradient(135deg, var(--success-soft), var(--success-soft));
+  color: var(--success);
 }
 
 .rank-badge.fail {
-  background: linear-gradient(135deg, #fef2f2, #fee2e2);
-  color: #dc2626;
+  background: linear-gradient(135deg, var(--danger-soft), var(--danger-soft));
+  color: var(--danger);
 }
 
 .rtbl-name {
@@ -1463,13 +1463,13 @@ onMounted(loadData)
 }
 
 .status-tag.pass {
-  background: #ecfdf5;
-  color: #059669;
+  background: var(--success-soft);
+  color: var(--success);
 }
 
 .status-tag.fail {
-  background: #fef2f2;
-  color: #dc2626;
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
 .rtbl-score {
@@ -1485,7 +1485,7 @@ onMounted(loadData)
 .score-bar-container {
   flex: 1;
   height: 8px;
-  background: #e5e7eb;
+  background: var(--surface-hover);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -1497,7 +1497,7 @@ onMounted(loadData)
 }
 
 .score-bar.high {
-  background: linear-gradient(90deg, #22c55e, #16a34a);
+  background: linear-gradient(90deg, var(--success), var(--success));
 }
 
 .score-bar.medium {
@@ -1505,7 +1505,7 @@ onMounted(loadData)
 }
 
 .score-bar.low {
-  background: linear-gradient(90deg, #ef4444, #dc2626);
+  background: linear-gradient(90deg, var(--danger), var(--danger));
 }
 
 .score-num {
@@ -1516,11 +1516,11 @@ onMounted(loadData)
 }
 
 .score-num.pass {
-  color: #059669;
+  color: var(--success);
 }
 
 .score-num.fail {
-  color: #dc2626;
+  color: var(--danger);
 }
 
 .rtbl-date {
@@ -1583,8 +1583,8 @@ onMounted(loadData)
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
+  color: var(--on-primary);
   box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
 }
 
@@ -1672,77 +1672,4 @@ onMounted(loadData)
 }
 
 /* Dark Mode Overrides */
-:global(.dark) .overview-card,
-:global(.dark) .analytics-card,
-:global(.dark) .trend-card,
-:global(.dark) .results-card,
-:global(.dark) .wrong-card,
-:global(.dark) .chart-card,
-:global(.dark) .heatmap-card {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-    color: var(--text-primary) !important;
-}
-
-:global(.dark) .trend-item,
-:global(.dark) .results-table-row,
-:global(.dark) .hot-item {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-    color: var(--text-primary) !important;
-}
-
-:global(.dark) .trend-item:hover,
-:global(.dark) .results-table-row:hover,
-:global(.dark) .hot-item:hover {
-    background: var(--surface-muted) !important;
-}
-
-:global(.dark) .trend-list-header,
-:global(.dark) .results-table-header {
-    background: var(--surface-muted) !important;
-    color: var(--text-secondary) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .search-filter,
-:global(.dark) .sort-control select {
-    background: var(--surface-muted) !important;
-    border-color: var(--border) !important;
-    color: var(--text-primary) !important;
-}
-
-:global(.dark) .accuracy-bar-container,
-:global(.dark) .score-bar-container,
-:global(.dark) .progress-bar {
-    background: var(--surface-muted) !important;
-}
-
-:global(.dark) .results-tabs button {
-    color: var(--text-secondary) !important;
-    background: transparent !important;
-}
-
-:global(.dark) .results-tabs button.active {
-    color: var(--primary) !important;
-    background: var(--primary-soft) !important;
-}
-
-:global(.dark) .pagination-controls {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .btn-page {
-    background: var(--surface-muted) !important;
-    border-color: var(--border) !important;
-    color: var(--text-primary) !important;
-}
-
-:global(.dark) .overview-icon.blue,
-:global(.dark) .overview-icon.green,
-:global(.dark) .overview-icon.purple,
-:global(.dark) .overview-icon.amber {
-    opacity: 0.9;
-}
 </style>

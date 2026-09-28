@@ -133,16 +133,12 @@ async function handleClaimCredits() {
 .view-header h1 {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary, var(--text-primary));
   margin: 0 0 0.5rem 0;
 }
 
-.dark .view-header h1 {
-  color: var(--text-primary-dark, #f9fafb);
-}
-
 .view-description {
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary, var(--text-secondary));
   margin: 0;
 }
 
@@ -175,16 +171,16 @@ async function handleClaimCredits() {
   justify-content: space-between;
   padding: 0.75rem 1rem;
   background: rgba(239, 68, 68, 0.1);
-  border: 1px solid #ef4444;
+  border: 1px solid var(--danger);
   border-radius: 8px;
-  color: #ef4444;
+  color: var(--danger);
   margin-bottom: 1rem;
 }
 
 .error-message button {
   background: none;
   border: none;
-  color: #ef4444;
+  color: var(--danger);
   font-size: 1rem;
   cursor: pointer;
   padding: 0.25rem;

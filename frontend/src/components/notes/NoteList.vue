@@ -157,25 +157,25 @@ function formatDate(isoString) {
 
 <style scoped>
 .dashed-border {
-  border: 2px dashed #cbd5e1;
+  border: 2px dashed var(--border-strong);
   transition: all 0.2s;
 }
 
 .dashed-border:hover {
   border-color: var(--primary);
-  background: white !important;
+  background: var(--surface) !important;
 }
 
 .note-card {
   transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
 }
 
 .note-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  border-color: #cbd5e1;
+  border-color: var(--border-strong);
 }
 
 .text-truncate-3 {

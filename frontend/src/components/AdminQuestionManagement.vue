@@ -1058,15 +1058,15 @@ defineExpose({
   gap: 6px;
   padding: 6px;
   border-radius: 12px;
-  background: #f8fafc;
-  border: 1px solid var(--border, #CBD5E1);
+  background: var(--bg-page);
+  border: 1px solid var(--border, var(--border-strong));
   margin-bottom: 18px;
 }
 
 .tab-btn {
   border: none;
   background: transparent;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
   font-size: 14px;
   font-weight: 600;
   padding: 8px 14px;
@@ -1079,12 +1079,12 @@ defineExpose({
 }
 
 .tab-btn:hover {
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
 }
 
 .tab-btn.active {
-  background: white;
-  color: var(--text-primary, #1E293B);
+  background: var(--surface);
+  color: var(--text-primary, var(--text-primary));
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
 }
 
@@ -1096,8 +1096,8 @@ defineExpose({
   height: 20px;
   padding: 0 6px;
   border-radius: 999px;
-  background: #f59e0b;
-  color: white;
+  background: var(--warning);
+  color: var(--on-primary);
   font-size: 12px;
   font-weight: 700;
 }
@@ -1129,7 +1129,7 @@ defineExpose({
 }
 
 .modern-modal-header {
-  background: linear-gradient(135deg, var(--primary, #476996) 0%, var(--primary-hover, #35527a) 100%);
+  background: linear-gradient(135deg, var(--primary, var(--primary)) 0%, var(--primary-hover, var(--primary-hover)) 100%);
   padding: 24px 28px;
   display: flex;
   align-items: center;
@@ -1208,8 +1208,8 @@ defineExpose({
 
 .modern-modal-footer {
   padding: 20px 28px;
-  background: #f9fafb;
-  border-top: 1px solid var(--border, #CBD5E1);
+  background: var(--bg-page);
+  border-top: 1px solid var(--border, var(--border-strong));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1221,7 +1221,7 @@ defineExpose({
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
   font-size: 13px;
   flex: 1;
 }
@@ -1256,38 +1256,38 @@ defineExpose({
 }
 
 .footer-btn-secondary {
-  background: white;
-  color: var(--text-secondary, #64748B);
-  border: 1px solid var(--border, #CBD5E1);
+  background: var(--surface);
+  color: var(--text-secondary, var(--text-secondary));
+  border: 1px solid var(--border, var(--border-strong));
 }
 
 .footer-btn-secondary:hover:not(:disabled) {
-  background: #f9fafb;
-  color: var(--text-primary, #1E293B);
-  border-color: #94a3b8;
+  background: var(--bg-page);
+  color: var(--text-primary, var(--text-primary));
+  border-color: var(--border-strong);
 }
 
 .footer-btn-pending {
-  background: #fff7eb;
+  background: var(--warning-soft);
   color: #d89b32;
   border: 1px solid #f7d7a8;
 }
 
 .footer-btn-pending:hover:not(:disabled) {
-  background: #fef3e2;
+  background: var(--warning-soft);
   border-color: #d89b32;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(216, 155, 50, 0.2);
 }
 
 .footer-btn-primary {
-  background: var(--primary, #476996);
-  color: white;
+  background: var(--primary, var(--primary));
+  color: var(--on-primary);
   box-shadow: 0 2px 4px rgba(71, 105, 150, 0.2);
 }
 
 .footer-btn-primary:hover:not(:disabled) {
-  background: var(--primary-hover, #35527a);
+  background: var(--primary-hover, var(--primary-hover));
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(71, 105, 150, 0.3);
 }
@@ -1333,46 +1333,6 @@ defineExpose({
   .footer-btn {
     width: 100%;
   }
-}
-
-:root[data-theme="dark"] .tab-switcher,
-.dark .tab-switcher {
-  background: #111827;
-  border-color: var(--border-dark, #334155);
-}
-
-:root[data-theme="dark"] .tab-btn,
-.dark .tab-btn {
-  color: var(--text-secondary-dark, #94a3b8);
-}
-
-:root[data-theme="dark"] .tab-btn:hover,
-.dark .tab-btn:hover {
-  color: var(--text-primary-dark, #f1f5f9);
-}
-
-:root[data-theme="dark"] .tab-btn.active,
-.dark .tab-btn.active {
-  background: #0f172a;
-  color: var(--text-primary-dark, #f1f5f9);
-  box-shadow: none;
-}
-
-:root[data-theme="dark"] .modern-modal,
-.dark .modern-modal {
-  background: var(--bg-primary, #0f172a);
-  border: 1px solid var(--border-dark, #334155);
-}
-
-:root[data-theme="dark"] .modern-modal-body,
-.dark .modern-modal-body {
-  background: var(--bg-primary, #0f172a);
-}
-
-:root[data-theme="dark"] .modern-modal-footer,
-.dark .modern-modal-footer {
-  background: var(--bg-secondary, #1e293b);
-  border-color: var(--border-dark, #334155);
 }
 </style>
 

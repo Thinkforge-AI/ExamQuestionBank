@@ -83,8 +83,8 @@ defineProps({
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #e5e7eb;
-  border-top: 4px solid #2563eb;
+  border: 4px solid var(--border);
+  border-top: 4px solid var(--primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 16px;
@@ -96,7 +96,7 @@ defineProps({
 }
 
 .loading-text {
-  color: #6b7280;
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -106,12 +106,12 @@ defineProps({
 }
 
 .error-title {
-  color: #dc2626;
+  color: var(--danger);
   margin: 0 0 8px 0;
 }
 
 .error-message {
-  color: #6b7280;
+  color: var(--text-secondary);
   margin: 0 0 16px 0;
 }
 
@@ -125,17 +125,17 @@ defineProps({
 }
 
 .btn-primary {
-  background: #2563eb;
-  color: white;
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 .btn-primary:hover {
-  background: #1d4ed8;
+  background: var(--primary-hover);
 }
 
 /* Focus styles for accessibility */
 .btn:focus {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
@@ -211,11 +211,11 @@ defineProps({
   .loading-spinner {
     border-width: 5px;
     border-color: #000;
-    border-top-color: #2563eb;
+    border-top-color: var(--primary);
   }
   
   .error-state {
-    border: 2px solid #dc2626;
+    border: 2px solid var(--danger);
     border-radius: 8px;
   }
   
@@ -228,7 +228,7 @@ defineProps({
 @media (prefers-reduced-motion: reduce) {
   .loading-spinner {
     animation: none;
-    border-top-color: #2563eb;
+    border-top-color: var(--primary);
     opacity: 0.7;
   }
 }

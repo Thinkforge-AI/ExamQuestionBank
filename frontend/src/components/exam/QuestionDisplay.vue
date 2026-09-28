@@ -71,7 +71,7 @@ const handleOptionSelect = (optionId) => {
 
 <style scoped>
 .question-display {
-  background: white;
+  background: var(--surface);
   padding: 24px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
@@ -85,12 +85,12 @@ const handleOptionSelect = (optionId) => {
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .question-number {
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 20px;
 }
 
@@ -100,9 +100,9 @@ const handleOptionSelect = (optionId) => {
 }
 
 .meta-item {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 14px;
-  background: #f3f4f6;
+  background: var(--surface-muted);
   padding: 4px 8px;
   border-radius: 4px;
   font-weight: 500;
@@ -115,7 +115,7 @@ const handleOptionSelect = (optionId) => {
 .question-text {
   font-size: 20px;
   line-height: 1.7;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0;
   font-weight: 400;
   letter-spacing: 0.01em;
@@ -132,31 +132,31 @@ const handleOptionSelect = (optionId) => {
   align-items: flex-start;
   gap: 14px;
   padding: 18px;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border);
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
   min-height: 64px;
-  background: #ffffff;
+  background: var(--surface);
   position: relative;
 }
 
 .option-item.option-hover:hover {
-  border-color: #3b82f6;
-  background: #eff6ff;
+  border-color: var(--primary);
+  background: var(--primary-soft);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
 }
 
 .option-item.selected {
-  border-color: #2563eb;
-  background: #dbeafe;
+  border-color: var(--primary);
+  background: var(--primary-soft);
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
 }
 
 .option-item:focus {
   outline: none;
-  border-color: #2563eb;
+  border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
@@ -166,7 +166,7 @@ const handleOptionSelect = (optionId) => {
 
 .option-label {
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   min-width: 28px;
   margin-top: 2px;
   font-size: 16px;
@@ -174,7 +174,7 @@ const handleOptionSelect = (optionId) => {
 
 .option-content {
   flex: 1;
-  color: #374151;
+  color: var(--text-primary);
   line-height: 1.6;
   font-size: 16px;
 }
@@ -249,7 +249,7 @@ const handleOptionSelect = (optionId) => {
   
   .option-item.selected {
     border-color: #000000;
-    background: #ffffff;
+    background: var(--surface);
   }
   
   .meta-item {

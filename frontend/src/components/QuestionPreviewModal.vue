@@ -209,7 +209,7 @@ const formattedExplanation = computed(() => {
 
 /* ====== Card ====== */
 .qpm-card {
-    background: #fff;
+    background: var(--surface);
     border-radius: 16px;
     width: min(640px, 100%);
     max-height: calc(100vh - 48px);
@@ -237,7 +237,7 @@ const formattedExplanation = computed(() => {
     align-items: center;
     justify-content: space-between;
     padding: 20px 24px;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--border);
     flex-shrink: 0;
 }
 
@@ -251,17 +251,17 @@ const formattedExplanation = computed(() => {
     width: 40px;
     height: 40px;
     border-radius: 10px;
-    background: #eef2ff;
+    background: var(--primary-soft);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #476996;
+    color: var(--primary-text);
 }
 
 .qpm-title {
     font-size: 18px;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--text-primary);
     margin: 0;
 }
 
@@ -269,19 +269,19 @@ const formattedExplanation = computed(() => {
     width: 36px;
     height: 36px;
     border-radius: 10px;
-    background: #f1f5f9;
+    background: var(--surface-muted);
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #64748b;
+    color: var(--text-secondary);
     transition: background 0.15s, color 0.15s;
 }
 
 .qpm-close-btn:hover {
-    background: #e2e8f0;
-    color: #334155;
+    background: var(--surface-hover);
+    color: var(--text-primary);
 }
 
 /* ====== Body ====== */
@@ -296,8 +296,8 @@ const formattedExplanation = computed(() => {
 
 /* ====== Meta Grid ====== */
 .qpm-meta-grid {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-page);
+    border: 1px solid var(--border);
     border-radius: 12px;
     padding: 16px;
     display: flex;
@@ -320,13 +320,13 @@ const formattedExplanation = computed(() => {
 .qpm-meta-label {
     font-size: 12px;
     font-weight: 600;
-    color: #94a3b8;
+    color: var(--text-muted);
 }
 
 .qpm-meta-value {
     font-size: 14px;
     font-weight: 600;
-    color: #1e293b;
+    color: var(--text-primary);
 }
 
 /* ====== Badges ====== */
@@ -342,32 +342,32 @@ const formattedExplanation = computed(() => {
 }
 
 .qpm-badge--mcq {
-    background: #eef2ff;
-    color: #4338ca;
+    background: var(--primary-soft);
+    color: var(--primary-text);
 }
 
 .qpm-badge--essay {
-    background: #fef3c7;
-    color: #92400e;
+    background: var(--warning-soft);
+    color: var(--warning);
 }
 
 .qpm-badge--easy {
-    background: #dcfce7;
-    color: #166534;
+    background: var(--success-soft);
+    color: var(--success);
 }
 
 .qpm-badge--normal {
-    background: #fef3c7;
-    color: #92400e;
+    background: var(--warning-soft);
+    color: var(--warning);
 }
 
 .qpm-badge--hard {
-    background: #fee2e2;
-    color: #991b1b;
+    background: var(--danger-soft);
+    color: var(--danger);
 }
 
 .qpm-badge--insane {
-    background: #ede9fe;
+    background: var(--icon-purple-bg);
     color: #5b21b6;
 }
 
@@ -375,13 +375,13 @@ const formattedExplanation = computed(() => {
 .qpm-section-label {
     font-size: 13px;
     font-weight: 600;
-    color: #64748b;
+    color: var(--text-secondary);
 }
 
 /* ====== Content Card ====== */
 .qpm-content-card {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-page);
+    border: 1px solid var(--border);
     border-radius: 12px;
     padding: 16px;
 }
@@ -390,7 +390,7 @@ const formattedExplanation = computed(() => {
     margin: 0;
     font-size: 15px;
     line-height: 1.6;
-    color: #1e293b;
+    color: var(--text-primary);
 }
 
 /* ====== Options ====== */
@@ -406,54 +406,54 @@ const formattedExplanation = computed(() => {
     gap: 12px;
     padding: 12px 16px;
     border-radius: 10px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-page);
+    border: 1px solid var(--border);
     transition: border-color 0.15s, background 0.15s;
 }
 
 .qpm-option--correct {
-    background: #f0fdf4;
-    border: 2px solid #22c55e;
+    background: var(--success-soft);
+    border: 2px solid var(--success);
 }
 
 .qpm-option-label {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: #e2e8f0;
+    background: var(--surface-hover);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 13px;
     font-weight: 700;
-    color: #64748b;
+    color: var(--text-secondary);
     flex-shrink: 0;
 }
 
 .qpm-option-label--correct {
-    background: #22c55e;
-    color: #fff;
+    background: var(--success);
+    color: var(--on-primary);
 }
 
 .qpm-option-text {
     flex: 1;
     font-size: 14px;
-    color: #1e293b;
+    color: var(--text-primary);
 }
 
 .qpm-option-text--correct {
     font-weight: 600;
-    color: #166534;
+    color: var(--success);
 }
 
 .qpm-option-check {
-    color: #22c55e;
+    color: var(--success);
     flex-shrink: 0;
 }
 
 /* ====== Explanation ====== */
 .qpm-explanation {
-    background: #fffbeb;
+    background: var(--warning-soft);
     border: 1px solid #fde68a;
     border-radius: 12px;
     padding: 16px;
@@ -463,7 +463,7 @@ const formattedExplanation = computed(() => {
 }
 
 .qpm-explanation-icon {
-    color: #d97706;
+    color: var(--warning);
     flex-shrink: 0;
     margin-top: 2px;
 }
@@ -472,7 +472,7 @@ const formattedExplanation = computed(() => {
     margin: 0;
     font-size: 14px;
     line-height: 1.6;
-    color: #92400e;
+    color: var(--warning);
 }
 
 /* ====== Footer ====== */
@@ -482,7 +482,7 @@ const formattedExplanation = computed(() => {
     align-items: center;
     gap: 10px;
     padding: 16px 24px 20px;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid var(--border);
     flex-shrink: 0;
 }
 
@@ -504,8 +504,8 @@ const formattedExplanation = computed(() => {
 }
 
 .qpm-btn--primary {
-    background: #476996;
-    color: #fff;
+    background: var(--primary);
+    color: var(--on-primary);
 }
 
 .qpm-btn--primary:hover {
@@ -514,25 +514,25 @@ const formattedExplanation = computed(() => {
 }
 
 .qpm-btn--added {
-    background: #dcfce7;
-    color: #166534;
+    background: var(--success-soft);
+    color: var(--success);
     cursor: default;
 }
 
 .qpm-btn--added:hover {
-    background: #dcfce7;
+    background: var(--success-soft);
     box-shadow: none;
 }
 
 .qpm-btn--secondary {
-    background: #fff;
-    color: #64748b;
-    border: 1px solid #e2e8f0;
+    background: var(--surface);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
 }
 
 .qpm-btn--secondary:hover {
-    background: #f8fafc;
-    border-color: #cbd5e1;
+    background: var(--bg-page);
+    border-color: var(--border-strong);
 }
 
 /* ====== Responsive ====== */

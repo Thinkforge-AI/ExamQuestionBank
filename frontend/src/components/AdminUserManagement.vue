@@ -179,17 +179,17 @@ defineExpose({ loadUsers })
   top: 50%;
   left: 12px;
   transform: translateY(-50%);
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
 .filter-input {
   width: 100%;
   padding: 10px 12px 10px 38px;
-  border: 1px solid var(--border, #cbd5e1);
+  border: 1px solid var(--border, var(--border-strong));
   border-radius: 10px;
   font-size: 14px;
-  background: var(--surface, #fff);
-  color: var(--text-primary, #1e293b);
+  background: var(--surface, var(--surface));
+  color: var(--text-primary, var(--text-primary));
 }
 
 .action-btn {
@@ -206,28 +206,28 @@ defineExpose({ loadUsers })
 }
 
 .action-btn-primary {
-  background: var(--primary, #476996);
-  color: #fff;
+  background: var(--primary, var(--primary));
+  color: var(--on-primary);
   box-shadow: 0 2px 4px rgba(71, 105, 150, 0.2);
 }
 
 .action-btn-primary:hover {
-  background: var(--primary-hover, #35527a);
+  background: var(--primary-hover, var(--primary-hover));
 }
 
 .action-btn-secondary {
-  background: #f3f4f6;
-  color: var(--text-secondary, #64748b);
+  background: var(--surface-muted);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .action-btn-secondary:hover {
-  background: #e5e7eb;
-  color: var(--text-primary, #1e293b);
+  background: var(--surface-hover);
+  color: var(--text-primary, var(--text-primary));
 }
 
 .action-btn-danger {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
 .action-btn-danger:hover {
@@ -240,7 +240,7 @@ defineExpose({ loadUsers })
 }
 
 .helper-text {
-  color: var(--text-secondary, #64748b);
+  color: var(--text-secondary, var(--text-secondary));
   font-size: 13px;
   margin: 0;
 }
@@ -253,15 +253,15 @@ defineExpose({ loadUsers })
   gap: 12px;
   padding: 40px 20px;
   border-radius: 12px;
-  border: 1px dashed var(--border, #cbd5e1);
-  background: var(--surface, #fff);
+  border: 1px dashed var(--border, var(--border-strong));
+  background: var(--surface, var(--surface));
 }
 
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #e2e8f0;
-  border-top-color: var(--primary, #476996);
+  border: 4px solid var(--border);
+  border-top-color: var(--primary, var(--primary));
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -272,9 +272,9 @@ defineExpose({ loadUsers })
 
 .user-table {
   border-radius: 12px;
-  border: 1px solid var(--border, #cbd5e1);
+  border: 1px solid var(--border, var(--border-strong));
   overflow: hidden;
-  background: var(--surface, #fff);
+  background: var(--surface, var(--surface));
 }
 
 .table-header,
@@ -287,24 +287,24 @@ defineExpose({ loadUsers })
 }
 
 .table-header {
-  background: var(--surface-muted, #f1f5f9);
-  color: var(--text-secondary, #64748b);
+  background: var(--surface-muted, var(--surface-muted));
+  color: var(--text-secondary, var(--text-secondary));
   font-weight: 600;
   font-size: 13px;
 }
 
 .table-row {
-  border-top: 1px solid var(--border, #e2e8f0);
+  border-top: 1px solid var(--border, var(--border));
 }
 
 .user-email {
   font-weight: 600;
-  color: var(--text-primary, #1e293b);
+  color: var(--text-primary, var(--text-primary));
 }
 
 .user-id {
   font-size: 12px;
-  color: var(--text-secondary, #64748b);
+  color: var(--text-secondary, var(--text-secondary));
   word-break: break-all;
 }
 
@@ -315,13 +315,13 @@ defineExpose({ loadUsers })
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
-  background: #e2e8f0;
-  color: #475569;
+  background: var(--surface-hover);
+  color: var(--text-secondary);
 }
 
 .role-badge.admin {
   background: rgba(34, 197, 94, 0.15);
-  color: #15803d;
+  color: var(--success);
 }
 
 .col-actions {
@@ -332,7 +332,7 @@ defineExpose({ loadUsers })
 
 .hint-text {
   font-size: 12px;
-  color: var(--text-secondary, #64748b);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 @media (max-width: 900px) {

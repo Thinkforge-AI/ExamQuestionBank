@@ -149,26 +149,17 @@ function handleCancel() {
 
 <style scoped>
 .discussion-form-mvp {
-  background: var(--bg-primary, white);
-  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--bg-primary, var(--surface));
+  border: 1px solid var(--border-color, var(--border));
   border-radius: 12px;
   padding: 1.5rem;
-}
-
-.dark .discussion-form-mvp {
-  background: var(--bg-secondary, #1f2937);
-  border-color: var(--border-color-dark, #374151);
 }
 
 .form-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary, var(--text-primary));
   margin: 0 0 1.5rem 0;
-}
-
-.dark .form-title {
-  color: var(--text-primary-dark, #f9fafb);
 }
 
 .author-preview-hint {
@@ -177,16 +168,11 @@ function handleCancel() {
   flex-wrap: wrap;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: var(--primary-soft, #eef2ff);
+  background: var(--primary-soft, var(--primary-soft));
   border-radius: 8px;
   margin-bottom: 1.25rem;
   font-size: 0.875rem;
-  color: var(--text-secondary, #6b7280);
-}
-
-.dark .author-preview-hint {
-  background: rgba(79, 70, 229, 0.1);
-  color: var(--text-secondary-dark, #9ca3af);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .author-preview-hint i {
@@ -228,32 +214,21 @@ function handleCancel() {
 .form-group label {
   display: block;
   font-weight: 500;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary, var(--text-primary));
   margin-bottom: 0.5rem;
-}
-
-.dark .form-group label {
-  color: var(--text-primary-dark, #f9fafb);
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: var(--bg-secondary, #f9fafb);
-  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--bg-secondary, var(--bg-page));
+  border: 1px solid var(--border-color, var(--border));
   border-radius: 8px;
   font-size: 1rem;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary, var(--text-primary));
   transition: all 0.2s ease;
   box-sizing: border-box;
-}
-
-.dark .form-group input,
-.dark .form-group textarea {
-  background: var(--bg-tertiary, #374151);
-  border-color: var(--border-color-dark, #4b5563);
-  color: var(--text-primary-dark, #f9fafb);
 }
 
 .form-group input:focus,
@@ -265,7 +240,7 @@ function handleCancel() {
 
 .form-group input.error,
 .form-group textarea.error {
-  border-color: #ef4444;
+  border-color: var(--danger);
 }
 
 .form-group textarea {
@@ -278,18 +253,18 @@ function handleCancel() {
   right: 0.5rem;
   bottom: -1.25rem;
   font-size: 0.75rem;
-  color: var(--text-tertiary, #9ca3af);
+  color: var(--text-tertiary, var(--text-muted));
 }
 
 .char-count.warning {
-  color: #f59e0b;
+  color: var(--warning);
 }
 
 .error-msg {
   display: block;
   margin-top: 0.25rem;
   font-size: 0.875rem;
-  color: #ef4444;
+  color: var(--danger);
 }
 
 .form-actions {
@@ -311,21 +286,12 @@ function handleCancel() {
 
 .btn-cancel {
   background: transparent;
-  color: var(--text-secondary, #6b7280);
-  border: 1px solid var(--border-color, #e5e7eb);
-}
-
-.dark .btn-cancel {
-  border-color: var(--border-color-dark, #4b5563);
-  color: var(--text-secondary-dark, #9ca3af);
+  color: var(--text-secondary, var(--text-secondary));
+  border: 1px solid var(--border-color, var(--border));
 }
 
 .btn-cancel:hover {
-  background: var(--bg-secondary, #f3f4f6);
-}
-
-.dark .btn-cancel:hover {
-  background: var(--bg-tertiary, #374151);
+  background: var(--bg-secondary, var(--surface-muted));
 }
 
 .btn-submit {

@@ -155,7 +155,7 @@ defineExpose({
 
 <style scoped>
 .card-list-section {
-  background: white;
+  background: var(--surface);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -185,14 +185,14 @@ defineExpose({
 .list-header h3 {
   margin: 0;
   font-size: 1.1rem;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .list-header select {
   padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: white;
+  background: var(--surface);
   cursor: pointer;
   font-size: 0.9rem;
 }
@@ -200,18 +200,18 @@ defineExpose({
 .loading {
   text-align: center;
   padding: 2rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .empty {
   text-align: center;
   padding: 2rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .empty .hint {
   font-size: 0.85rem;
-  color: #999;
+  color: var(--text-muted);
   margin-top: 0.5rem;
 }
 
@@ -226,7 +226,7 @@ defineExpose({
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background: #f8f9fa;
+  background: var(--surface-muted);
   border-radius: 8px;
   transition: background 0.2s;
   gap: 0.75rem;
@@ -246,7 +246,7 @@ defineExpose({
 }
 
 .list-card:hover {
-  background: #f0f0f0;
+  background: var(--surface-muted);
 }
 
 .list-card-content {
@@ -257,7 +257,7 @@ defineExpose({
 .list-card-subject {
   display: inline-block;
   padding: 0.2rem 0.5rem;
-  background: #e3f2fd;
+  background: var(--primary-soft);
   color: #1976d2;
   border-radius: 4px;
   font-size: 0.75rem;
@@ -267,7 +267,7 @@ defineExpose({
 .list-card-question {
   margin: 0 0 0.5rem 0;
   font-size: 0.95rem;
-  color: #333;
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -277,7 +277,7 @@ defineExpose({
   display: flex;
   gap: 1rem;
   font-size: 0.8rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .list-card-meta .status-learning {
@@ -296,14 +296,14 @@ defineExpose({
   padding: 0.5rem;
   background: transparent;
   border: none;
-  color: #999;
+  color: var(--text-muted);
   cursor: pointer;
   border-radius: 4px;
   transition: all 0.2s;
 }
 
 .btn-delete:hover:not(:disabled) {
-  background: #ffebee;
+  background: var(--danger-soft);
   color: #d32f2f;
 }
 
@@ -327,7 +327,7 @@ defineExpose({
 }
 
 .delete-modal {
-  background: white;
+  background: var(--surface);
   border-radius: 12px;
   padding: 1.5rem;
   max-width: 400px;
@@ -337,21 +337,21 @@ defineExpose({
 
 .delete-modal h4 {
   margin: 0 0 1rem 0;
-  color: #333;
+  color: var(--text-primary);
   font-size: 1.1rem;
 }
 
 .delete-modal p {
   margin: 0 0 0.5rem 0;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .delete-card-preview {
-  background: #f5f5f5;
+  background: var(--bg-page);
   padding: 0.75rem;
   border-radius: 6px;
   font-size: 0.9rem;
-  color: #333;
+  color: var(--text-primary);
   margin: 1rem 0 !important;
   white-space: nowrap;
   overflow: hidden;
@@ -367,17 +367,17 @@ defineExpose({
 
 .btn-cancel {
   padding: 0.6rem 1.2rem;
-  background: #f5f5f5;
+  background: var(--bg-page);
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
-  color: #666;
+  color: var(--text-secondary);
   transition: background 0.2s;
 }
 
 .btn-cancel:hover {
-  background: #e0e0e0;
+  background: var(--surface-hover);
 }
 
 .btn-confirm-delete {
@@ -472,7 +472,7 @@ defineExpose({
   .btn-delete {
     align-self: flex-end;
     padding: 0.6rem 1rem;
-    background: #ffebee;
+    background: var(--danger-soft);
     color: #d32f2f;
     border-radius: 6px;
   }

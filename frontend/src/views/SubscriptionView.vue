@@ -245,7 +245,7 @@ const formatDate = (dateString) => {
   left: 50%;
   transform: translateX(-50%);
   background: var(--primary);
-  color: white;
+  color: var(--on-primary);
   padding: 6px 16px;
   border-radius: 20px;
   font-size: 12px;
@@ -315,7 +315,7 @@ const formatDate = (dateString) => {
 
 .btn-primary {
   background: var(--primary);
-  color: white;
+  color: var(--on-primary);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -331,7 +331,7 @@ const formatDate = (dateString) => {
 
 .btn-outline:hover:not(:disabled) {
   background: var(--primary);
-  color: white;
+  color: var(--on-primary);
 }
 
 .btn:disabled {

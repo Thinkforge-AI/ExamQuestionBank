@@ -180,7 +180,7 @@ const close = () => emit('close')
 .modal-container {
     width: 92%;
     max-width: 480px;
-    background: white;
+    background: var(--surface);
     border-radius: 16px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     display: flex;
@@ -207,7 +207,7 @@ const close = () => emit('close')
     align-items: center;
     justify-content: space-between;
     padding: 20px 24px;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--border);
 }
 
 .header-content {
@@ -220,18 +220,18 @@ const close = () => emit('close')
     width: 40px;
     height: 40px;
     border-radius: 10px;
-    background: #fef3c7;
+    background: var(--warning-soft);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #d97706;
+    color: var(--warning);
     flex-shrink: 0;
 }
 
 .modal-title {
     font-size: 18px;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--text-primary);
     margin: 0;
 }
 
@@ -240,8 +240,8 @@ const close = () => emit('close')
     height: 36px;
     border-radius: 10px;
     border: none;
-    background: #f1f5f9;
-    color: #64748b;
+    background: var(--surface-muted);
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -251,8 +251,8 @@ const close = () => emit('close')
 }
 
 .close-btn:hover {
-    background: #e2e8f0;
-    color: #1e293b;
+    background: var(--surface-hover);
+    color: var(--text-primary);
 }
 
 /* Body */
@@ -270,15 +270,15 @@ const close = () => emit('close')
     align-items: center;
     gap: 10px;
     padding: 12px 16px;
-    background: #eff6ff;
+    background: var(--primary-soft);
     border: 1px solid #bfdbfe;
     border-radius: 10px;
-    color: #1e40af;
+    color: var(--primary-text);
     font-size: 14px;
 }
 
 .info-banner svg {
-    color: #3b82f6;
+    color: var(--primary-text);
     flex-shrink: 0;
 }
 
@@ -296,7 +296,7 @@ const close = () => emit('close')
 .section-label {
     font-size: 14px;
     font-weight: 600;
-    color: #334155;
+    color: var(--text-primary);
 }
 
 .field-grid {
@@ -318,13 +318,13 @@ const close = () => emit('close')
     gap: 8px;
     font-size: 14px;
     font-weight: 600;
-    color: #94a3b8;
+    color: var(--text-muted);
     cursor: pointer;
     transition: color 0.2s;
 }
 
 .field-toggle.active {
-    color: #1e293b;
+    color: var(--text-primary);
 }
 
 .field-toggle input[type="checkbox"] {
@@ -339,15 +339,15 @@ const close = () => emit('close')
     align-items: center;
     gap: 8px;
     padding: 10px 12px;
-    background: #f9fafb;
-    border: 2px solid #e5e7eb;
+    background: var(--bg-page);
+    border: 2px solid var(--border);
     border-radius: 10px;
     transition: all 0.2s;
 }
 
 .input-wrapper.active {
-    background: white;
-    border-color: #d97706;
+    background: var(--surface);
+    border-color: var(--warning);
 }
 
 .field-input {
@@ -357,7 +357,7 @@ const close = () => emit('close')
     background: transparent;
     font-size: 14px;
     font-weight: 600;
-    color: #1e293b;
+    color: var(--text-primary);
     min-width: 0;
 }
 
@@ -380,13 +380,13 @@ const close = () => emit('close')
 
 .input-suffix {
     font-size: 14px;
-    color: #94a3b8;
+    color: var(--text-muted);
     flex-shrink: 0;
 }
 
 .field-hint {
     font-size: 12px;
-    color: #94a3b8;
+    color: var(--text-muted);
 }
 
 /* Preview Section */
@@ -399,12 +399,12 @@ const close = () => emit('close')
 .preview-label {
     font-size: 14px;
     font-weight: 600;
-    color: #334155;
+    color: var(--text-primary);
 }
 
 .preview-box {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-page);
+    border: 1px solid var(--border);
     border-radius: 10px;
     padding: 16px;
     display: flex;
@@ -420,12 +420,12 @@ const close = () => emit('close')
 
 .preview-key {
     font-size: 13px;
-    color: #64748b;
+    color: var(--text-secondary);
 }
 
 .preview-val {
     font-size: 13px;
-    color: #1e293b;
+    color: var(--text-primary);
 }
 
 .preview-val strong {
@@ -439,31 +439,31 @@ const close = () => emit('close')
 }
 
 .preview-val .old {
-    color: #94a3b8;
+    color: var(--text-muted);
     text-decoration: line-through;
 }
 
 .preview-val .new {
     font-weight: 700;
-    color: #d97706;
+    color: var(--warning);
 }
 
 .preview-val .new.up {
-    color: #166534;
+    color: var(--success);
 }
 
 .preview-val .new.down {
-    color: #dc2626;
+    color: var(--danger);
 }
 
 .preview-val svg {
-    color: #64748b;
+    color: var(--text-secondary);
     flex-shrink: 0;
 }
 
 .preview-divider {
     height: 1px;
-    background: #e2e8f0;
+    background: var(--surface-hover);
 }
 
 /* Footer */
@@ -472,7 +472,7 @@ const close = () => emit('close')
     gap: 10px;
     justify-content: flex-end;
     padding: 16px 24px 20px;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid var(--border);
 }
 
 .btn-apply,
@@ -507,14 +507,14 @@ const close = () => emit('close')
 }
 
 .btn-cancel {
-    background: white;
-    color: #64748b;
-    border: 1px solid #e2e8f0;
+    background: var(--surface);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
 }
 
 .btn-cancel:hover {
-    background: #f9fafb;
-    border-color: #94a3b8;
+    background: var(--bg-page);
+    border-color: var(--border-strong);
 }
 
 @media (max-width: 480px) {

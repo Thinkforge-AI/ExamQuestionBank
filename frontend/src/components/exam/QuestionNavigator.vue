@@ -87,7 +87,7 @@ const getButtonAriaLabel = (index) => {
 
 <style scoped>
 .question-navigator {
-  background: white;
+  background: var(--surface);
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
@@ -97,7 +97,7 @@ const getButtonAriaLabel = (index) => {
 .navigator-title {
   margin: 0 0 12px 0;
   font-size: 16px;
-  color: #374151;
+  color: var(--text-primary);
 }
 
 .question-grid {
@@ -109,8 +109,8 @@ const getButtonAriaLabel = (index) => {
 .question-button {
   width: 40px;
   height: 40px;
-  border: 2px solid #e5e7eb;
-  background: white;
+  border: 2px solid var(--border);
+  background: var(--surface);
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
@@ -121,20 +121,20 @@ const getButtonAriaLabel = (index) => {
 }
 
 .question-button:hover {
-  border-color: #3b82f6;
-  background: #eff6ff;
+  border-color: var(--primary);
+  background: var(--primary-soft);
 }
 
 .question-button.current {
-  border-color: #2563eb;
-  background: #2563eb;
-  color: white;
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 .question-button.answered {
-  border-color: #10b981;
-  background: #d1fae5;
-  color: #065f46;
+  border-color: var(--success);
+  background: var(--success-soft);
+  color: var(--success);
 }
 
 .question-button.current.answered {
@@ -157,9 +157,9 @@ const getButtonAriaLabel = (index) => {
   gap: 12px;
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border);
   font-size: 12px;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .legend-item {
@@ -175,18 +175,18 @@ const getButtonAriaLabel = (index) => {
 }
 
 .legend-dot.answered {
-  background: #d1fae5;
-  border: 2px solid #10b981;
+  background: var(--success-soft);
+  border: 2px solid var(--success);
 }
 
 .legend-dot.unanswered {
-  background: white;
-  border: 2px solid #e5e7eb;
+  background: var(--surface);
+  border: 2px solid var(--border);
 }
 
 .legend-dot.flagged {
-  background: white;
-  border: 2px solid #e5e7eb;
+  background: var(--surface);
+  border: 2px solid var(--border);
   box-shadow: inset 0 0 0 2px #f97316;
 }
 
@@ -205,13 +205,13 @@ const getButtonAriaLabel = (index) => {
 
 /* Focus styles for accessibility */
 .question-button:focus {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
   z-index: 1;
 }
 
 .question-button:focus-visible {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
@@ -228,7 +228,7 @@ const getButtonAriaLabel = (index) => {
   
   .question-button.answered {
     border-color: #065f46;
-    background: #d1fae5;
+    background: var(--success-soft);
   }
 }
 

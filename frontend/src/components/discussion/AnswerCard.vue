@@ -115,24 +115,15 @@ async function handleVote(value) {
 
 <style scoped>
 .answer-card-mvp {
-  background: var(--bg-primary, white);
-  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--bg-primary, var(--surface));
+  border: 1px solid var(--border-color, var(--border));
   border-radius: 12px;
   padding: 1.25rem;
   transition: all 0.2s ease;
 }
 
-.dark .answer-card-mvp {
-  background: var(--bg-secondary, #1f2937);
-  border-color: var(--border-color-dark, #374151);
-}
-
 .answer-card-mvp.locked {
-  background: var(--bg-secondary, #f9fafb);
-}
-
-.dark .answer-card-mvp.locked {
-  background: var(--bg-tertiary, #374151);
+  background: var(--bg-secondary, var(--bg-page));
 }
 
 .answer-header {
@@ -149,14 +140,14 @@ async function handleVote(value) {
   align-items: center;
   gap: 0.75rem;
   font-size: 0.875rem;
-  color: var(--text-tertiary, #9ca3af);
+  color: var(--text-tertiary, var(--text-muted));
 }
 
 .author {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .author-icon {
@@ -165,7 +156,7 @@ async function handleVote(value) {
 
 .answer-stats {
   font-size: 0.75rem;
-  color: var(--text-tertiary, #9ca3af);
+  color: var(--text-tertiary, var(--text-muted));
 }
 
 .answer-content {
@@ -181,12 +172,7 @@ async function handleVote(value) {
   text-align: center;
   background: linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(139, 92, 246, 0.05));
   border-radius: 8px;
-  border: 1px dashed var(--border-color, #d1d5db);
-}
-
-.dark .locked-overlay {
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(139, 92, 246, 0.1));
-  border-color: var(--border-color-dark, #4b5563);
+  border: 1px dashed var(--border-color, var(--border-strong));
 }
 
 .lock-icon {
@@ -195,7 +181,7 @@ async function handleVote(value) {
 }
 
 .lock-message {
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary, var(--text-secondary));
   margin: 0 0 1rem 0;
 }
 
@@ -228,22 +214,14 @@ async function handleVote(value) {
 .answer-body {
   font-size: 1rem;
   line-height: 1.7;
-  color: var(--text-primary, #111827);
-}
-
-.dark .answer-body {
-  color: var(--text-primary-dark, #f9fafb);
+  color: var(--text-primary, var(--text-primary));
 }
 
 .answer-footer {
   display: flex;
   justify-content: flex-start;
   padding-top: 0.75rem;
-  border-top: 1px solid var(--border-color, #e5e7eb);
-}
-
-.dark .answer-footer {
-  border-color: var(--border-color-dark, #374151);
+  border-top: 1px solid var(--border-color, var(--border));
 }
 
 .loading-spinner {

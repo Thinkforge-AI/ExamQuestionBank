@@ -68,10 +68,10 @@ defineEmits(['clear'])
 }
 
 .selection-toolbar {
-    background: white;
+    background: var(--surface);
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
-    border: 1px solid var(--border, #CBD5E1);
+    border: 1px solid var(--border, var(--border-strong));
     pointer-events: auto;
     /* Re-enable pointer events for the toolbar itself */
 }
@@ -88,18 +88,18 @@ defineEmits(['clear'])
     align-items: center;
     gap: 10px;
     padding: 8px 16px;
-    background: var(--primary-soft, #EEF2FF);
+    background: var(--primary-soft, var(--primary-soft));
     border-radius: 10px;
 }
 
 .toolbar-info svg {
-    color: var(--primary, #476996);
+    color: var(--primary, var(--primary-text));
     flex-shrink: 0;
 }
 
 .toolbar-text {
     font-size: 14px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
     font-weight: 500;
 }
 
@@ -110,8 +110,8 @@ defineEmits(['clear'])
     min-width: 28px;
     height: 28px;
     padding: 0 10px;
-    background: var(--primary, #476996);
-    color: white;
+    background: var(--primary, var(--primary));
+    color: var(--on-primary);
     border-radius: 8px;
     font-size: 14px;
     font-weight: 600;
@@ -120,7 +120,7 @@ defineEmits(['clear'])
 .toolbar-divider {
     width: 1px;
     height: 32px;
-    background: #e5e7eb;
+    background: var(--surface-hover);
 }
 
 .toolbar-actions {
@@ -154,50 +154,50 @@ defineEmits(['clear'])
 /* Secondary Button */
 .toolbar-btn-secondary,
 :deep(.toolbar-btn-secondary) {
-    background: #f3f4f6;
-    color: var(--text-secondary, #64748B);
+    background: var(--surface-muted);
+    color: var(--text-secondary, var(--text-secondary));
 }
 
 .toolbar-btn-secondary:hover,
 :deep(.toolbar-btn-secondary:hover) {
-    background: #e5e7eb;
-    color: var(--text-primary, #1E293B);
+    background: var(--surface-hover);
+    color: var(--text-primary, var(--text-primary));
     transform: translateY(-1px);
 }
 
 /* Primary Button */
 :deep(.toolbar-btn-primary) {
-    background: var(--primary, #476996);
-    color: white;
+    background: var(--primary, var(--primary));
+    color: var(--on-primary);
 }
 
 :deep(.toolbar-btn-primary:hover) {
-    background: var(--primary-dark, #35527a);
+    background: var(--primary-dark, var(--primary-hover));
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(71, 105, 150, 0.2);
 }
 
 /* Danger Button */
 :deep(.toolbar-btn-danger) {
-    background: #fef2f2;
-    color: #dc2626;
+    background: var(--danger-soft);
+    color: var(--danger);
 }
 
 :deep(.toolbar-btn-danger:hover:not(:disabled)) {
-    background: #fee2e2;
-    color: #b91c1c;
+    background: var(--danger-soft);
+    color: var(--danger);
     transform: translateY(-1px);
 }
 
 /* Accent Button (for primary actions like Practice) */
 :deep(.toolbar-btn-accent) {
-    background: linear-gradient(135deg, var(--primary, #476996), #35527a);
-    color: white;
+    background: linear-gradient(135deg, var(--primary, var(--primary)), var(--primary-hover));
+    color: var(--on-primary);
     box-shadow: 0 2px 8px rgba(71, 105, 150, 0.2);
 }
 
 :deep(.toolbar-btn-accent:hover:not(:disabled)) {
-    background: linear-gradient(135deg, #35527a, var(--primary, #476996));
+    background: linear-gradient(135deg, var(--primary-hover), var(--primary, var(--primary)));
     transform: translateY(-1px);
     box-shadow: 0 4px 16px rgba(71, 105, 150, 0.3);
 }
@@ -221,7 +221,7 @@ defineEmits(['clear'])
 /* Danger Spinner specific */
 :deep(.toolbar-btn-danger .toolbar-spinner) {
     border-color: rgba(220, 38, 38, 0.3);
-    border-top-color: #dc2626;
+    border-top-color: var(--danger);
 }
 
 @keyframes toolbar-spin {

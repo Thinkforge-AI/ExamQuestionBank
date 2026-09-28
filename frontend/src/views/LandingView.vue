@@ -533,7 +533,7 @@ const handleContactSales = () => {
 
 .btn-primary {
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
   border: 1px solid transparent;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
@@ -635,42 +635,42 @@ const handleContactSales = () => {
 
 /* Colored icon backgrounds */
 .feature-icon.blue {
-  background: #eff6ff;
-  color: #3b82f6;
+  background: var(--primary-soft);
+  color: var(--primary-text);
 }
 
 .feature-icon.purple {
-  background: #f5f3ff;
+  background: var(--icon-purple-bg);
   color: #8b5cf6;
 }
 
 .feature-icon.green {
-  background: #ecfdf5;
-  color: #10b981;
+  background: var(--success-soft);
+  color: var(--success);
 }
 
 .feature-icon.orange {
-  background: #fff7ed;
+  background: var(--warning-soft);
   color: #f97316;
 }
 
 .feature-icon.red {
-  background: #fef2f2;
-  color: #ef4444;
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
 .feature-icon.cyan {
-  background: #ecfeff;
+  background: var(--primary-soft);
   color: #06b6d4;
 }
 
 .feature-icon.pink {
-  background: #fdf2f8;
+  background: var(--icon-purple-bg);
   color: #ec4899;
 }
 
 .feature-icon.yellow {
-  background: #fefce8;
+  background: var(--warning-soft);
   color: #eab308;
 }
 
@@ -715,7 +715,7 @@ const handleContactSales = () => {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #eff6ff; /* equivalent to blue-50 */
+  background: var(--primary-soft); /* equivalent to blue-50 */
   color: var(--primary);
   padding: 6px 14px;
   border-radius: 50px;
@@ -744,9 +744,9 @@ const handleContactSales = () => {
 }
 
 .extension-features li i {
-  color: #10b981; /* emerald-500/success color */
+  color: var(--success); /* emerald-500/success color */
   font-size: 16px;
-  background: #ecfdf5; /* emerald-50 */
+  background: var(--success-soft); /* emerald-50 */
   width: 20px; /* circle container */
   height: 20px;
   display: flex;
@@ -914,11 +914,11 @@ const handleContactSales = () => {
 .pricing-card {
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--surface);
   border-radius: 16px;
   padding: 32px 28px;
   text-align: left;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   transition: all 0.3s ease;
   position: relative;
 }
@@ -931,7 +931,7 @@ const handleContactSales = () => {
   border-color: var(--primary);
   box-shadow: 0 20px 50px rgba(59, 130, 246, 0.15);
   transform: scale(1.02);
-  background: #fff;
+  background: var(--surface);
 }
 
 .badge {
@@ -940,7 +940,7 @@ const handleContactSales = () => {
   left: 50%;
   transform: translateX(-50%);
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
   padding: 6px 16px;
   border-radius: 20px;
   font-size: 12px;
@@ -994,7 +994,7 @@ const handleContactSales = () => {
 }
 
 .pricing-features li i {
-  color: #10b981;
+  color: var(--success);
   font-size: 16px;
 }
 
@@ -1177,53 +1177,6 @@ const handleContactSales = () => {
 }
 
 /* Dark Mode Overrides */
-:global(.dark) .features-section,
-:global(.dark) .integration-section,
-:global(.dark) .extension-section {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .feature-card,
-:global(.dark) .benefit-card {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .feature-card:hover,
-:global(.dark) .benefit-card:hover {
-    background: var(--surface-muted) !important;
-    border-color: var(--primary) !important;
-}
-
-:global(.dark) .extension-demo {
-    background: var(--surface-muted) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .pricing-section {
-    background: var(--bg-page) !important;
-}
-
-:global(.dark) .pricing-card {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .pricing-card.featured {
-    background: var(--surface) !important;
-    border-color: var(--primary) !important;
-}
-
-:global(.dark) .pricing-features li {
-    border-color: var(--border) !important;
-    color: var(--text-primary) !important;
-}
-
-:global(.dark) .stats-section {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
 
 /* Footer Section */
 .site-footer {
@@ -1255,7 +1208,7 @@ const handleContactSales = () => {
   height: 32px;
   border-radius: 8px;
   background: var(--primary);
-  color: white;
+  color: var(--on-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1364,12 +1317,4 @@ const handleContactSales = () => {
 }
 
 /* Dark mode footer */
-:global(.dark) .site-footer {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .footer-bottom {
-    border-color: var(--border) !important;
-}
 </style>

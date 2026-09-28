@@ -147,19 +147,19 @@ onMounted(async () => {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: var(--bg-primary, #f5f5f5);
+  background: var(--bg-primary, var(--bg-page));
 }
 
 .loading-container {
   text-align: center;
   padding: 2rem;
-  background: var(--bg-secondary, white);
+  background: var(--bg-secondary, var(--surface));
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .loading-container p {
-  color: var(--text-secondary, #666);
+  color: var(--text-secondary, var(--text-secondary));
   margin-bottom: 0;
 }
 </style>

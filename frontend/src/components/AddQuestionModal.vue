@@ -203,7 +203,7 @@ onMounted(() => {
 .modal-container {
   width: 90%;
   max-width: 1100px;
-  background: white;
+  background: var(--surface);
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   display: flex;
@@ -231,7 +231,7 @@ onMounted(() => {
   align-items: flex-start;
   justify-content: space-between;
   padding: 24px 24px 20px;
-  border-bottom: 1px solid var(--border, #CBD5E1);
+  border-bottom: 1px solid var(--border, var(--border-strong));
 }
 
 .header-content {
@@ -245,24 +245,24 @@ onMounted(() => {
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: var(--primary, #476996);
+  background: var(--primary, var(--primary));
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--on-primary);
   flex-shrink: 0;
 }
 
 .modal-title {
   font-size: 20px;
   font-weight: 600;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
   margin: 0 0 4px 0;
 }
 
 .modal-subtitle {
   font-size: 14px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
   margin: 0;
 }
 
@@ -271,8 +271,8 @@ onMounted(() => {
   height: 32px;
   border-radius: 8px;
   border: none;
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--surface-muted);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -282,8 +282,8 @@ onMounted(() => {
 }
 
 .close-btn:hover {
-  background: #e5e7eb;
-  color: #111827;
+  background: var(--surface-hover);
+  color: var(--text-primary);
 }
 
 /* Body */
@@ -299,17 +299,17 @@ onMounted(() => {
   align-items: center;
   gap: 10px;
   padding: 12px 16px;
-  background: #FEF3C7;
+  background: var(--warning-soft);
   border: 1px solid #FCD34D;
   border-radius: 10px;
   margin-bottom: 16px;
   font-size: 14px;
-  color: #92400E;
+  color: var(--warning);
 }
 
 .excluded-hint svg {
   flex-shrink: 0;
-  color: #D97706;
+  color: var(--warning);
 }
 
 .excluded-hint strong {
@@ -322,8 +322,8 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px;
-  border-top: 1px solid var(--border, #CBD5E1);
-  background: var(--bg-page, #F8FAFC);
+  border-top: 1px solid var(--border, var(--border-strong));
+  background: var(--bg-page, var(--bg-page));
   border-radius: 0 0 16px 16px;
 }
 
@@ -332,11 +332,11 @@ onMounted(() => {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .footer-info strong {
-  color: var(--primary, #476996);
+  color: var(--primary, var(--primary-text));
   font-weight: 600;
 }
 
@@ -359,24 +359,24 @@ onMounted(() => {
 }
 
 .footer-btn-secondary {
-  background: white;
-  color: var(--text-primary, #1E293B);
-  border: 2px solid var(--border, #CBD5E1);
+  background: var(--surface);
+  color: var(--text-primary, var(--text-primary));
+  border: 2px solid var(--border, var(--border-strong));
 }
 
 .footer-btn-secondary:hover {
   border-color: var(--text-secondary, #64748B);
-  background: var(--bg-page, #F8FAFC);
+  background: var(--bg-page, var(--bg-page));
 }
 
 .footer-btn-primary {
-  background: var(--primary, #476996);
-  color: white;
-  border: 2px solid var(--primary, #476996);
+  background: var(--primary, var(--primary));
+  color: var(--on-primary);
+  border: 2px solid var(--primary, var(--primary));
 }
 
 .footer-btn-primary:hover:not(:disabled) {
-  background: var(--primary-hover, #35527a);
+  background: var(--primary-hover, var(--primary-hover));
   border-color: var(--primary-hover, #35527a);
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(71, 105, 150, 0.25);
@@ -404,12 +404,12 @@ onMounted(() => {
 }
 
 .toolbar-btn-primary {
-  background: var(--primary, #476996);
-  color: white;
+  background: var(--primary, var(--primary));
+  color: var(--on-primary);
 }
 
 .toolbar-btn-primary:hover:not(:disabled) {
-  background: var(--primary-hover, #35527a);
+  background: var(--primary-hover, var(--primary-hover));
 }
 
 .toolbar-btn-primary:disabled {

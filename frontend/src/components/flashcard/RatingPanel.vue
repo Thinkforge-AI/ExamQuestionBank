@@ -167,37 +167,37 @@ onUnmounted(() => {
 
 /* Rating button color variants */
 .rating-btn.again {
-  background: #fdf1f1;
+  background: var(--danger-soft);
   color: #9a1b1b;
   border: 1px solid #f3d6d6;
 }
 
 .rating-btn.hard {
-  background: #fef9e7;
-  color: #92400e;
+  background: var(--warning-soft);
+  color: var(--warning);
   border: 1px solid #fbe8c3;
 }
 
 .rating-btn.good {
-  background: #eff5fc;
+  background: var(--primary-soft);
   color: #0369a1;
   border: 1px solid #dce7f4;
 }
 
 .rating-btn.easy {
-  background: #ecf8f1;
+  background: var(--success-soft);
   color: #1f6a3b;
   border: 1px solid #cef3e8;
 }
 
 .rating-btn.perfect {
-  background: #f4f1fb;
+  background: var(--icon-purple-bg);
   color: #5b21b6;
   border: 1px solid #e8dff8;
 }
 
 .rating-btn.next {
-  background: #f0f9ff;
+  background: var(--primary-soft);
   color: #0369a1;
   border: 1px solid #bae6fd;
 }

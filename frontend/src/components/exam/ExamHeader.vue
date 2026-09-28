@@ -53,7 +53,7 @@ defineProps({
 
 <style scoped>
 .exam-header {
-  background: white;
+  background: var(--surface);
   padding: 24px;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
@@ -66,17 +66,17 @@ defineProps({
 .exam-title {
   margin: 0;
   font-size: 24px;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .exam-description {
-  color: #6b7280;
+  color: var(--text-secondary);
   margin: 8px 0 0 0;
 }
 
 .exam-meta span {
   display: block;
-  color: #4b5563;
+  color: var(--text-secondary);
   margin-bottom: 4px;
 }
 
@@ -153,7 +153,7 @@ defineProps({
   }
   
   .exam-title {
-    color: #000;
+    color: var(--text-primary);
   }
 }
 
@@ -166,7 +166,7 @@ defineProps({
 
 /* Focus styles */
 .exam-header:focus-within {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 </style>

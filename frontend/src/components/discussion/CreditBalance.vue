@@ -58,13 +58,9 @@ function handleClaim() {
   align-items: center;
   gap: 1rem;
   padding: 0.75rem 1rem;
-  background: var(--bg-secondary, #f3f4f6);
+  background: var(--bg-secondary, var(--surface-muted));
   border-radius: 12px;
   flex-wrap: wrap;
-}
-
-.dark .credit-balance-mvp {
-  background: var(--bg-tertiary, #374151);
 }
 
 .credit-info {
@@ -81,11 +77,11 @@ function handleClaim() {
 .credit-amount {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary, var(--text-primary));
 }
 
 .credit-label {
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary, var(--text-secondary));
   font-size: 0.875rem;
 }
 
@@ -94,8 +90,8 @@ function handleClaim() {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
+  background: linear-gradient(135deg, var(--success), #059669);
+  color: var(--on-primary);
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -120,14 +116,9 @@ function handleClaim() {
   gap: 0.25rem;
   margin-left: auto;
   padding: 0.25rem 0.75rem;
-  background: var(--bg-primary, white);
+  background: var(--bg-primary, var(--surface));
   border-radius: 8px;
-  border: 1px solid var(--border, #e5e7eb);
-}
-
-.dark .reputation-info {
-  background: var(--bg-secondary, #1f2937);
-  border-color: var(--border, #374151);
+  border: 1px solid var(--border, var(--border));
 }
 
 .reputation-icon {
@@ -137,7 +128,7 @@ function handleClaim() {
 
 .reputation-amount {
   font-weight: 600;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary, var(--text-primary));
 }
 
 .loading-spinner {

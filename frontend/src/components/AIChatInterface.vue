@@ -284,8 +284,8 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #ffffff;
-  color: #2c3e50;
+  background: var(--surface);
+  color: var(--text-primary);
   border-radius: 0;
   box-shadow: none;
 }
@@ -296,8 +296,8 @@ onMounted(async () => {
   display: flex;
   gap: 8px;
   padding: 12px 20px;
-  border-bottom: 1px solid #e5e7eb;
-  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
 }
 
 .chat-tabs button {
@@ -360,12 +360,12 @@ onMounted(async () => {
 
 .message.user .message-content {
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
   border-bottom-right-radius: 4px;
 }
 
 .message.assistant .message-content {
-  background: #fff;
+  background: var(--surface);
   color: var(--text-primary);
   border: 1px solid var(--border);
   border-bottom-left-radius: 4px;
@@ -418,7 +418,7 @@ onMounted(async () => {
 
 .error-message {
   padding: 12px 20px;
-  background: #fee;
+  background: var(--danger-soft);
   color: #c33;
   border-top: 1px solid #fcc;
   display: flex;
@@ -430,7 +430,7 @@ onMounted(async () => {
 .btn-upgrade {
   padding: 6px 12px;
   background: var(--primary);
-  color: white;
+  color: var(--on-primary);
   border: none;
   border-radius: 4px;
   font-size: 12px;
@@ -446,8 +446,8 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   padding: 8px 16px 16px;
-  border-top: 1px solid #e5e7eb;
-  background: #ffffff;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
   position: relative;
 }
 
@@ -475,13 +475,13 @@ onMounted(async () => {
   transform: translateX(-50%);
   width: 40px;
   height: 4px;
-  background: #d1d5db;
+  background: var(--border-strong);
   border-radius: 2px;
   transition: background 0.2s;
 }
 
 .resize-handle-top:hover::after {
-  background: #3b82f6;
+  background: var(--primary);
 }
 
 .chat-input-wrapper {
@@ -520,9 +520,9 @@ onMounted(async () => {
 }
 
 .chat-input:disabled {
-  background: #f5f5f5;
+  background: var(--bg-page);
   cursor: not-allowed;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .btn-send {
@@ -530,7 +530,7 @@ onMounted(async () => {
   height: 40px;
   padding: 0;
   background: var(--primary);
-  color: white;
+  color: var(--on-primary);
   border: none;
   border-radius: 50%;
   font-size: 16px;
@@ -575,16 +575,16 @@ onMounted(async () => {
 
 .btn-refresh {
   padding: 6px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-strong);
   border-radius: 6px;
-  background: #ffffff;
-  color: #2c3e50;
+  background: var(--surface);
+  color: var(--text-primary);
   cursor: pointer;
 }
 
 .history-placeholder {
   text-align: center;
-  color: #6b7280;
+  color: var(--text-secondary);
   padding: 40px 0;
 }
 
@@ -609,7 +609,7 @@ onMounted(async () => {
   display: flex;
   gap: 8px;
   line-height: 1.5;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .history-answer {
@@ -618,7 +618,7 @@ onMounted(async () => {
 
 .history-meta {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--text-muted);
   margin-top: 8px;
 }
 
@@ -640,7 +640,7 @@ onMounted(async () => {
 
 .history-reuse {
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
 }
 
 .history-reuse:hover {
@@ -648,13 +648,13 @@ onMounted(async () => {
 }
 
 .history-edit {
-  background: #f3f4f6;
+  background: var(--surface-muted);
   color: var(--text-primary);
   border: 1px solid var(--border);
 }
 
 .history-edit:hover {
-  background: #e5e7eb;
+  background: var(--surface-hover);
 }
 
 .chat-messages::-webkit-scrollbar,
@@ -664,7 +664,7 @@ onMounted(async () => {
 
 .chat-messages::-webkit-scrollbar-track,
 .history-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--surface-muted);
 }
 
 .chat-messages::-webkit-scrollbar-thumb,

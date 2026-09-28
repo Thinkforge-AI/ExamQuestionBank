@@ -272,10 +272,10 @@ defineExpose({
 
 <style scoped>
 .table-list {
-    background: white;
+    background: var(--surface);
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    border: 1px solid var(--border, #CBD5E1);
+    border: 1px solid var(--border, var(--border-strong));
     overflow: clip;
 }
 
@@ -285,8 +285,8 @@ defineExpose({
     align-items: center;
     gap: 16px;
     padding: 20px 24px;
-    border-bottom: 2px solid var(--border, #CBD5E1);
-    background: var(--bg-page, #F8FAFC);
+    border-bottom: 2px solid var(--border, var(--border-strong));
+    background: var(--bg-page, var(--bg-page));
 }
 
 .header-icon {
@@ -310,14 +310,14 @@ defineExpose({
     margin: 0;
     font-size: 18px;
     font-weight: 600;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
     letter-spacing: -0.01em;
 }
 
 .list-subtitle {
     margin: 4px 0 0;
     font-size: 13px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
     line-height: 1.5;
 }
 
@@ -333,15 +333,15 @@ defineExpose({
     display: grid;
     align-items: center;
     padding: 10px 16px;
-    background: var(--bg-page, #F8FAFC);
-    border-bottom: 1px solid var(--border, #E2E8F0);
+    background: var(--bg-page, var(--bg-page));
+    border-bottom: 1px solid var(--border, var(--border));
     gap: 8px;
 }
 
 .th-cell {
     font-size: 13px;
     font-weight: 600;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
     display: flex;
     align-items: center;
     gap: 4px;
@@ -353,7 +353,7 @@ defineExpose({
 }
 
 .th-cell.sortable:hover {
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
 }
 
 .th-cell.checkbox-cell {
@@ -363,17 +363,17 @@ defineExpose({
 .th-cell.checkbox-cell input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    accent-color: var(--primary, #476996);
+    accent-color: var(--primary, var(--primary));
     cursor: pointer;
 }
 
 .sort-icon {
     font-size: 13px;
-    color: var(--text-secondary, #94A3B8);
+    color: var(--text-secondary, var(--text-muted));
 }
 
 .sort-icon.active {
-    color: var(--primary, #476996);
+    color: var(--primary, var(--primary-text));
 }
 
 /* Table Body */
@@ -387,8 +387,8 @@ defineExpose({
     display: grid;
     align-items: center;
     padding: 12px 16px;
-    border-bottom: 1px solid var(--border, #E2E8F0);
-    background: white;
+    border-bottom: 1px solid var(--border, var(--border));
+    background: var(--surface);
     transition: background 0.2s ease, border-color 0.2s ease;
     gap: 8px;
     cursor: pointer;
@@ -399,24 +399,24 @@ defineExpose({
 }
 
 .table-row:hover {
-    background: var(--bg-page, #F8FAFC);
+    background: var(--bg-page, var(--bg-page));
 }
 
 .table-row.selected {
-    background: var(--primary-soft, #EEF2FF);
-    border-left: 3px solid var(--primary, #476996);
+    background: var(--primary-soft, var(--primary-soft));
+    border-left: 3px solid var(--primary, var(--primary));
 }
 
 /* Drag States (vuedraggable) */
 .drag-ghost {
     opacity: 0.4;
-    background: var(--primary-soft, #EEF2FF);
-    border-left: 3px solid var(--primary, #476996);
+    background: var(--primary-soft, var(--primary-soft));
+    border-left: 3px solid var(--primary, var(--primary));
 }
 
 .drag-active {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    background: white;
+    background: var(--surface);
     z-index: 10;
 }
 
@@ -428,7 +428,7 @@ defineExpose({
 /* Cell Styles */
 .td-cell {
     font-size: 14px;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -438,7 +438,7 @@ defineExpose({
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-secondary, #94A3B8);
+    color: var(--text-secondary, var(--text-muted));
     cursor: grab;
 }
 
@@ -459,7 +459,7 @@ defineExpose({
 .checkbox-cell input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    accent-color: var(--primary, #476996);
+    accent-color: var(--primary, var(--primary));
     cursor: pointer;
 }
 
@@ -470,24 +470,24 @@ defineExpose({
     justify-content: center;
     width: 28px;
     height: 28px;
-    border: 1px solid var(--border, #CBD5E1);
+    border: 1px solid var(--border, var(--border-strong));
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
     background: transparent;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
     padding: 0;
 }
 
 :deep(.action-btn:hover) {
-    background: var(--bg-page, #F8FAFC);
-    color: var(--text-primary, #1E293B);
-    border-color: var(--text-secondary, #94A3B8);
+    background: var(--bg-page, var(--bg-page));
+    color: var(--text-primary, var(--text-primary));
+    border-color: var(--text-secondary, var(--border-strong));
 }
 
 :deep(.action-btn.danger:hover) {
-    background: #FEE2E2;
-    color: #DC2626;
+    background: var(--danger-soft);
+    color: var(--danger);
     border-color: #FCA5A5;
 }
 
@@ -502,14 +502,14 @@ defineExpose({
     align-items: center;
     justify-content: center;
     padding: 60px 40px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
 }
 
 .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid var(--border, #CBD5E1);
-    border-top-color: var(--primary, #476996);
+    border: 3px solid var(--border, var(--border-strong));
+    border-top-color: var(--primary, var(--primary));
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin-bottom: 16px;
@@ -547,13 +547,13 @@ defineExpose({
     margin: 0 0 8px;
     font-size: 16px;
     font-weight: 500;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
 }
 
 .empty-hint {
     margin: 0;
     font-size: 14px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
 }
 
 /* Responsive */
@@ -582,27 +582,4 @@ defineExpose({
 }
 
 /* Dark Mode */
-:global(.dark) .table-list {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .table-row {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .table-row:hover {
-    background: var(--surface-muted) !important;
-}
-
-:global(.dark) .table-row.selected {
-    background: var(--primary-soft) !important;
-}
-
-:global(.dark) .list-header,
-:global(.dark) .table-header-row {
-    background: var(--surface-muted) !important;
-    border-color: var(--border) !important;
-}
 </style>

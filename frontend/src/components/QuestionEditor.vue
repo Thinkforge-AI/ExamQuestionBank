@@ -577,10 +577,10 @@ const onTagSearch = (query) => {
 }
 
 .editor-card {
-  background: white;
+  background: var(--surface);
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid var(--border, #CBD5E1);
+  border: 1px solid var(--border, var(--border-strong));
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -593,7 +593,7 @@ const onTagSearch = (query) => {
   justify-content: flex-end;
   gap: 12px;
   padding-top: 24px;
-  border-top: 2px solid var(--border, #CBD5E1);
+  border-top: 2px solid var(--border, var(--border-strong));
   margin-top: 8px;
 }
 
@@ -602,8 +602,8 @@ const onTagSearch = (query) => {
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: var(--primary, #476996);
-  color: white;
+  background: var(--primary, var(--primary));
+  color: var(--on-primary);
   border: none;
   border-radius: 10px;
   font-size: 14px;
@@ -613,7 +613,7 @@ const onTagSearch = (query) => {
 }
 
 .btn-save:hover:not(:disabled) {
-  background: var(--primary-hover, #35527a);
+  background: var(--primary-hover, var(--primary-hover));
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(71, 105, 150, 0.25);
 }
@@ -627,7 +627,7 @@ const onTagSearch = (query) => {
   width: 16px;
   height: 16px;
   border: 2px solid rgba(71, 105, 150, 0.3);
-  border-top-color: var(--primary, #476996);
+  border-top-color: var(--primary, var(--primary));
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
@@ -661,17 +661,17 @@ form {
   align-items: center;
   gap: 8px;
   font-weight: 600;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
   font-size: 14px;
 }
 
 .form-label svg {
-  color: var(--primary, #476996);
+  color: var(--primary, var(--primary-text));
   flex-shrink: 0;
 }
 
 .form-label .required {
-  color: #ef4444;
+  color: var(--danger);
   font-weight: 600;
 }
 
@@ -680,11 +680,11 @@ form {
 .form-select,
 .form-textarea {
   padding: 12px 14px;
-  border: 2px solid var(--border, #CBD5E1);
+  border: 2px solid var(--border, var(--border-strong));
   border-radius: 10px;
   font-size: 14px;
-  color: var(--text-primary, #1E293B);
-  background: white;
+  color: var(--text-primary, var(--text-primary));
+  background: var(--surface);
   transition: all 0.2s ease;
   font-family: inherit;
 }
@@ -693,7 +693,7 @@ form {
 .form-select:focus,
 .form-textarea:focus {
   outline: none;
-  border-color: var(--primary, #476996);
+  border-color: var(--primary, var(--primary));
   box-shadow: 0 0 0 3px rgba(71, 105, 150, 0.1);
 }
 
@@ -714,7 +714,7 @@ form {
 }
 
 .form-error {
-  color: #ef4444;
+  color: var(--danger);
   font-size: 13px;
   margin-top: -4px;
   display: flex;
@@ -749,8 +749,8 @@ form {
   align-items: center;
   gap: 6px;
   padding: 12px 18px;
-  background: var(--primary, #476996);
-  color: white;
+  background: var(--primary, var(--primary));
+  color: var(--on-primary);
   border: none;
   border-radius: 10px;
   font-size: 14px;
@@ -761,15 +761,15 @@ form {
 }
 
 .btn-add-tag:hover {
-  background: var(--primary-hover, #35527a);
+  background: var(--primary-hover, var(--primary-hover));
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(71, 105, 150, 0.25);
 }
 
 /* Options Section */
 .options-section {
-  background: white;
-  border: 2px solid var(--border, #CBD5E1);
+  background: var(--surface);
+  border: 2px solid var(--border, var(--border-strong));
   border-radius: 12px;
   padding: 20px;
 }
@@ -785,7 +785,7 @@ form {
   display: flex;
   gap: 12px;
   align-items: center;
-  background: var(--bg-page, #F8FAFC);
+  background: var(--bg-page, var(--bg-page));
   padding: 12px 14px;
   border-radius: 10px;
   border: 2px solid transparent;
@@ -793,8 +793,8 @@ form {
 }
 
 .option-item:hover {
-  border-color: var(--primary, #476996);
-  background: white;
+  border-color: var(--primary, var(--primary));
+  background: var(--surface);
 }
 
 .option-number {
@@ -803,8 +803,8 @@ form {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--primary, #476996);
-  color: white;
+  background: var(--primary, var(--primary));
+  color: var(--on-primary);
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
@@ -814,16 +814,16 @@ form {
 .option-input {
   flex: 1;
   padding: 10px 12px;
-  border: 2px solid var(--border, #CBD5E1);
+  border: 2px solid var(--border, var(--border-strong));
   border-radius: 8px;
   font-size: 14px;
   transition: all 0.2s ease;
-  background: white;
+  background: var(--surface);
 }
 
 .option-input:focus {
   outline: none;
-  border-color: var(--primary, #476996);
+  border-color: var(--primary, var(--primary));
   box-shadow: 0 0 0 3px rgba(71, 105, 150, 0.1);
 }
 
@@ -832,19 +832,19 @@ form {
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
   padding: 8px 12px;
-  background: white;
+  background: var(--surface);
   border-radius: 8px;
-  border: 2px solid var(--border, #CBD5E1);
+  border: 2px solid var(--border, var(--border-strong));
   transition: all 0.2s ease;
 }
 
 .checkbox-label:hover {
-  border-color: var(--primary, #476996);
+  border-color: var(--primary, var(--primary));
 }
 
 .checkbox-label input[type="checkbox"] {
@@ -857,8 +857,8 @@ form {
   width: 36px;
   height: 36px;
   border: none;
-  background: #ef4444;
-  color: white;
+  background: var(--danger);
+  color: var(--on-primary);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -869,7 +869,7 @@ form {
 }
 
 .btn-remove:hover {
-  background: #dc2626;
+  background: var(--danger);
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
 }
@@ -880,9 +880,9 @@ form {
   justify-content: center;
   gap: 8px;
   padding: 12px;
-  background: white;
-  color: var(--primary, #476996);
-  border: 2px dashed var(--border, #CBD5E1);
+  background: var(--surface);
+  color: var(--primary, var(--primary-text));
+  border: 2px dashed var(--border, var(--border-strong));
   border-radius: 10px;
   font-size: 14px;
   font-weight: 500;
@@ -892,15 +892,15 @@ form {
 }
 
 .btn-add-option:hover {
-  border-color: var(--primary, #476996);
-  background: var(--primary-soft, #EEF2FF);
-  color: var(--primary-hover, #35527a);
+  border-color: var(--primary, var(--primary));
+  background: var(--primary-soft, var(--primary-soft));
+  color: var(--primary-hover, var(--primary-text));
 }
 
 /* Exam Settings Section */
 .exam-settings {
-  background: white;
-  border: 2px solid var(--border, #CBD5E1);
+  background: var(--surface);
+  border: 2px solid var(--border, var(--border-strong));
   border-radius: 12px;
   padding: 24px;
   margin-top: 8px;
@@ -912,18 +912,18 @@ form {
   gap: 12px;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 2px solid var(--border, #CBD5E1);
+  border-bottom: 2px solid var(--border, var(--border-strong));
 }
 
 .settings-header svg {
-  color: var(--primary, #476996);
+  color: var(--primary, var(--primary-text));
 }
 
 .settings-header h4 {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
 }
 
 .form-row {
@@ -933,86 +933,6 @@ form {
 }
 
 /* Dark Mode */
-.dark .editor-card {
-  background: var(--surface, #1E293B);
-  border-color: var(--border, #334155);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-}
-
-.dark .form-label {
-  color: var(--text-primary, #F1F5F9);
-}
-
-.dark .form-input,
-.dark .form-select,
-.dark .form-textarea {
-  background: var(--surface-muted, #334155);
-  border-color: var(--border, #334155);
-  color: var(--text-primary, #F1F5F9);
-}
-
-.dark .form-input:focus,
-.dark .form-select:focus,
-.dark .form-textarea:focus {
-  border-color: var(--primary, #60A5FA);
-  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
-}
-
-.dark .form-actions {
-  border-top-color: var(--border, #334155);
-}
-
-.dark .options-section,
-.dark .exam-settings {
-  background: var(--surface, #1E293B);
-  border-color: var(--border, #334155);
-}
-
-.dark .option-item {
-  background: var(--surface-muted, #334155);
-}
-
-.dark .option-item:hover {
-  background: var(--surface, #1E293B);
-}
-
-.dark .option-input {
-  background: var(--surface, #1E293B);
-  border-color: var(--border, #334155);
-  color: var(--text-primary, #F1F5F9);
-}
-
-.dark .checkbox-label {
-  background: var(--surface, #1E293B);
-  border-color: var(--border, #334155);
-  color: var(--text-secondary, #94A3B8);
-}
-
-.dark .btn-add-option {
-  background: var(--surface, #1E293B);
-  border-color: var(--border, #334155);
-  color: var(--primary, #60A5FA);
-}
-
-.dark .btn-add-option:hover {
-  background: var(--surface-muted, #334155);
-}
-
-.dark .settings-header h4 {
-  color: var(--text-primary, #F1F5F9);
-}
-
-.dark .form-body::-webkit-scrollbar-track {
-  background: var(--surface-muted, #334155);
-}
-
-.dark .form-body::-webkit-scrollbar-thumb {
-  background: var(--border, #475569);
-}
-
-.dark .form-body::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary, #94A3B8);
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -1068,12 +988,12 @@ form {
 }
 
 .form-body::-webkit-scrollbar-track {
-  background: var(--surface-muted, #E2E8F0);
+  background: var(--surface-muted, var(--surface-hover));
   border-radius: 4px;
 }
 
 .form-body::-webkit-scrollbar-thumb {
-  background: var(--border, #CBD5E1);
+  background: var(--border, var(--border-strong));
   border-radius: 4px;
 }
 

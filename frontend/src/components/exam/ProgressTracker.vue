@@ -69,7 +69,7 @@ const progressPercentage = computed(() => {
 
 <style scoped>
 .progress-tracker {
-  background: white;
+  background: var(--surface);
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
@@ -84,26 +84,26 @@ const progressPercentage = computed(() => {
 }
 
 .progress-text {
-  color: #374151;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .progress-percentage {
-  color: #2563eb;
+  color: var(--primary-text);
   font-weight: 600;
 }
 
 .progress-bar {
   width: 100%;
   height: 8px;
-  background: #e5e7eb;
+  background: var(--surface-hover);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #2563eb, #3b82f6);
+  background: linear-gradient(90deg, var(--primary), var(--primary));
   border-radius: 4px;
   transition: width 0.3s ease;
 }
@@ -123,7 +123,7 @@ const progressPercentage = computed(() => {
 
 /* Focus styles for accessibility */
 .progress-tracker:focus-within {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
@@ -134,7 +134,7 @@ const progressPercentage = computed(() => {
   }
   
   .progress-fill {
-    background: #2563eb;
+    background: var(--primary);
   }
 }
 

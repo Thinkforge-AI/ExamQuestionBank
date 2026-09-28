@@ -271,7 +271,7 @@ const formatDate = (dateStr) => {
 }
 
 .day-cell.level-0 {
-    background: #ebedf0;
+    background: var(--surface-hover);
 }
 
 .day-cell.level-1 {
@@ -291,7 +291,7 @@ const formatDate = (dateStr) => {
 }
 
 .legend-box.level-0 {
-    background: #ebedf0;
+    background: var(--surface-hover);
 }
 
 .legend-box.level-1 {

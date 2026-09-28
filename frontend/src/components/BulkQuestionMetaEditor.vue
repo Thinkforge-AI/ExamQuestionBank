@@ -344,7 +344,7 @@ const close = () => emit('close')
 .modal-container {
   width: 92%;
   max-width: 760px;
-  background: white;
+  background: var(--surface);
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   display: flex;
@@ -369,7 +369,7 @@ const close = () => emit('close')
   align-items: flex-start;
   justify-content: space-between;
   padding: 24px 24px 20px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .header-content {
@@ -383,24 +383,24 @@ const close = () => emit('close')
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: var(--primary, #476996);
+  background: var(--primary, var(--primary));
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--on-primary);
   flex-shrink: 0;
 }
 
 .modal-title {
   font-size: 20px;
   font-weight: 600;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
   margin: 0 0 4px 0;
 }
 
 .modal-subtitle {
   font-size: 14px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
   margin: 0;
 }
 
@@ -409,8 +409,8 @@ const close = () => emit('close')
   height: 32px;
   border-radius: 8px;
   border: none;
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--surface-muted);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -420,8 +420,8 @@ const close = () => emit('close')
 }
 
 .close-btn:hover:not(:disabled) {
-  background: #e5e7eb;
-  color: #111827;
+  background: var(--surface-hover);
+  color: var(--text-primary);
 }
 
 .close-btn:disabled {
@@ -440,21 +440,21 @@ const close = () => emit('close')
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background: var(--primary-soft, #EEF2FF);
-  border: 1px solid var(--border, #CBD5E1);
+  background: var(--primary-soft, var(--primary-soft));
+  border: 1px solid var(--border, var(--border-strong));
   border-radius: 8px;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
   font-size: 14px;
   margin-bottom: 24px;
 }
 
 .info-banner svg {
-  color: var(--primary, #476996);
+  color: var(--primary, var(--primary-text));
   flex-shrink: 0;
 }
 
 .info-banner strong {
-  color: var(--primary, #476996);
+  color: var(--primary, var(--primary-text));
   font-weight: 600;
 }
 
@@ -468,13 +468,13 @@ const close = () => emit('close')
   gap: 6px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
   margin-bottom: 12px;
 }
 
 .label-hint {
   font-weight: 400;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
   font-size: 13px;
 }
 
@@ -488,21 +488,21 @@ const close = () => emit('close')
   align-items: flex-start;
   gap: 12px;
   padding: 16px;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;
-  background: white;
+  background: var(--surface);
 }
 
 .radio-card:hover {
-  border-color: var(--primary, #476996);
-  background: #f8fafc;
+  border-color: var(--primary, var(--primary));
+  background: var(--bg-page);
 }
 
 .radio-card.active {
-  border-color: var(--primary, #476996);
-  background: var(--primary-soft, #EEF2FF);
+  border-color: var(--primary, var(--primary));
+  background: var(--primary-soft, var(--primary-soft));
 }
 
 .radio-card input[type="radio"] {
@@ -510,7 +510,7 @@ const close = () => emit('close')
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: var(--primary, #476996);
+  accent-color: var(--primary, var(--primary));
 }
 
 .radio-content {
@@ -520,17 +520,17 @@ const close = () => emit('close')
 .radio-title {
   font-size: 15px;
   font-weight: 600;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
   margin-bottom: 4px;
 }
 
 .radio-desc {
   font-size: 13px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .question-list-wrapper {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -555,7 +555,7 @@ const close = () => emit('close')
 }
 
 .question-item:hover {
-  background: #f9fafb;
+  background: var(--bg-page);
 }
 
 .question-item input[type="checkbox"] {
@@ -563,7 +563,7 @@ const close = () => emit('close')
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: var(--primary, #476996);
+  accent-color: var(--primary, var(--primary));
 }
 
 .question-info {
@@ -573,7 +573,7 @@ const close = () => emit('close')
 
 .question-content {
   font-size: 14px;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
   margin-bottom: 6px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -586,7 +586,7 @@ const close = () => emit('close')
   display: flex;
   gap: 12px;
   font-size: 12px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .meta-id {
@@ -595,15 +595,15 @@ const close = () => emit('close')
 
 .meta-subject {
   padding: 2px 8px;
-  background: #f3f4f6;
+  background: var(--surface-muted);
   border-radius: 4px;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .pending-badge {
   display: inline-block;
   padding: 2px 8px;
-  background: #fff7eb;
+  background: var(--warning-soft);
   color: #d89b32;
   border: 1px solid #d89b32;
   border-radius: 4px;
@@ -613,7 +613,7 @@ const close = () => emit('close')
 }
 
 .pending-item {
-  background: #fffbf5;
+  background: var(--warning-soft);
   border-color: #f7d7a8;
 }
 
@@ -621,14 +621,14 @@ const close = () => emit('close')
   display: flex;
   gap: 16px;
   padding: 10px 16px;
-  background: #f9fafb;
-  border-top: 1px solid #e5e7eb;
+  background: var(--bg-page);
+  border-top: 1px solid var(--border);
 }
 
 .text-btn {
   border: none;
   background: none;
-  color: var(--primary, #476996);
+  color: var(--primary, var(--primary-text));
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -638,8 +638,8 @@ const close = () => emit('close')
 }
 
 .text-btn:hover {
-  background: var(--primary-soft, #EEF2FF);
-  color: var(--primary-hover, #35527a);
+  background: var(--primary-soft, var(--primary-soft));
+  color: var(--primary-hover, var(--primary-text));
 }
 
 .field-grid {
@@ -660,43 +660,43 @@ const close = () => emit('close')
   gap: 8px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
 }
 
 .field-input,
 .field-select {
   width: 100%;
   padding: 10px 12px;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border);
   border-radius: 10px;
   font-size: 14px;
-  color: var(--text-primary, #1E293B);
-  background: white;
+  color: var(--text-primary, var(--text-primary));
+  background: var(--surface);
   transition: all 0.2s ease;
 }
 
 .field-input:focus,
 .field-select:focus {
   outline: none;
-  border-color: var(--primary, #476996);
+  border-color: var(--primary, var(--primary));
   box-shadow: 0 0 0 3px rgba(71, 105, 150, 0.1);
 }
 
 .field-input:disabled,
 .field-select:disabled {
-  background: #f9fafb;
+  background: var(--bg-page);
   cursor: not-allowed;
 }
 
 .field-hint {
   margin-top: 10px;
   font-size: 12px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .preview-section {
   padding: 16px;
-  background: #f0fdf4;
+  background: var(--success-soft);
   border: 1px solid #bbf7d0;
   border-radius: 10px;
   margin-top: 8px;
@@ -708,13 +708,13 @@ const close = () => emit('close')
   gap: 6px;
   font-size: 13px;
   font-weight: 600;
-  color: #166534;
+  color: var(--success);
   margin-bottom: 8px;
 }
 
 .preview-content {
   font-size: 14px;
-  color: #15803d;
+  color: var(--success);
 }
 
 .modal-footer {
@@ -722,8 +722,8 @@ const close = () => emit('close')
   gap: 12px;
   justify-content: flex-end;
   padding: 20px 24px;
-  border-top: 1px solid #e5e7eb;
-  background: #f9fafb;
+  border-top: 1px solid var(--border);
+  background: var(--bg-page);
   border-radius: 0 0 16px 16px;
 }
 
@@ -742,24 +742,24 @@ const close = () => emit('close')
 }
 
 .btn-cancel {
-  background: white;
-  color: var(--text-secondary, #64748B);
-  border: 1px solid #d1d5db;
+  background: var(--surface);
+  color: var(--text-secondary, var(--text-secondary));
+  border: 1px solid var(--border-strong);
 }
 
 .btn-cancel:hover:not(:disabled) {
-  background: #f9fafb;
+  background: var(--bg-page);
   border-color: #9ca3af;
 }
 
 .btn-apply {
-  background: var(--primary, #476996);
-  color: white;
+  background: var(--primary, var(--primary));
+  color: var(--on-primary);
   border: none;
 }
 
 .btn-apply:hover:not(:disabled) {
-  background: var(--primary-hover, #35527a);
+  background: var(--primary-hover, var(--primary-hover));
   box-shadow: 0 4px 12px rgba(71, 105, 150, 0.4);
   transform: translateY(-1px);
 }

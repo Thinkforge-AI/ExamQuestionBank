@@ -209,7 +209,7 @@ function saveFlashcards() {
 
 .editor-header {
   padding: 16px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border);
   display: flex;
   gap: 12px;
 }
@@ -251,33 +251,33 @@ function saveFlashcards() {
   padding: 8px 16px;
   display: flex;
   gap: 8px;
-  background: #f8fafc;
-  border-top: 1px solid #e2e8f0;
+  background: var(--bg-page);
+  border-top: 1px solid var(--border);
 }
 
 .btn-light-primary {
-  background: #eff6ff;
-  color: #3b82f6;
+  background: var(--primary-soft);
+  color: var(--primary-text);
   border: 1px solid #dbeafe;
 }
 
 .btn-light-primary:hover {
-  background: #dbeafe;
+  background: var(--primary-soft);
 }
 
 .btn-light-warning {
-  background: #fffbeb;
-  color: #d97706;
+  background: var(--warning-soft);
+  color: var(--warning);
   border: 1px solid #fef3c7;
 }
 
 .btn-light-warning:hover {
-  background: #fef3c7;
+  background: var(--warning-soft);
 }
 
 .tags-section {
   padding: 12px 16px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--border);
 }
 
 .tag-input {
@@ -286,8 +286,8 @@ function saveFlashcards() {
 
 .editor-footer {
   padding: 16px;
-  background: #fff;
-  border-top: 1px solid #e2e8f0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
   display: flex;
   justify-content: flex-end;
 }
@@ -327,7 +327,7 @@ function saveFlashcards() {
 }
 
 .btn-icon:hover {
-  background: #f1f5f9;
-  color: #000;
+  background: var(--surface-muted);
+  color: var(--text-primary);
 }
 </style>

@@ -218,7 +218,7 @@ async function handleSubmitAnswer(body) {
 .loading-spinner {
   width: 48px;
   height: 48px;
-  border: 4px solid var(--border-color, #e5e7eb);
+  border: 4px solid var(--border-color, var(--border));
   border-top-color: var(--primary-color, #4f46e5);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -235,23 +235,19 @@ async function handleSubmitAnswer(body) {
 }
 
 .error-state h2 {
-  color: var(--text-primary, #111827);
+  color: var(--text-primary, var(--text-primary));
   margin: 0 0 0.5rem 0;
 }
 
-.dark .error-state h2 {
-  color: var(--text-primary-dark, #f9fafb);
-}
-
 .error-state p {
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary, var(--text-secondary));
   margin: 0 0 1.5rem 0;
 }
 
 .btn-retry {
   padding: 0.75rem 1.5rem;
   background: var(--primary-color, #4f46e5);
-  color: white;
+  color: var(--on-primary);
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -272,52 +268,33 @@ async function handleSubmitAnswer(body) {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: var(--bg-secondary, #f3f4f6);
-  color: var(--text-primary, #111827);
-  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--bg-secondary, var(--surface-muted));
+  color: var(--text-primary, var(--text-primary));
+  border: 1px solid var(--border-color, var(--border));
   border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.dark .btn-back {
-  background: var(--bg-tertiary, #374151);
-  color: var(--text-primary-dark, #f9fafb);
-  border-color: var(--border-color-dark, #4b5563);
-}
-
 .btn-back:hover {
-  background: var(--bg-tertiary, #e5e7eb);
-}
-
-.dark .btn-back:hover {
-  background: var(--bg-secondary, #4b5563);
+  background: var(--bg-tertiary, var(--surface-hover));
 }
 
 .discussion-detail-card {
-  background: var(--bg-primary, white);
-  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--bg-primary, var(--surface));
+  border: 1px solid var(--border-color, var(--border));
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 2rem;
 }
 
-.dark .discussion-detail-card {
-  background: var(--bg-secondary, #1f2937);
-  border-color: var(--border-color-dark, #374151);
-}
-
 .discussion-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary, var(--text-primary));
   margin: 0 0 1rem 0;
   line-height: 1.4;
-}
-
-.dark .discussion-title {
-  color: var(--text-primary-dark, #f9fafb);
 }
 
 .discussion-meta {
@@ -326,7 +303,7 @@ async function handleSubmitAnswer(body) {
   gap: 1rem;
   margin-bottom: 1.5rem;
   font-size: 0.875rem;
-  color: var(--text-tertiary, #9ca3af);
+  color: var(--text-tertiary, var(--text-muted));
   flex-wrap: wrap;
 }
 
@@ -334,17 +311,13 @@ async function handleSubmitAnswer(body) {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .discussion-body {
   font-size: 1rem;
   line-height: 1.8;
-  color: var(--text-primary, #111827);
-}
-
-.dark .discussion-body {
-  color: var(--text-primary-dark, #f9fafb);
+  color: var(--text-primary, var(--text-primary));
 }
 
 .answers-section {
@@ -358,13 +331,9 @@ async function handleSubmitAnswer(body) {
 .login-prompt {
   text-align: center;
   padding: 2rem;
-  background: var(--bg-secondary, #f3f4f6);
+  background: var(--bg-secondary, var(--surface-muted));
   border-radius: 12px;
-  color: var(--text-secondary, #6b7280);
-}
-
-.dark .login-prompt {
-  background: var(--bg-tertiary, #374151);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .error-toast {
@@ -376,8 +345,8 @@ async function handleSubmitAnswer(body) {
   align-items: center;
   gap: 1rem;
   padding: 0.75rem 1rem;
-  background: #ef4444;
-  color: white;
+  background: var(--danger);
+  color: var(--on-primary);
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   z-index: 1000;

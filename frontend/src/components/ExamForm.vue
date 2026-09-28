@@ -164,7 +164,7 @@ watch(() => props.exam, (newExam) => {
 
 <style scoped>
 .exam-form-card {
-  background: white;
+  background: var(--surface);
   box-shadow: none;
   border: none;
   border-radius: 20px;
@@ -173,7 +173,7 @@ watch(() => props.exam, (newExam) => {
 }
 
 .form-header {
-  background: linear-gradient(135deg, var(--primary, #476996) 0%, var(--primary-hover, #35527a) 100%);
+  background: linear-gradient(135deg, var(--primary, var(--primary)) 0%, var(--primary-hover, var(--primary-hover)) 100%);
   padding: 24px;
   display: flex;
   align-items: center;
@@ -239,17 +239,17 @@ watch(() => props.exam, (newExam) => {
   gap: 8px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
   margin-bottom: 10px;
 }
 
 .form-label svg {
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
   flex-shrink: 0;
 }
 
 .form-label .required {
-  color: #dc2626;
+  color: var(--danger);
   font-weight: 700;
 }
 
@@ -257,31 +257,31 @@ watch(() => props.exam, (newExam) => {
 .form-textarea {
   width: 100%;
   padding: 14px 16px;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border);
   border-radius: 10px;
   font-size: 15px;
-  color: var(--text-primary, #1E293B);
-  background: #f9fafb;
+  color: var(--text-primary, var(--text-primary));
+  background: var(--bg-page);
   transition: all 0.2s ease;
   font-family: inherit;
 }
 
 .form-input::placeholder,
 .form-textarea::placeholder {
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
 .form-input:hover,
 .form-textarea:hover {
-  border-color: #cbd5e1;
-  background: white;
+  border-color: var(--border-strong);
+  background: var(--surface);
 }
 
 .form-input:focus,
 .form-textarea:focus {
   outline: none;
-  border-color: var(--primary, #476996);
-  background: white;
+  border-color: var(--primary, var(--primary));
+  background: var(--surface);
   box-shadow: 0 0 0 4px rgba(71, 105, 150, 0.1);
 }
 
@@ -296,10 +296,10 @@ watch(() => props.exam, (newExam) => {
   align-items: center;
   gap: 8px;
   padding: 14px 16px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: var(--danger-soft);
+  border: 1px solid var(--danger);
   border-radius: 10px;
-  color: #dc2626;
+  color: var(--danger);
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 24px;
@@ -332,15 +332,15 @@ watch(() => props.exam, (newExam) => {
 }
 
 .btn-submit {
-  background: var(--primary, #476996);
-  color: white;
+  background: var(--primary, var(--primary));
+  color: var(--on-primary);
   flex: 1;
   min-width: 120px;
   box-shadow: 0 2px 4px rgba(71, 105, 150, 0.2);
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: var(--primary-hover, #35527a);
+  background: var(--primary-hover, var(--primary-hover));
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(71, 105, 150, 0.3);
 }
@@ -356,14 +356,14 @@ watch(() => props.exam, (newExam) => {
 }
 
 .btn-cancel {
-  background: #f3f4f6;
-  color: var(--text-secondary, #64748B);
+  background: var(--surface-muted);
+  color: var(--text-secondary, var(--text-secondary));
   min-width: 80px;
 }
 
 .btn-cancel:hover {
-  background: #e5e7eb;
-  color: var(--text-primary, #1E293B);
+  background: var(--surface-hover);
+  color: var(--text-primary, var(--text-primary));
   transform: translateY(-2px);
 }
 

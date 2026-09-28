@@ -686,7 +686,7 @@ const getRowClass = (item) => {
 .exam-design-page {
     width: 100%;
     min-height: 100vh;
-    background-color: #f8fafc;
+    background-color: var(--bg-page);
     font-family: 'Inter', sans-serif;
     display: flex;
     flex-direction: column;
@@ -695,8 +695,8 @@ const getRowClass = (item) => {
 /* Header */
 .page-header {
     height: 50px;
-    background-color: white;
-    border-bottom: 1px solid #e2e8f0;
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
     display: flex;
     position: sticky;
     top: 50px;
@@ -708,8 +708,8 @@ const getRowClass = (item) => {
 }
 
 .page-header.has-changes {
-    background-color: #FEF3C7;
-    border-bottom: 2px solid #F59E0B;
+    background-color: var(--warning-soft);
+    border-bottom: 2px solid var(--warning);
 }
 
 .header-left {
@@ -721,7 +721,7 @@ const getRowClass = (item) => {
 
 .page-header.has-changes .page-title {
     font-size: 16px;
-    color: #92400E;
+    color: var(--warning);
 }
 
 .unsaved-icon {
@@ -731,12 +731,12 @@ const getRowClass = (item) => {
 
 .unsaved-sep {
     font-size: 16px;
-    color: #B45309;
+    color: var(--warning);
 }
 
 .unsaved-detail {
     font-size: 13px;
-    color: #B45309;
+    color: var(--warning);
     white-space: nowrap;
 }
 
@@ -750,9 +750,9 @@ const getRowClass = (item) => {
 .unsaved-btn-discard {
     padding: 4px 10px;
     border-radius: 4px;
-    border: 1px solid #D97706;
+    border: 1px solid var(--warning);
     background: transparent;
-    color: #92400E;
+    color: var(--warning);
     font-size: 11px;
     font-weight: 600;
     cursor: pointer;
@@ -760,7 +760,7 @@ const getRowClass = (item) => {
 }
 
 .unsaved-btn-discard:hover {
-    background: #FDE68A;
+    background: var(--warning-soft);
 }
 
 .unsaved-btn-save {
@@ -781,14 +781,14 @@ const getRowClass = (item) => {
 
 .breadcrumb {
     font-size: 14px;
-    color: #64748b;
+    color: var(--text-secondary);
     margin-bottom: 2px;
 }
 
 .page-title {
     font-size: 18px;
     font-weight: 600;
-    color: #1e293b;
+    color: var(--text-primary);
     margin: 0;
 }
 
@@ -809,8 +809,8 @@ const getRowClass = (item) => {
 }
 
 .card {
-    background-color: white;
-    border: 1px solid #e2e8f0;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
     /* For rounded corners with header */
@@ -821,11 +821,11 @@ const getRowClass = (item) => {
 /* Info Card */
 .info-header {
     height: 50px;
-    background-color: white;
+    background-color: var(--surface);
     padding: 0 20px;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--border);
 }
 
 .info-icon {
@@ -835,7 +835,7 @@ const getRowClass = (item) => {
 .info-title {
     font-size: 16px;
     font-weight: 600;
-    color: #1e293b;
+    color: var(--text-primary);
     margin: 0;
 }
 
@@ -855,16 +855,16 @@ const getRowClass = (item) => {
 .form-group label {
     font-size: 14px;
     font-weight: 500;
-    color: #475569;
+    color: var(--text-secondary);
 }
 
 .form-group input,
 .form-group textarea {
     padding: 8px 12px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--border-strong);
     border-radius: 6px;
     font-size: 14px;
-    color: #334155;
+    color: var(--text-primary);
 }
 
 .form-group textarea {
@@ -879,8 +879,8 @@ const getRowClass = (item) => {
 }
 
 .btn-primary {
-    background-color: #476996;
-    color: white;
+    background-color: var(--primary);
+    color: var(--on-primary);
     border: none;
     padding: 8px 16px;
     border-radius: 6px;
@@ -889,9 +889,9 @@ const getRowClass = (item) => {
 }
 
 .btn-secondary {
-    background-color: white;
-    color: #475569;
-    border: 1px solid #cbd5e1;
+    background-color: var(--surface);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-strong);
     padding: 8px 16px;
     border-radius: 6px;
     cursor: pointer;
@@ -901,17 +901,17 @@ const getRowClass = (item) => {
 /* Stats Card */
 .stats-header {
     height: 50px;
-    background-color: white;
+    background-color: var(--surface);
     padding: 0 20px;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--border);
 }
 
 .stats-title {
     font-size: 16px;
     font-weight: 600;
-    color: #1e293b;
+    color: var(--text-primary);
     margin: 0;
 }
 
@@ -930,7 +930,7 @@ const getRowClass = (item) => {
 
 .counter-item {
     flex: 1;
-    background-color: #f8fafc;
+    background-color: var(--bg-page);
     border-radius: 8px;
     padding: 12px;
     display: flex;
@@ -941,12 +941,12 @@ const getRowClass = (item) => {
 .count {
     font-size: 20px;
     font-weight: 700;
-    color: #476996;
+    color: var(--primary-text);
 }
 
 .label {
     font-size: 12px;
-    color: #64748b;
+    color: var(--text-secondary);
 }
 
 /* Right Panel */
@@ -967,8 +967,8 @@ const getRowClass = (item) => {
     position: sticky;
     top: 100px;
     z-index: 100;
-    background: white;
-    border: 1px solid #e2e8f0;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 12px;
     padding: 4px 6px;
     display: flex;
@@ -996,7 +996,7 @@ const getRowClass = (item) => {
     border: none;
     border-radius: 8px;
     background: transparent;
-    color: #64748b;
+    color: var(--text-secondary);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -1004,13 +1004,13 @@ const getRowClass = (item) => {
 }
 
 .tab-item:hover {
-    background: #f1f5f9;
-    color: #1e293b;
+    background: var(--surface-muted);
+    color: var(--text-primary);
 }
 
 .tab-item.active {
-    background: #476996;
-    color: white;
+    background: var(--primary);
+    color: var(--on-primary);
     font-weight: 600;
 }
 
@@ -1026,8 +1026,8 @@ const getRowClass = (item) => {
     height: 20px;
     padding: 0 6px;
     border-radius: 10px;
-    background: #f1f5f9;
-    color: #64748b;
+    background: var(--surface-muted);
+    color: var(--text-secondary);
     font-size: 12px;
     font-weight: 600;
 }
@@ -1039,8 +1039,8 @@ const getRowClass = (item) => {
 
 /* Toolbar */
 .toolbar {
-    background-color: white;
-    border: 1px solid #e2e8f0;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 12px;
     padding: 16px 20px;
     display: flex;
@@ -1057,8 +1057,8 @@ const getRowClass = (item) => {
     flex: 2;
     height: 40px;
     padding: 0 12px;
-    background-color: #f8fafc;
-    border: 1px solid #cbd5e1;
+    background-color: var(--bg-page);
+    border: 1px solid var(--border-strong);
     border-radius: 8px;
 }
 
@@ -1066,8 +1066,8 @@ const getRowClass = (item) => {
     flex: 1;
     height: 40px;
     padding: 0 12px;
-    background-color: white;
-    border: 1px solid #cbd5e1;
+    background-color: var(--surface);
+    border: 1px solid var(--border-strong);
     border-radius: 8px;
 }
 
@@ -1083,59 +1083,59 @@ const getRowClass = (item) => {
 }
 
 .badge-subject {
-    background: #476996;
-    color: white;
+    background: var(--primary);
+    color: var(--on-primary);
 }
 
 .badge-tag {
-    background: #f1f5f9;
-    color: #475569;
-    border: 1px solid #e2e8f0;
+    background: var(--surface-muted);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
 }
 
 .badge-more {
-    background: #f8fafc;
-    color: #94a3b8;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-page);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
 }
 
 .badge-easy {
-    background: #dcfce7;
-    color: #166534;
+    background: var(--success-soft);
+    color: var(--success);
 }
 
 .badge-normal {
-    background: #dbeafe;
-    color: #1e40af;
+    background: var(--primary-soft);
+    color: var(--primary-text);
 }
 
 .badge-hard {
-    background: #fee2e2;
-    color: #991b1b;
+    background: var(--danger-soft);
+    color: var(--danger);
 }
 
 .badge-insane {
-    background: #fae8ff;
+    background: var(--icon-purple-bg);
     color: #86198f;
 }
 
 /* Action Buttons in Search Results */
 .action-btn-add {
-    background: #476996;
-    color: white;
-    border-color: #476996;
+    background: var(--primary);
+    color: var(--on-primary);
+    border-color: var(--primary);
 }
 
 .action-btn-add:hover {
-    background: #35527a !important;
-    color: white !important;
+    background: var(--primary-hover) !important;
+    color: var(--on-primary) !important;
     border-color: #35527a !important;
 }
 
 .action-btn-add.added {
-    background: #476996;
-    color: white;
-    border-color: #476996;
+    background: var(--primary);
+    color: var(--on-primary);
+    border-color: var(--primary);
     opacity: 0.6;
 }
 
@@ -1147,8 +1147,8 @@ const getRowClass = (item) => {
 
 /* Question List */
 .question-list {
-    background-color: white;
-    border: 1px solid #e2e8f0;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 12px;
     flex: 1;
     display: flex;
@@ -1158,24 +1158,24 @@ const getRowClass = (item) => {
 
 .list-header {
     height: 44px;
-    background-color: #f8fafc;
-    border-bottom: 1px solid #e2e8f0;
+    background-color: var(--bg-page);
+    border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     padding: 0 16px;
     font-size: 14px;
     font-weight: 500;
-    color: #64748b;
+    color: var(--text-secondary);
 }
 
 .list-row {
     height: 64px;
-    background-color: white;
-    border-bottom: 1px solid #f1f5f9;
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     padding: 0 16px;
-    color: #334155;
+    color: var(--text-primary);
 }
 
 /* Columns */
@@ -1195,13 +1195,13 @@ const getRowClass = (item) => {
 
 .q-text {
     font-size: 14px;
-    color: #1e293b;
+    color: var(--text-primary);
     font-weight: 500;
 }
 
 .q-meta {
     font-size: 12px;
-    color: #94a3b8;
+    color: var(--text-muted);
 }
 
 .col-type {
@@ -1217,13 +1217,13 @@ const getRowClass = (item) => {
 .score-input {
     width: 56px;
     text-align: center;
-    border: 1px solid #E2E8F0;
+    border: 1px solid var(--border);
     border-radius: 6px;
     padding: 4px 0;
     font-size: 14px;
     font-weight: 500;
-    color: #1E293B;
-    background: #F8FAFC;
+    color: var(--text-primary);
+    background: var(--bg-page);
     outline: none;
     transition: all 0.2s;
     -moz-appearance: textfield;
@@ -1236,13 +1236,13 @@ const getRowClass = (item) => {
 }
 
 .score-input:hover {
-    border-color: #CBD5E1;
-    background: white;
+    border-color: var(--border-strong);
+    background: var(--surface);
 }
 
 .score-input:focus {
-    border-color: #476996;
-    background: white;
+    border-color: var(--primary);
+    background: var(--surface);
     box-shadow: 0 0 0 2px rgba(71, 105, 150, 0.15);
 }
 
@@ -1254,54 +1254,54 @@ const getRowClass = (item) => {
 
 /* Change Indicators */
 :deep(.table-row.row-added) {
-    background: #F0FDF4;
-    border-left: 3px solid #22C55E;
+    background: var(--success-soft);
+    border-left: 3px solid var(--success);
 }
 
 :deep(.table-row.row-added) .td-cell {
-    color: #166534;
+    color: var(--success);
 }
 
 :deep(.table-row.row-added) .grip-cell {
-    color: #16A34A;
+    color: var(--success);
 }
 
 :deep(.table-row.row-added:hover) {
-    background: #DCFCE7;
+    background: var(--success-soft);
 }
 
 :deep(.table-row.row-modified) {
-    background: #FEF3C7;
-    border-left: 3px solid #F59E0B;
+    background: var(--warning-soft);
+    border-left: 3px solid var(--warning);
 }
 
 :deep(.table-row.row-modified) .td-cell {
-    color: #92400E;
+    color: var(--warning);
 }
 
 :deep(.table-row.row-modified) .grip-cell {
-    color: #B45309;
+    color: var(--warning);
 }
 
 :deep(.table-row.row-modified:hover) {
-    background: #FDE68A;
+    background: var(--warning-soft);
 }
 
 :deep(.table-row.row-removed) {
-    background: #FEF2F2;
-    border-left: 3px solid #EF4444;
+    background: var(--danger-soft);
+    border-left: 3px solid var(--danger);
 }
 
 :deep(.table-row.row-removed) .td-cell {
-    color: #991B1B;
+    color: var(--danger);
 }
 
 :deep(.table-row.row-removed) .grip-cell {
-    color: #EF4444;
+    color: var(--danger);
 }
 
 :deep(.table-row.row-removed:hover) {
-    background: #FEE2E2;
+    background: var(--danger-soft);
 }
 
 /* Leave Page Modal */
@@ -1316,7 +1316,7 @@ const getRowClass = (item) => {
 }
 
 .modal-card {
-    background: white;
+    background: var(--surface);
     border-radius: 16px;
     width: 440px;
     max-width: 90vw;
@@ -1337,7 +1337,7 @@ const getRowClass = (item) => {
     width: 56px;
     height: 56px;
     border-radius: 28px;
-    background: #FEF3C7;
+    background: var(--warning-soft);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1349,13 +1349,13 @@ const getRowClass = (item) => {
     margin: 0;
     font-size: 18px;
     font-weight: 700;
-    color: #1E293B;
+    color: var(--text-primary);
 }
 
 .modal-desc {
     margin: 0;
     font-size: 14px;
-    color: #64748B;
+    color: var(--text-secondary);
 }
 
 .modal-body {
@@ -1366,8 +1366,8 @@ const getRowClass = (item) => {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    background: #F8FAFC;
-    border: 1px solid #E2E8F0;
+    background: var(--bg-page);
+    border: 1px solid var(--border);
     border-radius: 10px;
     padding: 16px;
 }
@@ -1375,7 +1375,7 @@ const getRowClass = (item) => {
 .summary-title {
     font-size: 13px;
     font-weight: 600;
-    color: #475569;
+    color: var(--text-secondary);
 }
 
 .summary-row {
@@ -1383,7 +1383,7 @@ const getRowClass = (item) => {
     align-items: center;
     gap: 8px;
     font-size: 13px;
-    color: #475569;
+    color: var(--text-secondary);
 }
 
 .summary-dot {
@@ -1394,15 +1394,15 @@ const getRowClass = (item) => {
 }
 
 .summary-dot.added {
-    background: #22C55E;
+    background: var(--success);
 }
 
 .summary-dot.removed {
-    background: #EF4444;
+    background: var(--danger);
 }
 
 .summary-dot.modified {
-    background: #F59E0B;
+    background: var(--warning);
 }
 
 .modal-footer {
@@ -1417,8 +1417,8 @@ const getRowClass = (item) => {
     padding: 12px;
     border-radius: 10px;
     border: none;
-    background: #476996;
-    color: white;
+    background: var(--primary);
+    color: var(--on-primary);
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
@@ -1426,16 +1426,16 @@ const getRowClass = (item) => {
 }
 
 .modal-btn-save:hover {
-    background: #35527a;
+    background: var(--primary-hover);
 }
 
 .modal-btn-discard {
     width: 100%;
     padding: 12px;
     border-radius: 10px;
-    border: 1px solid #E2E8F0;
-    background: white;
-    color: #64748B;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-secondary);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -1443,7 +1443,7 @@ const getRowClass = (item) => {
 }
 
 .modal-btn-discard:hover {
-    background: #F8FAFC;
+    background: var(--bg-page);
 }
 
 .modal-btn-cancel {
@@ -1452,7 +1452,7 @@ const getRowClass = (item) => {
     border-radius: 10px;
     border: none;
     background: transparent;
-    color: #94A3B8;
+    color: var(--text-muted);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -1460,7 +1460,7 @@ const getRowClass = (item) => {
 }
 
 .modal-btn-cancel:hover {
-    background: #F1F5F9;
+    background: var(--surface-muted);
 }
 
 .btn-warning {
@@ -1480,8 +1480,8 @@ const getRowClass = (item) => {
 }
 
 .btn-danger {
-    background: #DC2626;
-    color: white;
+    background: var(--danger);
+    color: var(--on-primary);
     border: none;
     padding: 6px 14px;
     border-radius: 8px;

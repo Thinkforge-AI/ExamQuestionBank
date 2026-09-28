@@ -1801,7 +1801,7 @@ onUnmounted(() => {
 /* Draggable Divider */
 .split-divider {
     width: 8px;
-    background: #e5e7eb;
+    background: var(--surface-hover);
     cursor: col-resize;
     display: flex;
     align-items: center;
@@ -1845,7 +1845,7 @@ onUnmounted(() => {
     justify-content: space-between;
     align-items: center;
     padding: 14px 18px;
-    background: #f6f8fb;
+    background: var(--primary-soft);
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
 }
@@ -1875,7 +1875,7 @@ onUnmounted(() => {
     background: none;
     border: none;
     font-size: 20px;
-    color: #94a3b8;
+    color: var(--text-muted);
     cursor: pointer;
     padding: 4px 8px;
     border-radius: 6px;
@@ -1884,7 +1884,7 @@ onUnmounted(() => {
 }
 
 .btn-close:hover {
-    background: #eef1f5;
+    background: var(--primary-soft);
     color: var(--text-primary);
 }
 
@@ -1939,7 +1939,7 @@ onUnmounted(() => {
     border: 1px solid var(--border);
     border-radius: 10px;
     font-size: 14px;
-    background: #fbfcfd;
+    background: var(--primary-soft);
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -1968,7 +1968,7 @@ onUnmounted(() => {
     padding: 6px 40px 0 10px;
     border: 1px solid var(--border);
     border-radius: 10px;
-    background: #fbfcfd;
+    background: var(--primary-soft);
 }
 
 :deep(.multiselect__tags:focus-within) {
@@ -2000,7 +2000,7 @@ onUnmounted(() => {
 }
 
 :deep(.multiselect__placeholder) {
-    color: #9ca3af;
+    color: var(--text-muted);
     padding-top: 2px;
 }
 
@@ -2044,7 +2044,7 @@ onUnmounted(() => {
 }
 
 .subject-badge {
-    background: #e8f4fd;
+    background: var(--primary-soft);
     color: #1a5490;
     border: 1px solid #c8e1f5;
 }
@@ -2054,27 +2054,27 @@ onUnmounted(() => {
 }
 
 .difficulty-badge.easy {
-    background: #ecf8f1;
+    background: var(--success-soft);
     color: #1f6a3b;
     border-color: #c8ecd8;
 }
 
 .difficulty-badge.medium {
-    background: #fef9e8;
+    background: var(--warning-soft);
     color: #9a7b1b;
     border-color: #f5e6b3;
 }
 
 .difficulty-badge.hard {
-    background: #fdf1f1;
+    background: var(--danger-soft);
     color: #9a1b1b;
     border-color: #f3d6d6;
 }
 
 .tag-badge {
-    background: #f3f4f6;
-    color: #4b5563;
-    border: 1px solid #e5e7eb;
+    background: var(--surface-muted);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
 }
 
 /* Search Pagination */
@@ -2157,13 +2157,13 @@ onUnmounted(() => {
 
 /* Historical Exam Card - Blue theme */
 .historical-card {
-    background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%);
+    background: linear-gradient(135deg, var(--primary-soft) 0%, var(--primary-soft) 100%);
     border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .historical-card .mode-icon {
     background: rgba(59, 130, 246, 0.15);
-    color: #2563eb;
+    color: var(--primary-text);
 }
 
 .historical-card:hover {
@@ -2172,13 +2172,13 @@ onUnmounted(() => {
 
 /* Mock Exam Card - Purple theme */
 .mock-exam-card {
-    background: linear-gradient(135deg, #f8f4ff 0%, #f3f7ff 100%);
+    background: linear-gradient(135deg, var(--icon-purple-bg) 0%, var(--primary-soft) 100%);
     border: 1px solid rgba(128, 90, 200, 0.35);
 }
 
 .mock-exam-card .mode-icon {
     background: rgba(128, 90, 200, 0.15);
-    color: #7c3aed;
+    color: var(--icon-purple-fg);
 }
 
 .mock-exam-card:hover {
@@ -2187,13 +2187,13 @@ onUnmounted(() => {
 
 /* Wrong Questions Card - Red/Orange theme */
 .wrong-card {
-    background: linear-gradient(135deg, #fff5f5 0%, #fef2f2 100%);
+    background: linear-gradient(135deg, var(--danger-soft) 0%, var(--danger-soft) 100%);
     border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .wrong-card .mode-icon {
     background: rgba(239, 68, 68, 0.12);
-    color: #dc2626;
+    color: var(--danger);
 }
 
 .wrong-card:hover {
@@ -2202,13 +2202,13 @@ onUnmounted(() => {
 
 /* Bookmark Card - Amber/Gold theme */
 .bookmark-card {
-    background: linear-gradient(135deg, #fffbeb 0%, #fef9e7 100%);
+    background: linear-gradient(135deg, var(--warning-soft) 0%, var(--warning-soft) 100%);
     border: 1px solid rgba(245, 158, 11, 0.35);
 }
 
 .bookmark-card .mode-icon {
     background: rgba(245, 158, 11, 0.15);
-    color: #d97706;
+    color: var(--warning);
 }
 
 .bookmark-card:hover {
@@ -2271,7 +2271,7 @@ onUnmounted(() => {
 }
 
 .mock-exam-dialog {
-    background: #fff;
+    background: var(--surface);
     border-radius: 16px;
     width: 90%;
     max-width: 480px;
@@ -2285,7 +2285,7 @@ onUnmounted(() => {
     align-items: center;
     padding: 20px 24px;
     border-bottom: 1px solid var(--border);
-    background: #f8fafc;
+    background: var(--bg-page);
 }
 
 .dialog-header h3 {
@@ -2323,14 +2323,14 @@ onUnmounted(() => {
     gap: 10px;
     padding: 10px 14px;
     margin-bottom: 8px;
-    background: #f8fafc;
+    background: var(--bg-page);
     border-radius: 10px;
     cursor: pointer;
     transition: background 0.2s;
 }
 
 .source-checkbox:hover {
-    background: #f1f5f9;
+    background: var(--surface-muted);
 }
 
 .source-checkbox input[type="checkbox"] {
@@ -2369,8 +2369,8 @@ onUnmounted(() => {
 
 .count-btn {
     padding: 8px 16px;
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
     border-radius: 8px;
     font-size: 13px;
     font-weight: 600;
@@ -2380,12 +2380,12 @@ onUnmounted(() => {
 }
 
 .count-btn:hover {
-    background: #e2e8f0;
+    background: var(--surface-hover);
 }
 
 .count-btn.active {
     background: var(--primary);
-    color: #fff;
+    color: var(--on-primary);
     border-color: var(--primary);
 }
 
@@ -2414,8 +2414,8 @@ onUnmounted(() => {
 .available-count {
     margin-top: 16px;
     padding: 12px 16px;
-    background: #ecfdf5;
-    color: #059669;
+    background: var(--success-soft);
+    color: var(--success);
     border-radius: 10px;
     font-size: 14px;
     font-weight: 600;
@@ -2425,8 +2425,8 @@ onUnmounted(() => {
 .no-questions-warning {
     margin-top: 16px;
     padding: 12px 16px;
-    background: #fef2f2;
-    color: #dc2626;
+    background: var(--danger-soft);
+    color: var(--danger);
     border-radius: 10px;
     font-size: 14px;
     font-weight: 500;
@@ -2438,7 +2438,7 @@ onUnmounted(() => {
     justify-content: flex-end;
     gap: 12px;
     padding: 16px 24px;
-    background: #f8fafc;
+    background: var(--bg-page);
     border-top: 1px solid var(--border);
 }
 
@@ -2535,7 +2535,7 @@ onUnmounted(() => {
     justify-content: space-between;
     align-items: center;
     padding: 14px 16px;
-    background: #f7f9fb;
+    background: var(--primary-soft);
     border-radius: 10px;
     border: 1px solid var(--border);
     transition: all 0.3s ease;
@@ -2596,7 +2596,7 @@ onUnmounted(() => {
 
 .wrong-badge {
     display: inline-block;
-    background: #fdf1f1;
+    background: var(--danger-soft);
     color: #9a1b1b;
     padding: 2px 8px;
     border-radius: 6px;
@@ -2633,18 +2633,18 @@ onUnmounted(() => {
 }
 
 .btn-secondary {
-    background: #eef1f5;
+    background: var(--primary-soft);
     color: var(--text-primary);
     border-color: var(--border);
 }
 
 .btn-secondary:hover {
-    background: #e3e8ef;
+    background: var(--primary-soft);
 }
 
 .btn-flashcard-added {
-    background: #E0E7FF !important;
-    color: #4338CA !important;
+    background: var(--primary-soft) !important;
+    color: var(--primary-text) !important;
     border: 1px solid #C7D2FE !important;
     cursor: default;
 }
@@ -2683,7 +2683,7 @@ onUnmounted(() => {
 }
 
 .btn-ghost:hover {
-    background: #eef3f9;
+    background: var(--primary-soft);
 }
 
 /* Quiz Panel */
@@ -2742,22 +2742,22 @@ onUnmounted(() => {
 
 .option-item:hover {
     border-color: rgba(47, 95, 144, 0.4);
-    background: #f3f6fa;
+    background: var(--primary-soft);
 }
 
 .option-item.selected {
     border-color: var(--primary);
-    background: #eef3f9;
+    background: var(--primary-soft);
 }
 
 .option-item.correct {
     border-color: #3b8c5a;
-    background: #ecf8f1;
+    background: var(--success-soft);
 }
 
 .option-item.wrong {
     border-color: #c0392b;
-    background: #fdf3f1;
+    background: var(--danger-soft);
 }
 
 .option-label {
@@ -2774,7 +2774,7 @@ onUnmounted(() => {
 
 .correct-msg {
     color: #1f6a3b;
-    background: #ecf8f1;
+    background: var(--success-soft);
     padding: 12px;
     border-radius: 10px;
     margin: 0;
@@ -2782,7 +2782,7 @@ onUnmounted(() => {
 
 .wrong-msg {
     color: #a83226;
-    background: #fdf1f0;
+    background: var(--danger-soft);
     padding: 12px;
     border-radius: 10px;
     margin: 0;
@@ -3298,12 +3298,12 @@ onUnmounted(() => {
 }
 
 .search-item:hover {
-    background: #f1f5f9;
+    background: var(--surface-muted);
     border-color: var(--primary);
 }
 
 .search-item.selected {
-    background: var(--primary-soft, #EEF2FF);
+    background: var(--primary-soft, var(--primary-soft));
     border-color: var(--primary);
 }
 
@@ -3330,28 +3330,28 @@ onUnmounted(() => {
 }
 
 .subject-badge {
-    background: #e0f2fe;
+    background: var(--primary-soft);
     color: #0369a1;
 }
 
 .difficulty-badge.easy {
-    background: #dcfce7;
-    color: #15803d;
+    background: var(--success-soft);
+    color: var(--success);
 }
 
 .difficulty-badge.medium {
-    background: #fef9c3;
+    background: var(--warning-soft);
     color: #a16207;
 }
 
 .difficulty-badge.hard {
-    background: #fee2e2;
-    color: #b91c1c;
+    background: var(--danger-soft);
+    color: var(--danger);
 }
 
 .tag-badge {
-    background: #f3f4f6;
-    color: #4b5563;
+    background: var(--surface-muted);
+    color: var(--text-secondary);
 }
 
 .status-badge {
@@ -3363,13 +3363,13 @@ onUnmounted(() => {
 }
 
 .bookmark-status {
-    background: #fef3c7;
-    color: #b45309;
+    background: var(--warning-soft);
+    color: var(--warning);
 }
 
 .flashcard-status {
-    background: #dbeafe;
-    color: #1d4ed8;
+    background: var(--primary-soft);
+    color: var(--primary-text);
 }
 
 .empty-search,
@@ -3389,7 +3389,7 @@ onUnmounted(() => {
 .spinner {
     width: 24px;
     height: 24px;
-    border: 3px solid #e2e8f0;
+    border: 3px solid var(--border);
     border-top-color: var(--primary);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
@@ -3427,17 +3427,17 @@ onUnmounted(() => {
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s;
-    background: #fbfcfd;
+    background: var(--primary-soft);
 }
 
 .exam-select-item:hover {
     border-color: var(--primary);
-    background: #f3f6fa;
+    background: var(--primary-soft);
 }
 
 .exam-select-item.selected {
     border-color: var(--primary);
-    background: var(--primary-soft, #EEF2FF);
+    background: var(--primary-soft, var(--primary-soft));
 }
 
 .exam-select-item input[type="checkbox"] {
@@ -3524,14 +3524,14 @@ onUnmounted(() => {
 }
 
 .btn-icon.flagged {
-    background: var(--warning-soft, #fef3c7);
-    color: var(--warning, #f59e0b);
-    border-color: var(--warning, #f59e0b);
+    background: var(--warning-soft, var(--warning-soft));
+    color: var(--warning, var(--warning));
+    border-color: var(--warning, var(--warning));
 }
 
 .btn-icon.flagged:hover {
-    background: var(--warning, #f59e0b);
-    color: #fff;
+    background: var(--warning, var(--warning));
+    color: var(--on-primary);
 }
 
 .btn-icon i {
@@ -3539,50 +3539,6 @@ onUnmounted(() => {
 }
 
 /* Dark Mode Overrides */
-:global(.dark) .mode-card,
-:global(.dark) .subject-tab,
-:global(.dark) .filter-section,
-:global(.dark) .question-list-container,
-:global(.dark) .pagination-container {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-    color: var(--text-primary) !important;
-}
-
-:global(.dark) .mode-card:hover {
-    background: var(--surface-muted) !important;
-}
-
-:global(.dark) .search-box,
-:global(.dark) .filter-select,
-:global(.dark) .filter-input {
-    background: var(--surface-muted) !important;
-    border-color: var(--border) !important;
-    color: var(--text-primary) !important;
-}
-
-:global(.dark) .quiz-container,
-:global(.dark) .quiz-question-card,
-:global(.dark) .quiz-header {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .option-card {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-    color: var(--text-primary) !important;
-}
-
-:global(.dark) .option-card:hover {
-    background: var(--surface-muted) !important;
-    border-color: var(--primary) !important;
-}
-
-:global(.dark) .mock-exam-dialog-overlay .mock-exam-dialog {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
 
 /* ============================================
    RESPONSIVE BREAKPOINTS

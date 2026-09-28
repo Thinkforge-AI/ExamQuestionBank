@@ -98,45 +98,20 @@ defineExpose({
 
 /* Front Side - Question (Using Website Theme Colors) */
 .card-front {
-  background: linear-gradient(135deg, #476996 0%, #35527a 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  color: var(--on-primary);
   z-index: 2;
 }
 
 /* Back Side - Answer */
 .card-back {
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-  border: 2px solid #CBD5E1;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--bg-page) 100%);
+  border: 2px solid var(--border-strong);
   transform: rotateY(180deg);
-  color: #1E293B;
+  color: var(--text-primary);
 }
 
 /* Dark Mode Support */
-:global(.dark) .card-front {
-  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
-}
-
-:global(.dark) .card-back {
-  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-  border-color: #334155;
-  color: #f1f5f9;
-}
-
-:global(.dark) .answer-option {
-  background: #334155;
-  border-color: #475569;
-  color: #f1f5f9;
-}
-
-:global(.dark) .answer-option:hover {
-  background: #1e3a5f;
-  border-color: #60a5fa;
-}
-
-:global(.dark) .answer-option.correct {
-  background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
-  border-color: #10b981;
-}
 
 /* Badge Styling */
 .card-badge {
@@ -154,8 +129,8 @@ defineExpose({
 }
 
 .answer-badge {
-  background: linear-gradient(135deg, #476996 0%, #35527a 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  color: var(--on-primary);
 }
 
 /* Card Content */
@@ -215,17 +190,17 @@ defineExpose({
 }
 
 .answer-options::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--surface-muted);
   border-radius: 10px;
 }
 
 .answer-options::-webkit-scrollbar-thumb {
-  background: #476996;
+  background: var(--primary);
   border-radius: 10px;
 }
 
 .answer-options::-webkit-scrollbar-thumb:hover {
-  background: #35527a;
+  background: var(--primary-hover);
 }
 
 .answer-option {
@@ -233,8 +208,8 @@ defineExpose({
   align-items: flex-start;
   gap: 14px;
   padding: 16px 20px;
-  background: #F8FAFC;
-  border: 2px solid #E2E8F0;
+  background: var(--bg-page);
+  border: 2px solid var(--border);
   border-radius: 12px;
   font-size: 16px;
   line-height: 1.6;
@@ -243,21 +218,21 @@ defineExpose({
 }
 
 .answer-option:hover {
-  background: #EEF2FF;
-  border-color: #476996;
+  background: var(--primary-soft);
+  border-color: var(--primary);
   transform: translateX(4px);
 }
 
 /* Correct Answer Highlighting */
 .answer-option.correct {
-  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-  border: 2px solid #10b981;
+  background: linear-gradient(135deg, var(--success-soft) 0%, var(--success-soft) 100%);
+  border: 2px solid var(--success);
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
 }
 
 .option-marker {
   font-weight: 800;
-  color: #10b981;
+  color: var(--success);
   font-size: 20px;
   min-width: 24px;
   flex-shrink: 0;
@@ -265,7 +240,7 @@ defineExpose({
 
 .no-options {
   text-align: center;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 16px;
   margin: 0;
 }

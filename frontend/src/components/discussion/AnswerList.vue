@@ -51,22 +51,14 @@ function handleVote(data) {
 
 .list-header {
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--border-color, #e5e7eb);
-}
-
-.dark .list-header {
-  border-color: var(--border-color-dark, #374151);
+  border-bottom: 1px solid var(--border-color, var(--border));
 }
 
 .list-header h3 {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary, var(--text-primary));
   margin: 0;
-}
-
-.dark .list-header h3 {
-  color: var(--text-primary-dark, #f9fafb);
 }
 
 .empty-state {
@@ -76,7 +68,7 @@ function handleVote(data) {
   justify-content: center;
   padding: 2rem;
   text-align: center;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .empty-icon {

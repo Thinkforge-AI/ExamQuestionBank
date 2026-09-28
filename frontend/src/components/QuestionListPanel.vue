@@ -283,7 +283,7 @@ const handleSizeChange = (size) => {
 
 .content-text {
   font-size: 13px;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
   line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -294,7 +294,7 @@ const handleSizeChange = (size) => {
 
 .content-meta {
   font-size: 11px;
-  color: var(--text-muted, #94A3B8);
+  color: var(--text-muted, var(--text-muted));
 }
 
 /* Subject badge */
@@ -304,8 +304,8 @@ const handleSizeChange = (size) => {
   border-radius: 99px;
   font-size: 11px;
   font-weight: 500;
-  background: #DBEAFE;
-  color: #1E40AF;
+  background: var(--primary-soft);
+  color: var(--primary-text);
 }
 
 /* Difficulty badge */
@@ -318,18 +318,18 @@ const handleSizeChange = (size) => {
 }
 
 .badge-difficulty.easy {
-  background: #D1FAE5;
-  color: #065F46;
+  background: var(--success-soft);
+  color: var(--success);
 }
 
 .badge-difficulty.medium {
-  background: #FEF3C7;
-  color: #92400E;
+  background: var(--warning-soft);
+  color: var(--warning);
 }
 
 .badge-difficulty.hard {
-  background: #FEE2E2;
-  color: #991B1B;
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
 /* Tags cell */
@@ -345,34 +345,34 @@ const handleSizeChange = (size) => {
   padding: 1px 6px;
   border-radius: 4px;
   font-size: 11px;
-  background: #F1F5F9;
-  color: var(--text-secondary, #64748B);
-  border: 1px solid var(--border, #E2E8F0);
+  background: var(--surface-muted);
+  color: var(--text-secondary, var(--text-secondary));
+  border: 1px solid var(--border, var(--border));
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
 }
 
 .tag-badge:hover {
-  background: #E2E8F0;
-  color: var(--text-primary, #1E293B);
-  border-color: var(--text-secondary, #94A3B8);
+  background: var(--surface-hover);
+  color: var(--text-primary, var(--text-primary));
+  border-color: var(--text-secondary, var(--border-strong));
 }
 
 .tag-more {
   font-size: 11px;
-  color: var(--text-muted, #94A3B8);
+  color: var(--text-muted, var(--text-muted));
   white-space: nowrap;
 }
 
 /* Date text */
 .date-text {
   font-size: 12px;
-  color: var(--text-muted, #94A3B8);
+  color: var(--text-muted, var(--text-muted));
 }
 
 .text-muted {
-  color: var(--text-muted, #94A3B8);
+  color: var(--text-muted, var(--text-muted));
   font-size: 12px;
 }
 

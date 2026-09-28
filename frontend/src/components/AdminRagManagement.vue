@@ -208,10 +208,10 @@ onMounted(() => {
 }
 
 .rag-section {
-  background: var(--surface, white);
+  background: var(--surface, var(--surface));
   border-radius: 12px;
   padding: 24px;
-  border: 1px solid var(--border, #e5e7eb);
+  border: 1px solid var(--border, var(--border));
 }
 
 .section-heading {
@@ -220,12 +220,12 @@ onMounted(() => {
   gap: 10px;
   font-size: 18px;
   font-weight: 600;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
   margin: 0 0 20px 0;
 }
 
 .section-heading svg {
-  color: var(--primary, #476996);
+  color: var(--primary, var(--primary-text));
 }
 
 /* Stats Grid */
@@ -238,28 +238,28 @@ onMounted(() => {
 .stat-card {
   text-align: center;
   padding: 16px;
-  background: var(--surface-muted, #f8fafc);
+  background: var(--surface-muted, var(--bg-page));
   border-radius: 10px;
 }
 
 .stat-value {
   font-size: 28px;
   font-weight: 700;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
 }
 
 .stat-label {
   font-size: 13px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
   margin-top: 4px;
 }
 
 .stat-card.embedded .stat-value {
-  color: var(--success, #10b981);
+  color: var(--success, var(--success));
 }
 
 .stat-card.pending .stat-value {
-  color: var(--warning, #f59e0b);
+  color: var(--warning, var(--warning));
 }
 
 /* Progress Bar */
@@ -269,14 +269,14 @@ onMounted(() => {
 
 .progress-bar {
   height: 8px;
-  background: var(--surface-muted, #f1f5f9);
+  background: var(--surface-muted, var(--surface-muted));
   border-radius: 4px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary, #476996), var(--primary-hover, #35527a));
+  background: linear-gradient(90deg, var(--primary, var(--primary)), var(--primary-hover, var(--primary-hover)));
   border-radius: 4px;
   transition: width 0.5s ease;
 }
@@ -293,7 +293,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  background: var(--surface-muted, #f8fafc);
+  background: var(--surface-muted, var(--bg-page));
   border-radius: 10px;
   gap: 16px;
 }
@@ -302,13 +302,13 @@ onMounted(() => {
   margin: 0 0 4px 0;
   font-size: 15px;
   font-weight: 600;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
 }
 
 .action-info p {
   margin: 0;
   font-size: 13px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .action-btn {
@@ -326,12 +326,12 @@ onMounted(() => {
 }
 
 .action-btn-primary {
-  background: var(--primary, #476996);
-  color: white;
+  background: var(--primary, var(--primary));
+  color: var(--on-primary);
 }
 
 .action-btn-primary:hover:not(:disabled) {
-  background: var(--primary-hover, #35527a);
+  background: var(--primary-hover, var(--primary-hover));
 }
 
 .action-btn:disabled {
@@ -357,7 +357,7 @@ onMounted(() => {
 .embedding-progress {
   margin-top: 16px;
   padding: 16px;
-  background: var(--surface-muted, #f8fafc);
+  background: var(--surface-muted, var(--bg-page));
   border-radius: 8px;
 }
 
@@ -365,12 +365,12 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .progress-info .spinner {
   border-color: rgba(71, 105, 150, 0.3);
-  border-top-color: var(--primary, #476996);
+  border-top-color: var(--primary, var(--primary));
 }
 
 .result-stats {
@@ -379,12 +379,12 @@ onMounted(() => {
 }
 
 .result-stats .success {
-  color: var(--success, #10b981);
+  color: var(--success, var(--success));
   font-weight: 500;
 }
 
 .result-stats .failed {
-  color: var(--error, #ef4444);
+  color: var(--error, var(--danger));
   font-weight: 500;
 }
 
@@ -394,7 +394,7 @@ onMounted(() => {
 
 .result-errors summary {
   cursor: pointer;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
   font-size: 13px;
 }
 
@@ -402,7 +402,7 @@ onMounted(() => {
   margin: 8px 0 0 0;
   padding-left: 20px;
   font-size: 12px;
-  color: var(--error, #ef4444);
+  color: var(--error, var(--danger));
 }
 
 /* Info Box */
@@ -412,24 +412,24 @@ onMounted(() => {
   padding: 16px;
   background: rgba(71, 105, 150, 0.08);
   border-radius: 8px;
-  border-left: 3px solid var(--primary, #476996);
+  border-left: 3px solid var(--primary, var(--primary));
 }
 
 .info-box svg {
   flex-shrink: 0;
-  color: var(--primary, #476996);
+  color: var(--primary, var(--primary-text));
 }
 
 .info-box strong {
   display: block;
   margin-bottom: 4px;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
 }
 
 .info-box p {
   margin: 0;
   font-size: 13px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 /* Concept Groups */
@@ -442,7 +442,7 @@ onMounted(() => {
 
 .concept-group-card {
   padding: 14px 16px;
-  background: var(--surface-muted, #f8fafc);
+  background: var(--surface-muted, var(--bg-page));
   border-radius: 8px;
   display: flex;
   justify-content: space-between;
@@ -457,14 +457,14 @@ onMounted(() => {
 
 .group-name {
   font-weight: 500;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
 }
 
 .important-badge {
   font-size: 11px;
   padding: 2px 8px;
-  background: var(--warning, #f59e0b);
-  color: white;
+  background: var(--warning, var(--warning));
+  color: var(--on-primary);
   border-radius: 4px;
   font-weight: 500;
 }
@@ -473,13 +473,13 @@ onMounted(() => {
   display: flex;
   gap: 12px;
   font-size: 13px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .empty-state {
   text-align: center;
   padding: 24px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 /* Loading Skeleton */
@@ -491,7 +491,7 @@ onMounted(() => {
 
 .skeleton-box {
   height: 80px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, var(--surface-muted) 25%, var(--surface-hover) 50%, var(--surface-muted) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 10px;
@@ -520,15 +520,4 @@ onMounted(() => {
 }
 
 /* Dark Mode */
-:global(.dark) .rag-section {
-  background: var(--surface);
-  border-color: var(--border);
-}
-
-:global(.dark) .stat-card,
-:global(.dark) .action-card,
-:global(.dark) .embedding-progress,
-:global(.dark) .concept-group-card {
-  background: var(--surface-muted);
-}
 </style>

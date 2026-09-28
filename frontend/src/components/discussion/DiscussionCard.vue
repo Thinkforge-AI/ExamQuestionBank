@@ -72,17 +72,12 @@ function handleClick() {
 
 <style scoped>
 .discussion-card-mvp {
-  background: var(--bg-primary, white);
-  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--bg-primary, var(--surface));
+  border: 1px solid var(--border-color, var(--border));
   border-radius: 12px;
   padding: 1.25rem;
   cursor: pointer;
   transition: all 0.2s ease;
-}
-
-.dark .discussion-card-mvp {
-  background: var(--bg-secondary, #1f2937);
-  border-color: var(--border-color-dark, #374151);
 }
 
 .discussion-card-mvp:hover {
@@ -91,25 +86,17 @@ function handleClick() {
   border-color: var(--primary-color, #4f46e5);
 }
 
-.dark .discussion-card-mvp:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-}
-
 .card-title {
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary, var(--text-primary));
   margin: 0 0 0.5rem 0;
   line-height: 1.4;
 }
 
-.dark .card-title {
-  color: var(--text-primary-dark, #f9fafb);
-}
-
 .card-preview {
   font-size: 0.875rem;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary, var(--text-secondary));
   margin: 0 0 1rem 0;
   line-height: 1.5;
 }
@@ -120,7 +107,7 @@ function handleClick() {
   gap: 1rem;
   margin-bottom: 0.75rem;
   font-size: 0.875rem;
-  color: var(--text-tertiary, #9ca3af);
+  color: var(--text-tertiary, var(--text-muted));
 }
 
 .author {
@@ -143,7 +130,7 @@ function handleClick() {
   align-items: center;
   gap: 0.25rem;
   font-size: 0.875rem;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .stat-icon {

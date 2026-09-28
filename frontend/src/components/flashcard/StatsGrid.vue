@@ -86,17 +86,17 @@ defineEmits<{
 
 /* Stat Card Base Styles */
 .stat-card {
-  background: var(--surface, #ffffff);
+  background: var(--surface, var(--surface));
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
-  border: 1px solid var(--border, #e2e8f0);
+  border: 1px solid var(--border, var(--border));
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
   transition: all 0.2s;
-  color: var(--primary, #3b82f6);
+  color: var(--primary, var(--primary-text));
 }
 
 .stat-card:hover {
@@ -106,13 +106,13 @@ defineEmits<{
 
 /* Primary Card (Due Cards) */
 .stat-card.primary {
-  background: var(--primary, #3b82f6);
-  color: white;
+  background: var(--primary, var(--primary));
+  color: var(--on-primary);
   border: none;
 }
 
 .stat-card.primary:hover {
-  background: var(--primary-hover, #2563eb);
+  background: var(--primary-hover, var(--primary));
 }
 
 /* Icon Styles */
@@ -185,8 +185,8 @@ defineEmits<{
 }
 
 .btn-start:hover:not(:disabled) {
-  background: white;
-  color: var(--primary, #3b82f6);
+  background: var(--surface);
+  color: var(--primary, var(--primary-text));
 }
 
 .btn-start:disabled {
@@ -203,8 +203,8 @@ defineEmits<{
   margin-top: 8px;
   padding: 6px 14px;
   background: transparent;
-  border: 1px solid var(--primary, #3b82f6);
-  color: var(--primary, #3b82f6);
+  border: 1px solid var(--primary, var(--primary));
+  color: var(--primary, var(--primary-text));
   border-radius: 20px;
   cursor: pointer;
   font-weight: 600;
@@ -217,7 +217,7 @@ defineEmits<{
 }
 
 .btn-secondary-action:hover:not(:disabled) {
-  background: var(--primary-soft, #EEF2FF);
+  background: var(--primary-soft, var(--primary-soft));
   transform: translateY(-1px);
 }
 

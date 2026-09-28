@@ -77,13 +77,13 @@ function loadMore() {
   justify-content: center;
   padding: 3rem;
   text-align: center;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid var(--border-color, #e5e7eb);
+  border: 3px solid var(--border-color, var(--border));
   border-top-color: var(--primary-color, #4f46e5);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -108,12 +108,8 @@ function loadMore() {
 
 .empty-state h3 {
   font-size: 1.25rem;
-  color: var(--text-primary, #111827);
+  color: var(--text-primary, var(--text-primary));
   margin: 0 0 0.5rem 0;
-}
-
-.dark .empty-state h3 {
-  color: var(--text-primary-dark, #f9fafb);
 }
 
 .empty-state p {
@@ -133,27 +129,17 @@ function loadMore() {
   gap: 0.5rem;
   min-width: 120px;
   padding: 0.75rem 1.5rem;
-  background: var(--bg-secondary, #f3f4f6);
-  color: var(--text-primary, #111827);
-  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--bg-secondary, var(--surface-muted));
+  color: var(--text-primary, var(--text-primary));
+  border: 1px solid var(--border-color, var(--border));
   border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.dark .load-more-btn {
-  background: var(--bg-tertiary, #374151);
-  color: var(--text-primary-dark, #f9fafb);
-  border-color: var(--border-color-dark, #4b5563);
-}
-
 .load-more-btn:hover:not(:disabled) {
-  background: var(--bg-tertiary, #e5e7eb);
-}
-
-.dark .load-more-btn:hover:not(:disabled) {
-  background: var(--bg-secondary, #4b5563);
+  background: var(--bg-tertiary, var(--surface-hover));
 }
 
 .load-more-btn:disabled {
