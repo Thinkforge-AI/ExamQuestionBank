@@ -293,16 +293,14 @@ const time = (value) => (value ? new Date(value).getTime() : 0)
 const lastActivity = (exam) =>
     Math.max(time(exam.created_at), time(exam.last_result?.completed_at), time(exam.open_attempt?.updated_at))
 
-// The most recently touched unfinished attempt goes on top
-const openAttemptExam = computed(() => {
-    const open = exams.value.filter((e) => e.open_attempt)
-    return open.sort((a, b) => time(b.open_attempt.updated_at) - time(a.open_attempt.updated_at))[0] || null
-})
+// The exam whose `at(exam)` timestamp is latest, among those that have one
+const latestBy = (list, at) =>
+    list.reduce((best, e) => (at(e) && (!best || time(at(e)) > time(at(best))) ? e : best), null)
 
-const lastPractisedExam = computed(() => {
-    const done = exams.value.filter((e) => e.last_result)
-    return done.sort((a, b) => time(b.last_result.completed_at) - time(a.last_result.completed_at))[0] || null
-})
+// The most recently touched unfinished attempt goes on top
+const openAttemptExam = computed(() => latestBy(exams.value, (e) => e.open_attempt?.updated_at))
+
+const lastPractisedExam = computed(() => latestBy(exams.value, (e) => e.last_result?.completed_at))
 
 const sortedExams = computed(() => {
     const list = [...exams.value]
