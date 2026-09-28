@@ -319,6 +319,14 @@ const examService = {
     return { data }
   },
 
+  // 我的考卷: exams the user created, took or is taking, with their open attempt
+  // and latest result (get_my_exams)
+  async getMyExams() {
+    const { data, error } = await supabase.rpc('get_my_exams')
+    if (error) throw new Error(error.message)
+    return { data: Array.isArray(data) ? data : [] }
+  },
+
   // ---- Resumable attempts (exam_attempt) ----------------------------------
 
   // The caller's unfinished attempt for this exam, or null
