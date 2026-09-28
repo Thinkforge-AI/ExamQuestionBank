@@ -15,8 +15,8 @@
 -- p_user_id argument instead of using auth.uid(), and still carry PostgreSQL's
 -- default EXECUTE grant to PUBLIC (which includes the anon role). That means
 -- any caller can read or write another user's conversations and legal notes
--- through /rest/v1/rpc. Fix separately together with the extension, which is
--- the only caller.
+-- through /rest/v1/rpc. Fixed by the next migration,
+-- 20260928130100_secure_note_and_extension_rpcs.sql.
 
 -- conversation_role gains a system role
 ALTER TYPE "public"."conversation_role" ADD VALUE IF NOT EXISTS 'system';
