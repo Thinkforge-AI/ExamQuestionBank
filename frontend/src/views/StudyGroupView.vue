@@ -40,7 +40,7 @@ ul {
   padding: 0;
 }
 li {
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   margin-bottom: 1rem;
   padding: 1rem;
 }

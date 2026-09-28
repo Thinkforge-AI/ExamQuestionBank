@@ -208,14 +208,14 @@ const refreshUsers = () => {
 .section-title {
   font-size: 28px;
   font-weight: 700;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
   margin: 0 0 8px 0;
   letter-spacing: -0.02em;
 }
 
 .section-subtitle {
   font-size: 15px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
   margin: 0;
 }
 
@@ -245,25 +245,25 @@ const refreshUsers = () => {
 }
 
 .action-btn-primary {
-  background: var(--primary, #476996);
-  color: white;
+  background: var(--primary, var(--primary));
+  color: var(--on-primary);
   box-shadow: 0 2px 4px rgba(71, 105, 150, 0.2);
 }
 
 .action-btn-primary:hover {
-  background: var(--primary-hover, #35527a);
+  background: var(--primary-hover, var(--primary-hover));
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(71, 105, 150, 0.3);
 }
 
 .action-btn-secondary {
-  background: #f3f4f6;
-  color: var(--text-secondary, #64748B);
+  background: var(--surface-muted);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .action-btn-secondary:hover {
-  background: #e5e7eb;
-  color: var(--text-primary, #1E293B);
+  background: var(--surface-hover);
+  color: var(--text-primary, var(--text-primary));
   transform: translateY(-1px);
 }
 
@@ -278,7 +278,7 @@ const refreshUsers = () => {
   display: flex;
   gap: 8px;
   padding: 6px;
-  background: #f3f4f6;
+  background: var(--surface-muted);
   border-radius: 12px;
 }
 
@@ -291,7 +291,7 @@ const refreshUsers = () => {
   border-radius: 8px;
   font-size: 15px;
   font-weight: 500;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
   background: transparent;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -303,7 +303,7 @@ const refreshUsers = () => {
 }
 
 .tab-btn:hover {
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
   background: rgba(255, 255, 255, 0.5);
 }
 
@@ -312,8 +312,8 @@ const refreshUsers = () => {
 }
 
 .tab-btn.active {
-  background: white;
-  color: var(--primary, #476996);
+  background: var(--surface);
+  color: var(--primary, var(--primary-text));
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
@@ -376,29 +376,6 @@ const refreshUsers = () => {
 }
 
 /* Dark Mode Overrides */
-:global(.dark) .admin-tabs {
-    background: var(--surface-muted) !important;
-}
-
-:global(.dark) .tab-btn.active {
-    background: var(--surface) !important;
-    color: var(--primary) !important;
-}
-
-:global(.dark) .tab-btn:hover {
-    background: var(--surface) !important;
-    color: var(--text-primary) !important;
-}
-
-:global(.dark) .action-btn-secondary {
-    background: var(--surface-muted) !important;
-    color: var(--text-secondary) !important;
-}
-
-:global(.dark) .action-btn-secondary:hover {
-    background: var(--surface) !important;
-    color: var(--text-primary) !important;
-}
 </style>
 
 

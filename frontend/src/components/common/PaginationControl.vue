@@ -148,10 +148,10 @@ const handlePageJump = () => {
     align-items: center;
     gap: 16px;
     padding: 20px;
-    background: white;
+    background: var(--surface);
     border-radius: 12px 12px 0 0;
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.05);
-    border: 1px solid var(--border, #CBD5E1);
+    border: 1px solid var(--border, var(--border-strong));
     flex-wrap: wrap;
     z-index: 100;
     margin-top: 24px;
@@ -166,7 +166,7 @@ const handlePageJump = () => {
 
 .pagination-info .text-muted {
     font-size: 14px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
     font-weight: 500;
 }
 
@@ -174,23 +174,23 @@ const handlePageJump = () => {
     width: auto;
     min-width: 130px;
     padding: 8px 32px 8px 12px;
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--border);
     border-radius: 8px;
     font-size: 13px;
-    background: #f9fafb;
+    background: var(--bg-page);
     cursor: pointer;
     transition: all 0.2s ease;
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
 }
 
 .page-size-select:focus {
     outline: none;
-    border-color: var(--primary, #476996);
-    background-color: white;
+    border-color: var(--primary, var(--primary));
+    background-color: var(--surface);
     box-shadow: 0 0 0 3px rgba(71, 105, 150, 0.1);
 }
 
@@ -214,10 +214,10 @@ const handlePageJump = () => {
     min-width: 40px;
     height: 40px;
     padding: 0 12px;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
     text-decoration: none;
-    background-color: white;
-    border: 2px solid #e5e7eb;
+    background-color: var(--surface);
+    border: 2px solid var(--border);
     border-radius: 8px;
     font-size: 14px;
     font-weight: 500;
@@ -226,16 +226,16 @@ const handlePageJump = () => {
 }
 
 .page-link:hover:not(:disabled) {
-    background-color: var(--primary-soft, #EEF2FF);
-    border-color: var(--primary, #476996);
-    color: var(--primary, #476996);
+    background-color: var(--primary-soft, var(--primary-soft));
+    border-color: var(--primary, var(--primary));
+    color: var(--primary, var(--primary-text));
     transform: translateY(-1px);
 }
 
 .page-item.active .page-link {
-    background: var(--primary, #476996);
-    border-color: var(--primary, #476996);
-    color: white;
+    background: var(--primary, var(--primary));
+    border-color: var(--primary, var(--primary));
+    color: var(--on-primary);
     box-shadow: 0 2px 4px rgba(71, 105, 150, 0.2);
 }
 
@@ -243,9 +243,9 @@ const handlePageJump = () => {
     cursor: not-allowed;
     opacity: 0.4;
     transform: none;
-    color: var(--text-secondary, #64748B);
-    background-color: #f9fafb;
-    border-color: #e5e7eb;
+    color: var(--text-secondary, var(--text-secondary));
+    background-color: var(--bg-page);
+    border-color: var(--border);
     pointer-events: none;
 }
 
@@ -257,24 +257,24 @@ const handlePageJump = () => {
 
 .page-jumper .text-muted {
     font-size: 14px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
 }
 
 .page-jumper input {
     width: 70px;
     text-align: center;
     padding: 8px 12px;
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--border);
     border-radius: 8px;
     font-size: 14px;
-    background-color: white;
-    color: var(--text-primary, #1E293B);
+    background-color: var(--surface);
+    color: var(--text-primary, var(--text-primary));
     transition: all 0.2s ease;
 }
 
 .page-jumper input:focus {
     outline: none;
-    border-color: var(--primary, #476996);
+    border-color: var(--primary, var(--primary));
     box-shadow: 0 0 0 3px rgba(71, 105, 150, 0.1);
 }
 
@@ -283,8 +283,8 @@ const handlePageJump = () => {
     padding: 8px 16px;
     border: none;
     border-radius: 8px;
-    background: var(--primary, #476996);
-    color: white;
+    background: var(--primary, var(--primary));
+    color: var(--on-primary);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -292,7 +292,7 @@ const handlePageJump = () => {
 }
 
 .page-jumper .btn:hover:not(:disabled) {
-    background: var(--primary-hover, #35527a);
+    background: var(--primary-hover, var(--primary-hover));
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(71, 105, 150, 0.3);
 }

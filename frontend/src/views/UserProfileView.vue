@@ -273,11 +273,6 @@ onMounted(() => {
   padding: 1.5rem;
 }
 
-.dark .profile-card {
-  background: var(--surface);
-  border-color: var(--border);
-}
-
 .section-title {
   font-size: 1.125rem;
   font-weight: 600;
@@ -315,12 +310,6 @@ onMounted(() => {
   color: var(--text-primary);
   transition: all 0.2s ease;
   box-sizing: border-box;
-}
-
-.dark .form-group input {
-  background: var(--surface-muted);
-  border-color: var(--border);
-  color: var(--text-primary);
 }
 
 .form-group input:focus {
@@ -405,7 +394,7 @@ onMounted(() => {
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
   background: var(--primary);
-  color: white;
+  color: var(--on-primary);
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -469,10 +458,6 @@ onMounted(() => {
   padding: 1rem;
   background: var(--bg-page);
   border-radius: 8px;
-}
-
-.dark .stat-item {
-  background: var(--surface-muted);
 }
 
 .stat-icon {

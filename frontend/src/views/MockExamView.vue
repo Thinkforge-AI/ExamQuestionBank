@@ -24,15 +24,15 @@
 .coming-soon {
   text-align: center;
   padding: 3rem;
-  background: var(--bg-secondary, #f3f4f6);
+  background: var(--bg-secondary, var(--surface-muted));
   border-radius: 8px;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary, var(--text-secondary));
 }
 .btn {
   display: inline-block;
   padding: 10px 20px;
-  background: var(--primary, #476996);
-  color: white;
+  background: var(--primary, var(--primary));
+  color: var(--on-primary);
   border-radius: 6px;
   text-decoration: none;
 }

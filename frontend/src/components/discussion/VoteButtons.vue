@@ -61,17 +61,12 @@ function handleVote(value) {
   justify-content: center;
   width: 36px;
   height: 36px;
-  background: var(--bg-secondary, #f3f4f6);
-  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--bg-secondary, var(--surface-muted));
+  border: 1px solid var(--border-color, var(--border));
   border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
-}
-
-.dark .vote-btn {
-  background: var(--bg-tertiary, #374151);
-  border-color: var(--border-color-dark, #4b5563);
 }
 
 .vote-btn:hover:not(:disabled) {
@@ -80,23 +75,23 @@ function handleVote(value) {
 
 .vote-btn.upvote:hover:not(:disabled) {
   background: rgba(16, 185, 129, 0.1);
-  border-color: #10b981;
+  border-color: var(--success);
 }
 
 .vote-btn.downvote:hover:not(:disabled) {
   background: rgba(239, 68, 68, 0.1);
-  border-color: #ef4444;
+  border-color: var(--danger);
 }
 
 .vote-btn.active.upvote {
   background: rgba(16, 185, 129, 0.2);
-  border-color: #10b981;
+  border-color: var(--success);
   box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
 }
 
 .vote-btn.active.downvote {
   background: rgba(239, 68, 68, 0.2);
-  border-color: #ef4444;
+  border-color: var(--danger);
   box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
 }
 
@@ -110,18 +105,14 @@ function handleVote(value) {
   text-align: center;
   font-weight: 600;
   font-size: 0.875rem;
-  color: var(--text-primary, #111827);
-}
-
-.dark .vote-count {
-  color: var(--text-primary-dark, #f9fafb);
+  color: var(--text-primary, var(--text-primary));
 }
 
 .vote-count.positive {
-  color: #10b981;
+  color: var(--success);
 }
 
 .vote-count.negative {
-  color: #ef4444;
+  color: var(--danger);
 }
 </style>

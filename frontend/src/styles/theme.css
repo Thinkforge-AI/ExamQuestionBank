@@ -1,0 +1,253 @@
+/**
+ * Theme tokens — the single source of truth for light and dark mode.
+ *
+ * Components reference semantic tokens only (var(--surface), var(--text-primary) …)
+ * and never hardcode colors or write their own `.dark` overrides. Switching the
+ * theme swaps this one set of values; see composables/useTheme.js.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --bg-page: #F5F7FA;
+  --surface: #FFFFFF;
+  --surface-raised: #FFFFFF;
+  --surface-muted: #EEF1F5;
+  --surface-hover: #E4E9F0;
+
+  /* Lines */
+  --border: #D9DFE7;
+  --border-strong: #B4BECB;
+
+  /* Text */
+  --text-primary: #19212D;
+  --text-secondary: #4A5668;
+  --text-muted: #5D6979;
+
+  /* Primary */
+  --primary: #3D5F8F;
+  --primary-hover: #324F78;
+  --primary-soft: #E7EDF6;
+  --on-primary: #FFFFFF;
+  --primary-text: #36568A;
+  --focus-ring: #6F92C6;
+
+  /* Status */
+  --success: #1D7447;
+  --success-soft: #E3F3E9;
+  --warning: #8F5B00;
+  --warning-soft: #FBEFD9;
+  --danger: #B3261E;
+  --danger-soft: #FCE8E6;
+
+  /* Elevation */
+  --overlay: rgba(16, 24, 40, 0.45);
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.08);
+  --shadow-hover: 0 4px 12px rgba(16, 24, 40, 0.10);
+  --shadow-card: 0 2px 8px rgba(16, 24, 40, 0.06);
+  --shadow-elegant: 0 4px 16px rgba(16, 24, 40, 0.08);
+  --shadow-glow: 0 0 0 3px var(--primary-soft);
+
+  /* Icon tints */
+  --icon-blue-bg: #E7EDF6;
+  --icon-blue-fg: #36568A;
+  --icon-green-bg: #E3F3E9;
+  --icon-green-fg: #1D7447;
+  --icon-purple-bg: #EFEAF8;
+  --icon-purple-fg: #5B4494;
+  --icon-orange-bg: #FCEDE3;
+  --icon-orange-fg: #9A4A12;
+  --icon-amber-bg: #FBEFD9;
+  --icon-amber-fg: #8F5B00;
+
+  --radius: 12px;
+
+  /* Breakpoints (reference only; CSS vars can't be used in @media) */
+  --bp-phone-plus: 480px;
+  --bp-tablet-sm: 640px;
+  --bp-tablet: 768px;
+  --bp-tablet-lg: 1024px;
+  --bp-desktop: 1200px;
+}
+
+:root.dark {
+  color-scheme: dark;
+
+  --bg-page: #0D1219;
+  --surface: #151C26;
+  --surface-raised: #1C2531;
+  --surface-muted: #1F2935;
+  --surface-hover: #273342;
+
+  --border: #2A3544;
+  --border-strong: #3E4B5D;
+
+  --text-primary: #E7EBF1;
+  --text-secondary: #AEB8C6;
+  --text-muted: #8793A4;
+
+  --primary: #82A9DD;
+  --primary-hover: #9BBBE7;
+  --primary-soft: #1B2A40;
+  --on-primary: #0C1420;
+  --primary-text: #92B6E8;
+  --focus-ring: #9CBEEB;
+
+  --success: #62C991;
+  --success-soft: #13281D;
+  --warning: #E2B35C;
+  --warning-soft: #2B2212;
+  --danger: #F2877D;
+  --danger-soft: #351A18;
+
+  --overlay: rgba(0, 0, 0, 0.6);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-elegant: 0 4px 20px rgba(0, 0, 0, 0.45);
+
+  --icon-blue-bg: #1B2A40;
+  --icon-blue-fg: #92B6E8;
+  --icon-green-bg: #13281D;
+  --icon-green-fg: #62C991;
+  --icon-purple-bg: #251E38;
+  --icon-purple-fg: #B7A3E8;
+  --icon-orange-bg: #2E1D12;
+  --icon-orange-fg: #EFA06A;
+  --icon-amber-bg: #2B2212;
+  --icon-amber-fg: #E2B35C;
+}
+
+/* Older names still referenced by components — aliases, not separate colors. */
+:root {
+  --destructive: var(--danger);
+  --destructive-soft: var(--danger-soft);
+  --error: var(--danger);
+  --primary-color: var(--primary);
+  --primary-dark: var(--primary-hover);
+  --accent: var(--primary);
+  --accent-hover: var(--primary-hover);
+  --bg-primary: var(--surface);
+  --bg-secondary: var(--bg-page);
+  --bg-tertiary: var(--surface-muted);
+  --bg-soft: var(--surface-muted);
+  --border-color: var(--border);
+  --text-tertiary: var(--text-muted);
+  --nav-surface: var(--surface);
+  --nav-border: var(--border);
+  --nav-shadow: var(--shadow);
+  --glass-bg: var(--surface);
+  --glass-border: var(--border);
+  --gradient-hero: var(--bg-page);
+  --gradient-card: var(--surface);
+}
+
+/* Bootstrap 5.3 reads these; data-bs-theme is set alongside .dark */
+:root,
+:root.dark {
+  --bs-body-bg: var(--bg-page);
+  --bs-body-color: var(--text-primary);
+  --bs-emphasis-color: var(--text-primary);
+  --bs-secondary-color: var(--text-secondary);
+  --bs-tertiary-color: var(--text-muted);
+  --bs-secondary-bg: var(--surface-muted);
+  --bs-tertiary-bg: var(--surface-muted);
+  --bs-border-color: var(--border);
+  --bs-link-color: var(--primary-text);
+  --bs-link-hover-color: var(--primary-hover);
+  --bs-link-color-rgb: 54, 86, 138;
+  --bs-primary-rgb: 61, 95, 143;
+  --bs-focus-ring-color: color-mix(in srgb, var(--focus-ring) 40%, transparent);
+}
+
+:root.dark {
+  --bs-link-color-rgb: 146, 182, 232;
+  --bs-primary-rgb: 130, 169, 221;
+}
+
+html,
+body {
+  background: var(--bg-page);
+  color: var(--text-primary);
+}
+
+.card,
+.modal-content,
+.dropdown-menu,
+.popover,
+.offcanvas {
+  --bs-card-bg: var(--surface);
+  --bs-modal-bg: var(--surface-raised);
+  --bs-dropdown-bg: var(--surface-raised);
+  --bs-dropdown-link-color: var(--text-primary);
+  --bs-dropdown-link-hover-bg: var(--surface-hover);
+  --bs-popover-bg: var(--surface-raised);
+  --bs-offcanvas-bg: var(--surface-raised);
+  --bs-card-border-color: var(--border);
+  --bs-modal-border-color: var(--border);
+  --bs-dropdown-border-color: var(--border);
+}
+
+.form-control,
+.form-select {
+  background-color: var(--surface);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.form-control::placeholder {
+  color: var(--text-muted);
+}
+
+.text-muted,
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Only animate the swap when the user toggles, never on first paint. */
+:root.theme-transition,
+:root.theme-transition *,
+:root.theme-transition *::before,
+:root.theme-transition *::after {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root.theme-transition,
+  :root.theme-transition * {
+    transition: none !important;
+  }
+}
+
+/* Paper is white: print always uses the light palette. */
+@media print {
+  :root.dark {
+    color-scheme: light;
+    --bg-page: #FFFFFF;
+    --surface: #FFFFFF;
+    --surface-raised: #FFFFFF;
+    --surface-muted: #EEF1F5;
+    --surface-hover: #E4E9F0;
+    --border: #D9DFE7;
+    --border-strong: #B4BECB;
+    --text-primary: #19212D;
+    --text-secondary: #4A5668;
+    --text-muted: #5D6979;
+    --primary: #3D5F8F;
+    --primary-soft: #E7EDF6;
+    --on-primary: #FFFFFF;
+    --primary-text: #36568A;
+    --success: #1D7447;
+    --success-soft: #E3F3E9;
+    --warning: #8F5B00;
+    --warning-soft: #FBEFD9;
+    --danger: #B3261E;
+    --danger-soft: #FCE8E6;
+  }
+}

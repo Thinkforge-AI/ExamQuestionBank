@@ -119,21 +119,21 @@ function handleOpenNote() {
 
 .question-item.active {
   border-color: var(--primary);
-  background: #eef3f9;
+  background: var(--primary-soft);
 }
 
 .question-item.checked {
-  background: #f0f9ff;
+  background: var(--primary-soft);
 }
 
 .question-item.pending {
   border-color: #d89b32;
   border-style: dashed;
-  background: #fff7eb;
+  background: var(--warning-soft);
 }
 
 .question-item.pending.active {
-  background: #fdeed9;
+  background: var(--warning-soft);
 }
 
 .item-checkbox {
@@ -150,7 +150,7 @@ function handleOpenNote() {
   align-items: center;
   justify-content: center;
   background: var(--primary);
-  color: white;
+  color: var(--on-primary);
   border-radius: 10px;
   font-weight: 700;
   font-size: 13px;
@@ -180,11 +180,11 @@ function handleOpenNote() {
 .question-item.has-pending-edit:not(.pending) {
   border-color: var(--primary);
   border-style: dashed;
-  background: #eef3f9;
+  background: var(--primary-soft);
 }
 
 .question-item.has-pending-edit:not(.pending).active {
-  background: #e5edf7;
+  background: var(--primary-soft);
 }
 
 .question-number.has-pending-edit {
@@ -275,7 +275,7 @@ function handleOpenNote() {
     opacity: 1;
     width: 28px;
     height: 28px;
-    background: #ffe5e5; /* Softer background for always-visible */
+    background: var(--danger-soft); /* Softer background for always-visible */
     color: #c0392b;
   }
 }

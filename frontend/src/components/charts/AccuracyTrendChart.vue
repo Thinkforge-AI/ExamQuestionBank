@@ -191,8 +191,8 @@ const chartOptions = {
 
 .time-range-selector button {
     padding: 4px 12px;
-    border: 1px solid #e2e8f0;
-    background: #fff;
+    border: 1px solid var(--border);
+    background: var(--surface);
     border-radius: 6px;
     font-size: 12px;
     color: var(--text-secondary);
@@ -201,12 +201,12 @@ const chartOptions = {
 }
 
 .time-range-selector button:hover {
-    background: #f8fafc;
+    background: var(--bg-page);
 }
 
 .time-range-selector button.active {
     background: var(--primary);
-    color: #fff;
+    color: var(--on-primary);
     border-color: var(--primary);
 }
 

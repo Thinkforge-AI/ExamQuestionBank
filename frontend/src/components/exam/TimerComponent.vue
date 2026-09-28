@@ -141,18 +141,18 @@ defineExpose({
 }
 
 .timer-component.normal {
-  color: #2563eb;
-  background: #eff6ff;
+  color: var(--primary-text);
+  background: var(--primary-soft);
 }
 
 .timer-component.warning {
-  color: #d97706;
-  background: #fef3c7;
+  color: var(--warning);
+  background: var(--warning-soft);
 }
 
 .timer-component.danger {
-  color: #dc2626;
-  background: #fee2e2;
+  color: var(--danger);
+  background: var(--danger-soft);
   animation: pulse 1s infinite;
 }
 
@@ -185,22 +185,22 @@ defineExpose({
 
 /* Focus styles for accessibility */
 .timer-component:focus {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .timer-component.normal {
-    border: 2px solid #2563eb;
+    border: 2px solid var(--primary);
   }
   
   .timer-component.warning {
-    border: 2px solid #d97706;
+    border: 2px solid var(--warning);
   }
   
   .timer-component.danger {
-    border: 2px solid #dc2626;
+    border: 2px solid var(--danger);
   }
 }
 

@@ -243,7 +243,7 @@ export default {
   justify-content: center;
   padding: 48px 24px;
   text-align: center;
-  background: #fff;
+  background: var(--surface);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   max-width: 500px;
@@ -257,13 +257,13 @@ export default {
 .error-title {
   font-size: 24px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0 0 12px 0;
 }
 
 .error-message {
   font-size: 16px;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin: 0 0 24px 0;
   line-height: 1.5;
 }
@@ -286,37 +286,37 @@ export default {
 }
 
 .btn:focus {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
 .btn-primary {
-  background: #2563eb;
-  color: white;
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 .btn-primary:hover {
-  background: #1d4ed8;
+  background: var(--primary-hover);
 }
 
 .btn-secondary {
-  background: #f3f4f6;
-  color: #374151;
-  border: 1px solid #d1d5db;
+  background: var(--surface-muted);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
 }
 
 .btn-secondary:hover {
-  background: #e5e7eb;
+  background: var(--surface-hover);
 }
 
 .btn-outline {
   background: transparent;
-  color: #6b7280;
-  border: 1px solid #d1d5db;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-strong);
 }
 
 .btn-outline:hover {
-  background: #f9fafb;
+  background: var(--bg-page);
 }
 
 .error-details {
@@ -327,22 +327,22 @@ export default {
 
 .error-details summary {
   cursor: pointer;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 14px;
   padding: 8px;
 }
 
 .error-details summary:hover {
-  color: #374151;
+  color: var(--text-primary);
 }
 
 .error-details pre {
-  background: #f3f4f6;
+  background: var(--surface-muted);
   padding: 16px;
   border-radius: 6px;
   overflow-x: auto;
   font-size: 12px;
-  color: #374151;
+  color: var(--text-primary);
   margin-top: 8px;
 }
 
@@ -379,7 +379,7 @@ export default {
   
   .error-icon svg circle,
   .error-icon svg path {
-    stroke: #dc2626;
+    stroke: var(--danger);
     stroke-width: 3;
   }
 }

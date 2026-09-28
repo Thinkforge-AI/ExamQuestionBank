@@ -740,7 +740,7 @@ onMounted(async () => {
 <style scoped>
 .user-exam-view {
     min-height: 100vh;
-    background: var(--bg-page, #F8FAFC);
+    background: var(--bg-page, var(--bg-page));
     padding: 32px 0;
 }
 
@@ -753,13 +753,13 @@ onMounted(async () => {
 .page-title {
     font-size: 32px;
     font-weight: 700;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
     margin-bottom: 8px;
 }
 
 .page-subtitle {
     font-size: 16px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
     margin-bottom: 32px;
 }
 
@@ -768,7 +768,7 @@ onMounted(async () => {
     display: flex;
     gap: 8px;
     margin-bottom: 24px;
-    border-bottom: 2px solid #e5e7eb;
+    border-bottom: 2px solid var(--border);
 }
 
 .tab-btn {
@@ -779,7 +779,7 @@ onMounted(async () => {
     background: transparent;
     border: none;
     border-bottom: 3px solid transparent;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
@@ -788,13 +788,13 @@ onMounted(async () => {
 }
 
 .tab-btn:hover {
-    color: var(--primary, #476996);
-    background: var(--primary-soft, #EEF2FF);
+    color: var(--primary, var(--primary-text));
+    background: var(--primary-soft, var(--primary-soft));
 }
 
 .tab-btn.active {
-    color: var(--primary, #476996);
-    border-bottom-color: var(--primary, #476996);
+    color: var(--primary, var(--primary-text));
+    border-bottom-color: var(--primary, var(--primary));
 }
 
 .tab-content {
@@ -815,7 +815,7 @@ onMounted(async () => {
 
 /* Exam List Section */
 .exam-list-section {
-    background: var(--surface, #FFFFFF);
+    background: var(--surface, var(--surface));
     border-radius: 12px;
     padding: 24px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -831,7 +831,7 @@ onMounted(async () => {
 .section-title {
     font-size: 18px;
     font-weight: 600;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
     margin: 0;
 }
 
@@ -851,15 +851,15 @@ onMounted(async () => {
     flex-direction: column;
     height: 100%;
     min-height: 200px;
-    background: #f9fafb;
-    border: 2px solid #e5e7eb;
+    background: var(--bg-page);
+    border: 2px solid var(--border);
     border-radius: 12px;
     padding: 20px;
     transition: all 0.2s;
 }
 
 .exam-card:hover {
-    border-color: var(--primary, #476996);
+    border-color: var(--primary, var(--primary));
     box-shadow: 0 4px 12px rgba(71, 105, 150, 0.15);
     transform: translateY(-2px);
 }
@@ -871,7 +871,7 @@ onMounted(async () => {
 .exam-name {
     font-size: 18px;
     font-weight: 600;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
     margin: 0 0 12px 0;
     line-height: 1.4;
     display: -webkit-box;
@@ -893,7 +893,7 @@ onMounted(async () => {
     align-items: center;
     gap: 6px;
     font-size: 13px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
 }
 
 .meta-item svg {
@@ -906,12 +906,12 @@ onMounted(async () => {
     justify-content: space-between;
     padding-top: 16px;
     margin-top: auto;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid var(--border);
 }
 
 .exam-date {
     font-size: 12px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
 }
 
 .exam-actions {
@@ -921,7 +921,7 @@ onMounted(async () => {
 
 /* Filters Section */
 .filters-section {
-    background: var(--surface, #FFFFFF);
+    background: var(--surface, var(--surface));
     border-radius: 12px;
     padding: 24px;
     margin-bottom: 24px;
@@ -948,24 +948,24 @@ onMounted(async () => {
 .filter-label {
     font-size: 14px;
     font-weight: 500;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
 }
 
 .filter-select,
 .filter-input {
     padding: 10px 12px;
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--border);
     border-radius: 8px;
     font-size: 14px;
-    background: #f9fafb;
+    background: var(--bg-page);
     transition: all 0.2s;
 }
 
 .filter-select:focus,
 .filter-input:focus {
     outline: none;
-    border-color: var(--primary, #476996);
-    background: white;
+    border-color: var(--primary, var(--primary));
+    background: var(--surface);
     box-shadow: 0 0 0 3px rgba(71, 105, 150, 0.1);
 }
 
@@ -981,8 +981,8 @@ onMounted(async () => {
 
 .search-btn {
     padding: 10px 16px;
-    background: var(--primary, #476996);
-    color: white;
+    background: var(--primary, var(--primary));
+    color: var(--on-primary);
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -993,7 +993,7 @@ onMounted(async () => {
 }
 
 .search-btn:hover:not(:disabled) {
-    background: var(--primary-hover, #35527a);
+    background: var(--primary-hover, var(--primary-hover));
 }
 
 .search-btn:disabled {
@@ -1010,12 +1010,12 @@ onMounted(async () => {
     align-items: center;
     justify-content: space-between;
     padding-top: 16px;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid var(--border);
 }
 
 .result-count {
     font-size: 14px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
     font-weight: 500;
 }
 
@@ -1049,7 +1049,7 @@ onMounted(async () => {
 
 /* Questions Section */
 .questions-section {
-    background: var(--surface, #FFFFFF);
+    background: var(--surface, var(--surface));
     border-radius: 12px;
     padding: 24px;
     margin-bottom: 24px;
@@ -1068,14 +1068,14 @@ onMounted(async () => {
     align-items: center;
     justify-content: center;
     padding: 64px 24px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
 }
 
 .spinner {
     width: 48px;
     height: 48px;
-    border: 4px solid #e5e7eb;
-    border-top-color: var(--primary, #476996);
+    border: 4px solid var(--border);
+    border-top-color: var(--primary, var(--primary));
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 16px;
@@ -1107,20 +1107,20 @@ onMounted(async () => {
     display: flex;
     gap: 16px;
     padding: 16px;
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--border);
     border-radius: 10px;
-    background: #f9fafb;
+    background: var(--bg-page);
     transition: all 0.2s;
 }
 
 .question-card:hover {
-    border-color: #cbd5e1;
-    background: white;
+    border-color: var(--border-strong);
+    background: var(--surface);
 }
 
 .question-card.selected {
-    border-color: var(--primary, #476996);
-    background: var(--primary-soft, #EEF2FF);
+    border-color: var(--primary, var(--primary));
+    background: var(--primary-soft, var(--primary-soft));
 }
 
 .question-checkbox {
@@ -1132,7 +1132,7 @@ onMounted(async () => {
     width: 20px;
     height: 20px;
     cursor: pointer;
-    accent-color: var(--primary, #476996);
+    accent-color: var(--primary, var(--primary));
 }
 
 .question-content {
@@ -1149,7 +1149,7 @@ onMounted(async () => {
 
 .question-text {
     font-size: 15px;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
     line-height: 1.6;
     cursor: pointer;
     display: block;
@@ -1169,23 +1169,23 @@ onMounted(async () => {
 }
 
 .meta-badge.subject {
-    background: #dbeafe;
-    color: #1e40af;
+    background: var(--primary-soft);
+    color: var(--primary-text);
 }
 
 .meta-badge.difficulty.easy {
-    background: #dcfce7;
-    color: #16a34a;
+    background: var(--success-soft);
+    color: var(--success);
 }
 
 .meta-badge.difficulty.medium {
-    background: #fef3c7;
-    color: #d97706;
+    background: var(--warning-soft);
+    color: var(--warning);
 }
 
 .meta-badge.difficulty.hard {
-    background: #fee2e2;
-    color: #dc2626;
+    background: var(--danger-soft);
+    color: var(--danger);
 }
 
 .question-tags {
@@ -1196,7 +1196,7 @@ onMounted(async () => {
 
 .tag {
     padding: 3px 8px;
-    background: #e0e7ff;
+    background: var(--primary-soft);
     color: #4f46e5;
     border-radius: 4px;
     font-size: 11px;
@@ -1205,7 +1205,7 @@ onMounted(async () => {
 
 /* Exam Config Section */
 .exam-config-section {
-    background: var(--surface, #FFFFFF);
+    background: var(--surface, var(--surface));
     border-radius: 12px;
     padding: 24px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -1223,28 +1223,28 @@ onMounted(async () => {
     display: block;
     font-size: 14px;
     font-weight: 500;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
     margin-bottom: 8px;
 }
 
 .required {
-    color: #dc2626;
+    color: var(--danger);
 }
 
 .form-input {
     width: 100%;
     padding: 12px 14px;
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--border);
     border-radius: 8px;
     font-size: 14px;
-    background: #f9fafb;
+    background: var(--bg-page);
     transition: all 0.2s;
 }
 
 .form-input:focus {
     outline: none;
-    border-color: var(--primary, #476996);
-    background: white;
+    border-color: var(--primary, var(--primary));
+    background: var(--surface);
     box-shadow: 0 0 0 3px rgba(71, 105, 150, 0.1);
 }
 
@@ -1255,8 +1255,8 @@ onMounted(async () => {
 .error-message {
     margin-top: 16px;
     padding: 12px 16px;
-    background: #fee2e2;
-    color: #dc2626;
+    background: var(--danger-soft);
+    color: var(--danger);
     border-radius: 8px;
     font-size: 14px;
 }
@@ -1282,24 +1282,24 @@ onMounted(async () => {
 }
 
 .btn-primary {
-    background: var(--primary, #476996);
-    color: white;
+    background: var(--primary, var(--primary));
+    color: var(--on-primary);
     box-shadow: 0 2px 4px rgba(71, 105, 150, 0.2);
 }
 
 .btn-primary:hover:not(:disabled) {
-    background: var(--primary-hover, #35527a);
+    background: var(--primary-hover, var(--primary-hover));
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(71, 105, 150, 0.3);
 }
 
 .btn-secondary {
-    background: #f1f5f9;
-    color: var(--text-primary, #1E293B);
+    background: var(--surface-muted);
+    color: var(--text-primary, var(--text-primary));
 }
 
 .btn-secondary:hover:not(:disabled) {
-    background: #e2e8f0;
+    background: var(--surface-hover);
 }
 
 .btn-ghost {
@@ -1314,15 +1314,15 @@ onMounted(async () => {
 }
 
 .btn-danger {
-    background: #fee;
-    color: #dc2626;
-    border: 1px solid #fecaca;
+    background: var(--danger-soft);
+    color: var(--danger);
+    border: 1px solid var(--danger);
 }
 
 .btn-danger:hover:not(:disabled) {
-    background: #dc2626;
-    color: white;
-    border-color: #dc2626;
+    background: var(--danger);
+    color: var(--on-primary);
+    border-color: var(--danger);
     transform: translateY(-1px);
     box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
 }
@@ -1397,7 +1397,7 @@ onMounted(async () => {
 }
 
 .mock-exam-dialog {
-    background: white;
+    background: var(--surface);
     border-radius: 16px;
     width: 100%;
     max-width: 560px;
@@ -1412,21 +1412,21 @@ onMounted(async () => {
     justify-content: space-between;
     align-items: center;
     padding: 20px 24px;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border);
 }
 
 .dialog-header h3 {
     margin: 0;
     font-size: 20px;
     font-weight: 600;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
 }
 
 .btn-close {
     background: none;
     border: none;
     font-size: 24px;
-    color: #9ca3af;
+    color: var(--text-muted);
     cursor: pointer;
     padding: 4px 8px;
     border-radius: 4px;
@@ -1434,8 +1434,8 @@ onMounted(async () => {
 }
 
 .btn-close:hover {
-    background: #f3f4f6;
-    color: #6b7280;
+    background: var(--surface-muted);
+    color: var(--text-secondary);
 }
 
 .dialog-body {
@@ -1445,7 +1445,7 @@ onMounted(async () => {
 }
 
 .dialog-desc {
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
     margin-bottom: 20px;
     font-size: 14px;
 }
@@ -1458,7 +1458,7 @@ onMounted(async () => {
 .question-count-setting h4 {
     font-size: 14px;
     font-weight: 600;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
     margin: 0 0 12px 0;
 }
 
@@ -1476,26 +1476,26 @@ onMounted(async () => {
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--border);
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .exam-select-item:hover {
-    border-color: var(--primary, #476996);
-    background: var(--primary-soft, #EEF2FF);
+    border-color: var(--primary, var(--primary));
+    background: var(--primary-soft, var(--primary-soft));
 }
 
 .exam-select-item.selected {
-    border-color: var(--primary, #476996);
-    background: var(--primary-soft, #EEF2FF);
+    border-color: var(--primary, var(--primary));
+    background: var(--primary-soft, var(--primary-soft));
 }
 
 .exam-select-item input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    accent-color: var(--primary, #476996);
+    accent-color: var(--primary, var(--primary));
 }
 
 .exam-select-info {
@@ -1509,12 +1509,12 @@ onMounted(async () => {
 .exam-select-name {
     font-size: 14px;
     font-weight: 500;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
 }
 
 .exam-select-meta {
     font-size: 13px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
 }
 
 .question-count-setting {
@@ -1530,24 +1530,24 @@ onMounted(async () => {
 
 .count-btn {
     padding: 8px 16px;
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--border);
     border-radius: 8px;
-    background: white;
+    background: var(--surface);
     font-size: 14px;
     font-weight: 500;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .count-btn:hover {
-    border-color: var(--primary, #476996);
+    border-color: var(--primary, var(--primary));
 }
 
 .count-btn.active {
-    border-color: var(--primary, #476996);
-    background: var(--primary, #476996);
-    color: white;
+    border-color: var(--primary, var(--primary));
+    background: var(--primary, var(--primary));
+    color: var(--on-primary);
 }
 
 .custom-count {
@@ -1555,13 +1555,13 @@ onMounted(async () => {
     align-items: center;
     gap: 8px;
     font-size: 14px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
 }
 
 .count-input {
     width: 80px;
     padding: 8px 12px;
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--border);
     border-radius: 6px;
     font-size: 14px;
     text-align: center;
@@ -1569,13 +1569,13 @@ onMounted(async () => {
 
 .count-input:focus {
     outline: none;
-    border-color: var(--primary, #476996);
+    border-color: var(--primary, var(--primary));
 }
 
 .available-count {
     padding: 12px 16px;
-    background: #dcfce7;
-    color: #16a34a;
+    background: var(--success-soft);
+    color: var(--success);
     border-radius: 8px;
     font-size: 14px;
     font-weight: 500;
@@ -1584,8 +1584,8 @@ onMounted(async () => {
 .no-exams-warning,
 .no-questions-warning {
     padding: 16px;
-    background: #fef3c7;
-    color: #d97706;
+    background: var(--warning-soft);
+    color: var(--warning);
     border-radius: 8px;
     font-size: 14px;
     text-align: center;
@@ -1597,7 +1597,7 @@ onMounted(async () => {
     justify-content: center;
     gap: 12px;
     padding: 32px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
 }
 
 .dialog-footer {
@@ -1605,86 +1605,9 @@ onMounted(async () => {
     justify-content: flex-end;
     gap: 12px;
     padding: 16px 24px;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid var(--border);
 }
 
 /* Dark Mode Overrides */
-:global(.dark) .exam-card,
-:global(.dark) .question-card,
-:global(.dark) .exam-list-section,
-:global(.dark) .filters-section,
-:global(.dark) .questions-section,
-:global(.dark) .exam-config-section {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .exam-card:hover,
-:global(.dark) .question-card:hover {
-    background: var(--surface-muted) !important;
-    border-color: var(--primary) !important;
-}
-
-:global(.dark) .tabs-container,
-:global(.dark) .exam-card-footer,
-:global(.dark) .filter-actions,
-:global(.dark) .dialog-footer {
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .filter-select,
-:global(.dark) .filter-input,
-:global(.dark) .form-input {
-    background: var(--surface-muted) !important;
-    border-color: var(--border) !important;
-    color: var(--text-primary) !important;
-}
-
-:global(.dark) .filter-select:focus,
-:global(.dark) .filter-input:focus,
-:global(.dark) .form-input:focus {
-    background: var(--surface) !important;
-    border-color: var(--primary) !important;
-}
-
-:global(.dark) .exam-select-item {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .exam-select-item:hover,
-:global(.dark) .exam-select-item.selected {
-    background: var(--surface-muted) !important;
-}
-
-:global(.dark) .modal-content,
-:global(.dark) .mock-exam-dialog {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .btn-secondary {
-    background: var(--surface-muted) !important;
-    color: var(--text-primary) !important;
-}
-
-:global(.dark) .btn-danger {
-    background: var(--destructive-soft) !important;
-    border-color: var(--destructive) !important;
-}
-
-:global(.dark) .error-message {
-    background: var(--destructive-soft) !important;
-    color: var(--destructive) !important;
-}
-
-:global(.dark) .meta-badge {
-    background: var(--surface-muted) !important;
-}
-
-:global(.dark) .tag {
-    background: var(--primary-soft) !important;
-    color: var(--primary) !important;
-}
 </style>
 

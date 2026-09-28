@@ -755,8 +755,8 @@ defineExpose({
   display: flex;
   gap: 6px;
   padding: 6px;
-  background: #FAFAFA;
-  border: 1px solid #E8E8E8;
+  background: var(--bg-page);
+  border: 1px solid var(--border);
   border-radius: 10px;
   width: fit-content;
 }
@@ -772,21 +772,21 @@ defineExpose({
   font-family: 'Space Grotesk', 'Inter', sans-serif;
   font-size: 14px;
   font-weight: normal;
-  color: #7A7A7A;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .tab-btn:hover {
-  color: #0D0D0D;
+  color: var(--text-primary);
   background: rgba(0, 0, 0, 0.03);
 }
 
 .tab-btn.active {
-  background: #FFFFFF;
-  color: #0D0D0D;
+  background: var(--surface);
+  color: var(--text-primary);
   font-weight: 600;
-  border: 1px solid #E8E8E8;
+  border: 1px solid var(--border);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
@@ -798,8 +798,8 @@ defineExpose({
   height: 20px;
   padding: 0 6px;
   border-radius: 999px;
-  background: #f59e0b;
-  color: #FFFFFF;
+  background: var(--warning);
+  color: var(--on-primary);
   font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 700;
@@ -817,24 +817,24 @@ defineExpose({
   gap: 6px;
   padding: 8px 16px;
   border-radius: 8px;
-  border: 1px solid #E8E8E8;
-  background: white;
+  border: 1px solid var(--border);
+  background: var(--surface);
   font-size: 13px;
   font-weight: 500;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .header-action-btn:hover {
-  background: #F8FAFC;
-  border-color: #CBD5E1;
+  background: var(--bg-page);
+  border-color: var(--border-strong);
 }
 
 .header-action-btn.primary {
-  background: #476996;
-  color: white;
-  border-color: #476996;
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
 }
 
 .header-action-btn.primary:hover {
@@ -856,7 +856,7 @@ defineExpose({
 .content-text {
   font-family: 'Inter', sans-serif;
   font-size: 14px;
-  color: #0D0D0D;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -865,7 +865,7 @@ defineExpose({
 .content-meta {
   font-family: 'Inter', sans-serif;
   font-size: 12px;
-  color: #94A3B8;
+  color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -878,11 +878,11 @@ defineExpose({
   justify-content: center;
   padding: 2px 8px;
   border-radius: 6px;
-  background: #F1F5F9;
+  background: var(--surface-muted);
   font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #475569;
+  color: var(--text-secondary);
 }
 
 /* ── Difficulty Badges ── */
@@ -898,22 +898,22 @@ defineExpose({
 }
 
 .difficulty-badge.easy {
-  background: #DCFCE7;
-  color: #15803D;
+  background: var(--success-soft);
+  color: var(--success);
 }
 
 .difficulty-badge.normal {
-  background: #FEF9C3;
+  background: var(--warning-soft);
   color: #A16207;
 }
 
 .difficulty-badge.hard {
-  background: #FEE2E2;
-  color: #DC2626;
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
 .difficulty-badge.insane {
-  background: #F3E8FF;
+  background: var(--icon-purple-bg);
   color: #7C3AED;
 }
 
@@ -921,7 +921,7 @@ defineExpose({
 .created-text {
   font-family: 'Inter', sans-serif;
   font-size: 12px;
-  color: #0D0D0D;
+  color: var(--text-primary);
 }
 
 /* ── Row Actions ── */
@@ -938,34 +938,34 @@ defineExpose({
   justify-content: center;
   width: 28px;
   height: 28px;
-  border: 1px solid #E8E8E8;
+  border: 1px solid var(--border);
   border-radius: 8px;
   background: transparent;
-  color: #7A7A7A;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
   padding: 0;
 }
 
 .row-actions .action-btn:hover {
-  background: #F8FAFC;
-  color: #1E293B;
-  border-color: #94A3B8;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
 }
 
 .row-actions .action-btn.danger:hover {
-  background: #FEE2E2;
-  color: #DC2626;
+  background: var(--danger-soft);
+  color: var(--danger);
   border-color: #FCA5A5;
 }
 
 .row-actions .action-btn.save-btn {
-  color: #476996;
+  color: var(--primary-text);
 }
 
 .row-actions .action-btn.save-btn:hover {
-  background: #EEF2FF;
-  border-color: #476996;
+  background: var(--primary-soft);
+  border-color: var(--primary);
 }
 
 .row-actions .action-btn i {
@@ -979,9 +979,9 @@ defineExpose({
   justify-content: space-between;
   height: 48px;
   padding: 0 24px;
-  background: #FEF3C7;
+  background: var(--warning-soft);
   border-radius: 8px 8px 0 0;
-  border-bottom: 2px solid #F59E0B;
+  border-bottom: 2px solid var(--warning);
   margin-bottom: -48px;
   position: relative;
   z-index: 1;
@@ -1000,22 +1000,22 @@ defineExpose({
   width: 28px;
   height: 28px;
   border-radius: 6px;
-  background: #FDE68A;
+  background: var(--warning-soft);
   font-size: 14px;
-  color: #D97706;
+  color: var(--warning);
 }
 
 .bar-msg {
   font-family: 'Inter', sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #92400E;
+  color: var(--warning);
 }
 
 .bar-detail {
   font-family: 'Inter', sans-serif;
   font-size: 12px;
-  color: #B45309;
+  color: var(--warning);
 }
 
 .bar-right {
@@ -1040,12 +1040,12 @@ defineExpose({
 
 .bar-btn.outline {
   background: transparent;
-  border: 1px solid #D97706;
-  color: #92400E;
+  border: 1px solid var(--warning);
+  color: var(--warning);
 }
 
 .bar-btn.outline:hover {
-  background: #FDE68A;
+  background: var(--warning-soft);
 }
 
 .bar-btn.filled {
@@ -1108,7 +1108,7 @@ defineExpose({
 }
 
 .modal-panel {
-  background: #FFFFFF;
+  background: var(--surface);
   border-radius: 16px;
   width: 100%;
   max-width: 900px;
@@ -1123,7 +1123,7 @@ defineExpose({
   align-items: flex-start;
   justify-content: space-between;
   padding: 24px 28px 16px;
-  border-bottom: 1px solid #E8E8E8;
+  border-bottom: 1px solid var(--border);
 }
 
 .modal-title-row {
@@ -1134,7 +1134,7 @@ defineExpose({
 
 .modal-title-row>i {
   font-size: 22px;
-  color: #476996;
+  color: var(--primary-text);
 }
 
 .modal-title {
@@ -1142,14 +1142,14 @@ defineExpose({
   font-family: 'Space Grotesk', 'Inter', sans-serif;
   font-size: 20px;
   font-weight: 600;
-  color: #0D0D0D;
+  color: var(--text-primary);
 }
 
 .modal-subtitle {
   margin: 2px 0 0;
   font-family: 'Inter', sans-serif;
   font-size: 13px;
-  color: #7A7A7A;
+  color: var(--text-secondary);
 }
 
 .modal-close-btn {
@@ -1161,14 +1161,14 @@ defineExpose({
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #7A7A7A;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .modal-close-btn:hover {
-  background: #F1F3F5;
-  color: #0D0D0D;
+  background: var(--surface-muted);
+  color: var(--text-primary);
 }
 
 .modal-panel-body {
@@ -1182,7 +1182,7 @@ defineExpose({
   align-items: center;
   justify-content: space-between;
   padding: 16px 28px;
-  border-top: 1px solid #E8E8E8;
+  border-top: 1px solid var(--border);
   gap: 16px;
 }
 
@@ -1192,7 +1192,7 @@ defineExpose({
   gap: 8px;
   font-family: 'Inter', sans-serif;
   font-size: 12px;
-  color: #7A7A7A;
+  color: var(--text-secondary);
 }
 
 .footer-info i {
@@ -1220,26 +1220,26 @@ defineExpose({
 }
 
 .footer-btn.secondary {
-  background: #F1F3F5;
+  background: var(--surface-muted);
   color: #495057;
 }
 
 .footer-btn.secondary:hover {
-  background: #DEE2E6;
+  background: var(--surface-hover);
 }
 
 .footer-btn.pending {
-  background: #FEF3C7;
-  color: #92400E;
+  background: var(--warning-soft);
+  color: var(--warning);
 }
 
 .footer-btn.pending:hover {
-  background: #FDE68A;
+  background: var(--warning-soft);
 }
 
 .footer-btn.primary {
-  background: #476996;
-  color: #FFFFFF;
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 .footer-btn.primary:hover {

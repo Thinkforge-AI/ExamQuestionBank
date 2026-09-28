@@ -232,7 +232,7 @@ onMounted(() => {
   max-width: 1200px;
   margin: 0 auto;
   height: calc(100vh - 150px);
-  background: var(--bg-soft, #f8fafc);
+  background: var(--bg-soft, var(--bg-page));
   color: var(--text-primary);
   overflow: hidden;
 }
@@ -241,17 +241,17 @@ onMounted(() => {
 .sidebar {
   width: 260px;
   height: 100%;
-  background: #fff;
+  background: var(--surface);
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--border, #e5e7eb);
+  border-right: 1px solid var(--border, var(--border));
   flex-shrink: 0;
   overflow: hidden;
 }
 
 .sidebar-header {
   padding: 12px;
-  border-bottom: 1px solid var(--border, #e5e7eb);
+  border-bottom: 1px solid var(--border, var(--border));
 }
 
 .btn-new-chat {
@@ -260,7 +260,7 @@ onMounted(() => {
   background: var(--primary);
   border: none;
   border-radius: 8px;
-  color: #fff;
+  color: var(--on-primary);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -315,7 +315,7 @@ onMounted(() => {
 }
 
 .history-item:hover {
-  background: var(--bg-soft, #f3f4f6);
+  background: var(--bg-soft, var(--surface-muted));
 }
 
 .history-item.active {
@@ -351,7 +351,7 @@ onMounted(() => {
 }
 
 .history-edit-btn:hover {
-  background: var(--bg-soft, #f3f4f6);
+  background: var(--bg-soft, var(--surface-muted));
   color: var(--primary);
 }
 
@@ -440,8 +440,8 @@ onMounted(() => {
 }
 
 .feature-box {
-  background: #fff;
-  border: 1px solid var(--border, #e5e7eb);
+  background: var(--surface);
+  border: 1px solid var(--border, var(--border));
   border-radius: 12px;
   padding: 20px 16px;
   display: flex;
@@ -483,7 +483,7 @@ onMounted(() => {
 /* Messages */
 .message-row {
   padding: 20px 0;
-  border-bottom: 1px solid var(--border, #e5e7eb);
+  border-bottom: 1px solid var(--border, var(--border));
 }
 
 .message-row:last-child {
@@ -507,12 +507,12 @@ onMounted(() => {
 
 .message-row.user .message-avatar {
   background: linear-gradient(135deg, var(--primary), #4f46e5);
-  color: #fff;
+  color: var(--on-primary);
 }
 
 .message-row.assistant .message-avatar {
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: #fff;
+  background: linear-gradient(135deg, var(--success), #059669);
+  color: var(--on-primary);
 }
 
 .message-content {
@@ -543,8 +543,8 @@ onMounted(() => {
   font-weight: 700;
   margin: 20px 0 12px 0;
   padding-bottom: 8px;
-  border-bottom: 2px solid var(--primary, #2563eb);
-  color: var(--primary, #2563eb);
+  border-bottom: 2px solid var(--primary, var(--primary));
+  color: var(--primary, var(--primary-text));
 }
 
 .message-text :deep(h2:first-child) {
@@ -574,7 +574,7 @@ onMounted(() => {
 }
 
 .message-text :deep(blockquote) {
-  border-left: 3px solid var(--primary, #2563eb);
+  border-left: 3px solid var(--primary, var(--primary));
   margin: 12px 0;
   padding: 8px 16px;
   background: var(--primary-soft, rgba(37, 99, 235, 0.06));
@@ -591,19 +591,19 @@ onMounted(() => {
 
 .message-text :deep(th),
 .message-text :deep(td) {
-  border: 1px solid var(--border, #e5e7eb);
+  border: 1px solid var(--border, var(--border));
   padding: 8px 12px;
   text-align: left;
 }
 
 .message-text :deep(th) {
-  background: var(--bg-soft, #f8fafc);
+  background: var(--bg-soft, var(--bg-page));
   font-weight: 600;
 }
 
 .message-text :deep(hr) {
   border: none;
-  border-top: 1px solid var(--border, #e5e7eb);
+  border-top: 1px solid var(--border, var(--border));
   margin: 16px 0;
 }
 
@@ -616,7 +616,7 @@ onMounted(() => {
 }
 
 .message-text :deep(code) {
-  background: var(--bg-soft, #f1f5f9);
+  background: var(--bg-soft, var(--surface-muted));
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 13px;
@@ -685,10 +685,10 @@ onMounted(() => {
 /* Error */
 .error-banner {
   padding: 12px 16px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: var(--danger-soft);
+  border: 1px solid var(--danger);
   border-radius: 8px;
-  color: #dc2626;
+  color: var(--danger);
   font-size: 14px;
   display: flex;
   align-items: center;
@@ -703,15 +703,15 @@ onMounted(() => {
   left: 0;
   right: 0;
   padding: 16px 24px 24px;
-  background: linear-gradient(to top, var(--bg-soft, #f8fafc) 80%, transparent);
+  background: linear-gradient(to top, var(--bg-soft, var(--bg-page)) 80%, transparent);
 }
 
 .input-container {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #fff;
-  border: 1px solid var(--border, #e5e7eb);
+  background: var(--surface);
+  border: 1px solid var(--border, var(--border));
   border-radius: 16px;
   padding: 12px 16px;
   transition: all 0.2s;
@@ -745,7 +745,7 @@ onMounted(() => {
   width: 36px;
   height: 36px;
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -762,7 +762,7 @@ onMounted(() => {
 }
 
 .btn-submit:disabled {
-  background: #d1d5db;
+  background: var(--border-strong);
   cursor: not-allowed;
 }
 
@@ -786,7 +786,7 @@ onMounted(() => {
 
 .messages-area::-webkit-scrollbar-thumb,
 .sidebar-content::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: var(--border-strong);
   border-radius: 3px;
 }
 
@@ -821,7 +821,7 @@ onMounted(() => {
     height: auto;
     max-height: 160px;
     border-right: none;
-    border-bottom: 1px solid var(--border, #e5e7eb);
+    border-bottom: 1px solid var(--border, var(--border));
   }
 
   .sidebar-content {
@@ -911,59 +911,4 @@ onMounted(() => {
 }
 
 /* Dark Mode Overrides */
-:global(.dark) .sidebar {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .feature-box {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-    color: var(--text-primary) !important;
-}
-
-:global(.dark) .feature-box:hover {
-    background: var(--surface-muted) !important;
-}
-
-:global(.dark) .input-container {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .input-container:focus-within {
-    border-color: var(--primary) !important;
-}
-
-:global(.dark) .input-container textarea {
-    color: var(--text-primary) !important;
-}
-
-:global(.dark) .history-item:hover {
-    background: var(--surface-muted) !important;
-}
-
-:global(.dark) .history-item.active {
-    background: var(--primary-soft) !important;
-}
-
-:global(.dark) .error-banner {
-    background: var(--destructive-soft) !important;
-    border-color: var(--destructive) !important;
-    color: var(--destructive) !important;
-}
-
-:global(.dark) .messages-area::-webkit-scrollbar-thumb,
-:global(.dark) .sidebar-content::-webkit-scrollbar-thumb {
-    background: var(--text-secondary) !important;
-}
-
-:global(.dark) .btn-submit:disabled {
-    background: var(--surface-muted) !important;
-    color: var(--text-secondary) !important;
-}
-
-:global(.dark) .message-row {
-    border-color: var(--border) !important;
-}
 </style>

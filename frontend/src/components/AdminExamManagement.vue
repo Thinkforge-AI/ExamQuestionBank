@@ -464,24 +464,24 @@ onMounted(() => { fetchExams() })
     left: 14px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
     pointer-events: none;
 }
 
 .filter-input {
     width: 100%;
     padding: 12px 16px 12px 44px;
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--border);
     border-radius: 10px;
     font-size: 14px;
     transition: all 0.2s ease;
-    background: #f9fafb;
+    background: var(--bg-page);
 }
 
 .filter-input:focus {
     outline: none;
-    border-color: var(--primary, #476996);
-    background: white;
+    border-color: var(--primary, var(--primary));
+    background: var(--surface);
     box-shadow: 0 0 0 3px rgba(71, 105, 150, 0.1);
 }
 
@@ -501,29 +501,29 @@ onMounted(() => { fetchExams() })
 }
 
 .header-btn-primary {
-    background: var(--primary, #476996);
-    color: white;
+    background: var(--primary, var(--primary));
+    color: var(--on-primary);
 }
 
 .header-btn-primary:hover {
-    background: var(--primary-hover, #35527a);
+    background: var(--primary-hover, var(--primary-hover));
 }
 
 .header-btn-outline {
-    background: white;
-    color: var(--text-primary, #1E293B);
-    border: 2px solid var(--border, #E2E8F0);
+    background: var(--surface);
+    color: var(--text-primary, var(--text-primary));
+    border: 2px solid var(--border, var(--border));
 }
 
 .header-btn-outline:hover {
-    border-color: var(--text-secondary, #94A3B8);
-    background: var(--bg-page, #F8FAFC);
+    border-color: var(--text-secondary, var(--border-strong));
+    background: var(--bg-page, var(--bg-page));
 }
 
 /* Cell Styles */
 .question-count {
     font-weight: 600;
-    color: var(--primary, #476996);
+    color: var(--primary, var(--primary-text));
 }
 
 .publish-badge {
@@ -535,18 +535,18 @@ onMounted(() => { fetchExams() })
 }
 
 .publish-badge.published {
-    background: #A7F3D0;
-    color: #065F46;
+    background: var(--success-soft);
+    color: var(--success);
 }
 
 .publish-badge.draft {
     background: #FCD34D;
-    color: #92400E;
+    color: var(--warning);
 }
 
 .date-text {
     font-size: 12px;
-    color: var(--text-muted, #94A3B8);
+    color: var(--text-muted, var(--text-muted));
 }
 
 /* Row Actions */
@@ -568,18 +568,18 @@ onMounted(() => { fetchExams() })
 
 /* More Actions Dropdown (Bootstrap) */
 .action-btn-more {
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
 }
 
 .action-btn-more:hover {
-    background: #F3F4F6;
+    background: var(--surface-muted);
 }
 
 .row-actions :deep(.dropdown-menu) {
     min-width: 150px;
     border-radius: 10px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-    border: 1px solid var(--border, #E2E8F0);
+    border: 1px solid var(--border, var(--border));
     padding: 4px 0;
 }
 
@@ -589,12 +589,12 @@ onMounted(() => { fetchExams() })
     gap: 8px;
     padding: 8px 14px;
     font-size: 13px;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
 }
 
 .row-actions :deep(.dropdown-item:hover) {
-    background-color: var(--bg-page, #F1F5F9);
-    color: var(--text-primary, #1E293B);
+    background-color: var(--bg-page, var(--surface-muted));
+    color: var(--text-primary, var(--text-primary));
 }
 
 .row-actions :deep(.dropdown-item:disabled) {
@@ -602,7 +602,7 @@ onMounted(() => { fetchExams() })
 }
 
 .row-actions :deep(.dropdown-item svg) {
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
     flex-shrink: 0;
 }
 
@@ -633,12 +633,4 @@ onMounted(() => { fetchExams() })
 }
 
 /* Dark mode for dropdown */
-:global(.dark) .row-actions .dropdown-menu {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .row-actions .dropdown-item:hover {
-    background-color: var(--surface-muted) !important;
-}
 </style>

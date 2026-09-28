@@ -288,7 +288,7 @@ export default {
 
 <style scoped>
 .results-actions {
-  background: white;
+  background: var(--surface);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -302,12 +302,12 @@ export default {
 .actions-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
 }
 
 .actions-subtitle {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.875rem;
   line-height: 1.5;
   margin: 0;
@@ -321,7 +321,7 @@ export default {
 }
 
 .action-card {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1.5rem;
   display: flex;
@@ -329,11 +329,11 @@ export default {
   align-items: center;
   text-align: center;
   transition: all 0.2s ease;
-  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--bg-page) 100%);
 }
 
 .action-card:hover {
-  border-color: #d1d5db;
+  border-color: var(--border-strong);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   transform: translateY(-1px);
 }
@@ -349,23 +349,23 @@ export default {
 }
 
 .action-icon.bookmark {
-  background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%);
-  color: #92400e;
+  background: linear-gradient(135deg, var(--warning-soft) 0%, #fbbf24 100%);
+  color: var(--warning);
 }
 
 .action-icon.flashcard {
-  background: linear-gradient(135deg, #dbeafe 0%, #3b82f6 100%);
-  color: #1e40af;
+  background: linear-gradient(135deg, var(--primary-soft) 0%, var(--primary) 100%);
+  color: var(--primary-text);
 }
 
 .action-icon.retake {
-  background: linear-gradient(135deg, #d1fae5 0%, #10b981 100%);
-  color: #065f46;
+  background: linear-gradient(135deg, var(--success-soft) 0%, var(--success) 100%);
+  color: var(--success);
 }
 
 .action-icon.return {
-  background: linear-gradient(135deg, #e5e7eb 0%, #6b7280 100%);
-  color: #374151;
+  background: linear-gradient(135deg, var(--surface-hover) 0%, #6b7280 100%);
+  color: var(--text-primary);
 }
 
 .action-content {
@@ -378,12 +378,12 @@ export default {
 .action-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
 }
 
 .action-description {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.875rem;
   line-height: 1.5;
   margin: 0 0 1.5rem 0;
@@ -406,23 +406,23 @@ export default {
 }
 
 .action-button.primary {
-  background: #3b82f6;
-  color: white;
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 .action-button.primary:hover:not(:disabled) {
-  background: #2563eb;
+  background: var(--primary);
   transform: translateY(-1px);
 }
 
 .action-button.secondary {
-  background: #f3f4f6;
-  color: #374151;
-  border: 1px solid #d1d5db;
+  background: var(--surface-muted);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
 }
 
 .action-button.secondary:hover:not(:disabled) {
-  background: #e5e7eb;
+  background: var(--surface-hover);
   transform: translateY(-1px);
 }
 
@@ -444,15 +444,15 @@ export default {
 }
 
 .success-message {
-  background: #ecfdf5;
-  border: 1px solid #10b981;
-  color: #065f46;
+  background: var(--success-soft);
+  border: 1px solid var(--success);
+  color: var(--success);
 }
 
 .error-message {
-  background: #fef2f2;
-  border: 1px solid #ef4444;
-  color: #991b1b;
+  background: var(--danger-soft);
+  border: 1px solid var(--danger);
+  color: var(--danger);
 }
 
 .success-icon,
@@ -470,7 +470,7 @@ export default {
 .error-dismiss {
   background: none;
   border: none;
-  color: #991b1b;
+  color: var(--danger);
   font-size: 1.25rem;
   cursor: pointer;
   padding: 0;
@@ -524,17 +524,17 @@ export default {
   
   .action-icon.bookmark {
     background: #fbbf24;
-    color: #000;
+    color: var(--text-primary);
   }
   
   .action-icon.flashcard {
-    background: #3b82f6;
-    color: #fff;
+    background: var(--primary);
+    color: var(--on-primary);
   }
   
   .action-icon.retake {
-    background: #10b981;
-    color: #fff;
+    background: var(--success);
+    color: var(--on-primary);
   }
   
   .action-icon.return {
@@ -553,17 +553,17 @@ export default {
 
 /* Focus styles for accessibility */
 .action-button:focus {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
 .error-dismiss:focus {
-  outline: 2px solid #ef4444;
+  outline: 2px solid var(--danger);
   outline-offset: 2px;
 }
 
 .action-card:focus-within {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 

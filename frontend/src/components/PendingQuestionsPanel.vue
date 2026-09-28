@@ -245,7 +245,7 @@ defineExpose({
 <style scoped>
 /* Pending Questions Section */
 .pending-section {
-  background: white;
+  background: var(--surface);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border: 2px dashed #d89b32;
@@ -340,13 +340,13 @@ defineExpose({
 }
 
 .btn-save-pending {
-  background: white;
+  background: var(--surface);
   color: #d89b32;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .btn-save-pending:hover:not(:disabled) {
-  background: #f9fafb;
+  background: var(--bg-page);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
@@ -378,14 +378,14 @@ defineExpose({
   gap: 12px;
   padding: 14px;
   margin-bottom: 10px;
-  background: #fff7eb;
+  background: var(--warning-soft);
   border: 1px dashed #d89b32;
   border-radius: 10px;
   transition: all 0.2s ease;
 }
 
 .pending-item:hover {
-  background: #fef3e2;
+  background: var(--warning-soft);
   border-color: #c88a2a;
   box-shadow: 0 2px 8px rgba(216, 155, 50, 0.1);
 }
@@ -419,7 +419,7 @@ defineExpose({
 
 .pending-text {
   font-size: 14px;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
   margin-bottom: 8px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -447,13 +447,13 @@ defineExpose({
 
 .meta-badge.meta-answer {
   background: rgba(34, 197, 94, 0.15);
-  color: #16a34a;
+  color: var(--success);
   font-weight: 700;
 }
 
 .meta-info {
   font-size: 12px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .pending-actions {
@@ -474,20 +474,20 @@ defineExpose({
 }
 
 .btn-edit-pending {
-  color: var(--primary, #476996);
+  color: var(--primary, var(--primary-text));
 }
 
 .btn-edit-pending:hover {
-  background: var(--primary-soft, #EEF2FF);
+  background: var(--primary-soft, var(--primary-soft));
   transform: scale(1.05);
 }
 
 .btn-remove-pending {
-  color: #dc2626;
+  color: var(--danger);
 }
 
 .btn-remove-pending:hover {
-  background: #fee2e2;
+  background: var(--danger-soft);
   transform: scale(1.05);
 }
 
@@ -511,7 +511,7 @@ defineExpose({
   align-items: center;
   gap: 10px;
   font-size: 13px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .pending-selected {
@@ -519,8 +519,8 @@ defineExpose({
   align-items: center;
   padding: 3px 10px;
   border-radius: 999px;
-  background: var(--primary-soft, #EEF2FF);
-  color: var(--primary, #476996);
+  background: var(--primary-soft, var(--primary-soft));
+  color: var(--primary, var(--primary-text));
   font-weight: 600;
 }
 
@@ -535,7 +535,7 @@ defineExpose({
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 .pending-panel .meta-item svg {
@@ -543,46 +543,46 @@ defineExpose({
 }
 
 .pending-tools .btn-clear-pending {
-  background: #f3f4f6;
-  color: var(--text-secondary, #64748B);
-  border: 1px solid var(--border, #CBD5E1);
+  background: var(--surface-muted);
+  color: var(--text-secondary, var(--text-secondary));
+  border: 1px solid var(--border, var(--border-strong));
 }
 
 .pending-tools .btn-clear-pending:hover:not(:disabled) {
-  background: #e5e7eb;
-  color: var(--text-primary, #1E293B);
+  background: var(--surface-hover);
+  color: var(--text-primary, var(--text-primary));
 }
 
 .pending-tools .btn-save-pending {
-  background: var(--primary, #476996);
-  color: white;
+  background: var(--primary, var(--primary));
+  color: var(--on-primary);
   border: none;
   box-shadow: 0 2px 6px rgba(71, 105, 150, 0.2);
 }
 
 .pending-tools .btn-save-pending:hover:not(:disabled) {
-  background: var(--primary-hover, #35527a);
+  background: var(--primary-hover, var(--primary-hover));
 }
 
 .pending-empty {
   margin-top: 12px;
   padding: 24px;
-  border: 2px dashed var(--border, #CBD5E1);
+  border: 2px dashed var(--border, var(--border-strong));
   border-radius: 12px;
-  background: #f8fafc;
+  background: var(--bg-page);
   text-align: center;
 }
 
 .pending-empty-title {
   font-size: 16px;
   font-weight: 700;
-  color: var(--text-primary, #1E293B);
+  color: var(--text-primary, var(--text-primary));
   margin-bottom: 6px;
 }
 
 .pending-empty-hint {
   font-size: 13px;
-  color: var(--text-secondary, #64748B);
+  color: var(--text-secondary, var(--text-secondary));
 }
 
 @media (max-width: 768px) {
@@ -601,7 +601,7 @@ defineExpose({
     align-items: center;
     gap: 6px;
     font-size: 12px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
   }
 
   .pending-panel .meta-item svg {
@@ -609,157 +609,27 @@ defineExpose({
   }
 
   .pending-tools .btn-clear-pending {
-    background: #f3f4f6;
-    color: var(--text-secondary, #64748B);
-    border: 1px solid var(--border, #CBD5E1);
+    background: var(--surface-muted);
+    color: var(--text-secondary, var(--text-secondary));
+    border: 1px solid var(--border, var(--border-strong));
   }
 
   .pending-tools .btn-clear-pending:hover:not(:disabled) {
-    background: #e5e7eb;
-    color: var(--text-primary, #1E293B);
+    background: var(--surface-hover);
+    color: var(--text-primary, var(--text-primary));
   }
 
   .pending-tools .btn-save-pending {
-    background: var(--primary, #476996);
-    color: white;
+    background: var(--primary, var(--primary));
+    color: var(--on-primary);
     border: none;
     box-shadow: 0 2px 6px rgba(71, 105, 150, 0.2);
   }
 
   .pending-tools .btn-save-pending:hover:not(:disabled) {
-    background: var(--primary-hover, #35527a);
+    background: var(--primary-hover, var(--primary-hover));
   }
 }
 
-:root[data-theme="dark"] .pending-selected,
-.dark .pending-selected {
-  background: rgba(71, 105, 150, 0.25);
-  color: #cbd5f5;
-}
-
-:root[data-theme="dark"] .pending-tools .btn-clear-pending,
-.dark .pending-tools .btn-clear-pending {
-  background: #1f2937;
-  color: #cbd5f5;
-  border-color: #334155;
-}
-
-:root[data-theme="dark"] .pending-tools .btn-save-pending,
-.dark .pending-tools .btn-save-pending {
-  background: #f59e0b;
-  color: #0f172a;
-}
-
-:root[data-theme="dark"] .pending-empty,
-.dark .pending-empty {
-  background: #111827;
-  border-color: var(--border-dark, #334155);
-}
-
-:root[data-theme="dark"] .pending-empty-title,
-.dark .pending-empty-title {
-  color: var(--text-primary-dark, #f1f5f9);
-}
-
-:root[data-theme="dark"] .pending-empty-hint,
-.dark .pending-empty-hint {
-  color: var(--text-secondary-dark, #94a3b8);
-}
-
 /* Pending Section - Dark Mode */
-:root[data-theme="dark"] .pending-section,
-.dark .pending-section {
-  background: #0f172a;
-  border-color: #a16207;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-}
-
-:root[data-theme="dark"] .pending-header,
-.dark .pending-header {
-  background: linear-gradient(135deg, #a16207 0%, #92400e 100%);
-  border-bottom-color: rgba(255, 255, 255, 0.08);
-}
-
-:root[data-theme="dark"] .header-icon,
-.dark .header-icon {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-:root[data-theme="dark"] .pending-title,
-.dark .pending-title {
-  color: #fef3c7;
-}
-
-:root[data-theme="dark"] .pending-subtitle,
-.dark .pending-subtitle {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-:root[data-theme="dark"] .btn-bulk-edit-pending,
-.dark .btn-bulk-edit-pending,
-:root[data-theme="dark"] .btn-clear-pending,
-.dark .btn-clear-pending {
-  background: rgba(255, 255, 255, 0.12);
-  color: #fef3c7;
-  border-color: rgba(255, 255, 255, 0.25);
-}
-
-:root[data-theme="dark"] .btn-save-pending,
-.dark .btn-save-pending {
-  background: #0f172a;
-  color: #fcd34d;
-  border: 1px solid #f59e0b;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-:root[data-theme="dark"] .pending-item,
-.dark .pending-item {
-  background: #1f2937;
-  border-color: #a16207;
-}
-
-:root[data-theme="dark"] .pending-item:hover,
-.dark .pending-item:hover {
-  background: #263244;
-  border-color: #f59e0b;
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
-}
-
-:root[data-theme="dark"] .pending-number,
-.dark .pending-number {
-  background: #f59e0b;
-  color: #0f172a;
-}
-
-:root[data-theme="dark"] .pending-text,
-.dark .pending-text {
-  color: #f8fafc;
-}
-
-:root[data-theme="dark"] .meta-badge,
-.dark .meta-badge {
-  background: rgba(245, 158, 11, 0.18);
-  color: #fcd34d;
-}
-
-:root[data-theme="dark"] .meta-badge.meta-answer,
-.dark .meta-badge.meta-answer {
-  background: rgba(34, 197, 94, 0.18);
-  color: #86efac;
-}
-
-:root[data-theme="dark"] .meta-info,
-.dark .meta-info {
-  color: #94a3b8;
-}
-
-:root[data-theme="dark"] .btn-edit-pending:hover,
-.dark .btn-edit-pending:hover {
-  background: rgba(71, 105, 150, 0.25);
-}
-
-:root[data-theme="dark"] .btn-remove-pending:hover,
-.dark .btn-remove-pending:hover {
-  background: rgba(220, 38, 38, 0.2);
-}
 </style>

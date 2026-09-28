@@ -42,10 +42,10 @@ const progressWidth = computed(() => {
   gap: 16px;
   margin-bottom: 30px;
   padding: 16px;
-  background: var(--surface, #ffffff);
+  background: var(--surface, var(--surface));
   border-radius: 12px;
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
-  border: 1px solid var(--border, #e2e8f0);
+  border: 1px solid var(--border, var(--border));
   flex-wrap: wrap;
 }
 
@@ -54,7 +54,7 @@ const progressWidth = computed(() => {
   white-space: nowrap;
   font-weight: 600;
   font-size: 14px;
-  color: var(--text-primary, #1e293b);
+  color: var(--text-primary, var(--text-primary));
   min-width: 60px;
 }
 
@@ -63,7 +63,7 @@ const progressWidth = computed(() => {
   flex: 1;
   min-width: 200px;
   height: 8px;
-  background: var(--border, #e2e8f0);
+  background: var(--border, var(--surface-hover));
   border-radius: 4px;
   overflow: hidden;
 }
@@ -71,7 +71,7 @@ const progressWidth = computed(() => {
 /* Animated Progress Fill */
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary, #3b82f6), var(--primary-hover, #2563eb));
+  background: linear-gradient(90deg, var(--primary, var(--primary)), var(--primary-hover, var(--primary)));
   border-radius: 4px;
   transition: width 0.3s ease-out;
 }
@@ -79,11 +79,11 @@ const progressWidth = computed(() => {
 /* Exit Button */
 .btn-exit {
   padding: 8px 16px;
-  background: var(--surface, #ffffff);
-  border: 1px solid var(--border, #e2e8f0);
+  background: var(--surface, var(--surface));
+  border: 1px solid var(--border, var(--border));
   border-radius: 10px;
   cursor: pointer;
-  color: var(--text-primary, #1e293b);
+  color: var(--text-primary, var(--text-primary));
   font-weight: 600;
   font-size: 14px;
   transition: all 0.2s;
@@ -93,9 +93,9 @@ const progressWidth = computed(() => {
 }
 
 .btn-exit:hover {
-  background: #f0f4f8;
-  border-color: var(--primary, #3b82f6);
-  color: var(--primary, #3b82f6);
+  background: var(--primary-soft);
+  border-color: var(--primary, var(--primary));
+  color: var(--primary, var(--primary-text));
 }
 
 .btn-exit:active {

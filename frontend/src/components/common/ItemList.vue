@@ -201,10 +201,10 @@ defineExpose({
 
 <style scoped>
 .item-list {
-    background: white;
+    background: var(--surface);
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    border: 1px solid var(--border, #CBD5E1);
+    border: 1px solid var(--border, var(--border-strong));
     overflow: clip;
 }
 
@@ -214,8 +214,8 @@ defineExpose({
     align-items: center;
     gap: 16px;
     padding: 20px 24px;
-    border-bottom: 2px solid var(--border, #CBD5E1);
-    background: var(--bg-page, #F8FAFC);
+    border-bottom: 2px solid var(--border, var(--border-strong));
+    background: var(--bg-page, var(--bg-page));
 }
 
 .header-icon {
@@ -239,14 +239,14 @@ defineExpose({
     margin: 0;
     font-size: 18px;
     font-weight: 600;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
     letter-spacing: -0.01em;
 }
 
 .list-subtitle {
     margin: 4px 0 0;
     font-size: 13px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
     line-height: 1.5;
 }
 
@@ -263,8 +263,8 @@ defineExpose({
     align-items: center;
     justify-content: space-between;
     padding: 10px 24px;
-    background: var(--bg-page, #F8FAFC);
-    border-bottom: 1px solid var(--border, #E2E8F0);
+    background: var(--bg-page, var(--bg-page));
+    border-bottom: 1px solid var(--border, var(--border));
 }
 
 .select-all-label {
@@ -272,21 +272,21 @@ defineExpose({
     align-items: center;
     gap: 10px;
     font-size: 14px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
     cursor: pointer;
 }
 
 .select-all-label input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    accent-color: var(--primary, #476996);
+    accent-color: var(--primary, var(--primary));
     cursor: pointer;
 }
 
 .selection-count {
     padding: 4px 10px;
-    background: var(--primary, #476996);
-    color: white;
+    background: var(--primary, var(--primary));
+    color: var(--on-primary);
     border-radius: 6px;
     font-size: 12px;
     font-weight: 600;
@@ -301,8 +301,8 @@ defineExpose({
 /* List Item */
 .list-item {
     padding: 14px 16px;
-    border-bottom: 1px solid var(--border, #E2E8F0);
-    background: white;
+    border-bottom: 1px solid var(--border, var(--border));
+    background: var(--surface);
     transition: all 0.2s ease;
     cursor: pointer;
 }
@@ -312,12 +312,12 @@ defineExpose({
 }
 
 .list-item.hover-enabled:hover {
-    background: var(--bg-page, #F8FAFC);
+    background: var(--bg-page, var(--bg-page));
 }
 
 .list-item.selected {
-    background: var(--primary-soft, #EEF2FF);
-    border-left: 3px solid var(--primary, #476996);
+    background: var(--primary-soft, var(--primary-soft));
+    border-left: 3px solid var(--primary, var(--primary));
 }
 
 /* Top Row: Checkbox + Badges + Actions */
@@ -334,7 +334,7 @@ defineExpose({
 .item-checkbox input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    accent-color: var(--primary, #476996);
+    accent-color: var(--primary, var(--primary));
     cursor: pointer;
 }
 
@@ -363,7 +363,7 @@ defineExpose({
 .item-content-text {
     margin: 0;
     font-size: 14px;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
     line-height: 1.5;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -379,30 +379,30 @@ defineExpose({
     justify-content: center;
     width: 28px;
     height: 28px;
-    border: 1px solid var(--border, #CBD5E1);
+    border: 1px solid var(--border, var(--border-strong));
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
     background: transparent;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
     padding: 0;
 }
 
 :deep(.action-btn:hover) {
-    background: var(--bg-page, #F8FAFC);
-    color: var(--text-primary, #1E293B);
-    border-color: var(--text-secondary, #94A3B8);
+    background: var(--bg-page, var(--bg-page));
+    color: var(--text-primary, var(--text-primary));
+    border-color: var(--text-secondary, var(--border-strong));
 }
 
 :deep(.action-btn.active) {
-    background: #F59E0B;
-    color: white;
-    border-color: #F59E0B;
+    background: var(--warning);
+    color: var(--on-primary);
+    border-color: var(--warning);
 }
 
 :deep(.action-btn.active:hover) {
     background: #D97706;
-    border-color: #D97706;
+    border-color: var(--warning);
 }
 
 :deep(.action-btn i) {
@@ -416,14 +416,14 @@ defineExpose({
     align-items: center;
     justify-content: center;
     padding: 60px 40px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
 }
 
 .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid var(--border, #CBD5E1);
-    border-top-color: var(--primary, #476996);
+    border: 3px solid var(--border, var(--border-strong));
+    border-top-color: var(--primary, var(--primary));
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin-bottom: 16px;
@@ -459,13 +459,13 @@ defineExpose({
     margin: 0 0 8px;
     font-size: 16px;
     font-weight: 500;
-    color: var(--text-primary, #1E293B);
+    color: var(--text-primary, var(--text-primary));
 }
 
 .empty-hint {
     margin: 0;
     font-size: 14px;
-    color: var(--text-secondary, #64748B);
+    color: var(--text-secondary, var(--text-secondary));
 }
 
 /* Responsive */
@@ -503,27 +503,4 @@ defineExpose({
 }
 
 /* Dark Mode */
-:global(.dark) .item-list {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .list-item {
-    background: var(--surface) !important;
-    border-color: var(--border) !important;
-}
-
-:global(.dark) .list-item.hover-enabled:hover {
-    background: var(--surface-muted) !important;
-}
-
-:global(.dark) .list-item.selected {
-    background: var(--primary-soft) !important;
-}
-
-:global(.dark) .list-header,
-:global(.dark) .select-all-bar {
-    background: var(--surface-muted) !important;
-    border-color: var(--border) !important;
-}
 </style>

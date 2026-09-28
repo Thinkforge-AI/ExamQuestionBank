@@ -120,7 +120,7 @@ const questionCount = computed(() => props.exam?.examQuestions?.length ?? 0)
 }
 
 .modal-content {
-  background: #fff;
+  background: var(--surface);
   border-radius: 12px;
   width: min(960px, 100%);
   max-height: calc(100vh - 80px);
@@ -134,7 +134,7 @@ const questionCount = computed(() => props.exam?.examQuestions?.length ?? 0)
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .modal-body {
@@ -147,19 +147,19 @@ const questionCount = computed(() => props.exam?.examQuestions?.length ?? 0)
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .detail-status {
   text-align: center;
-  color: #6b7280;
+  color: var(--text-secondary);
   padding: 24px 0;
 }
 
 .detail-error {
-  color: #b91c1c;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  color: var(--danger);
+  background: var(--danger-soft);
+  border: 1px solid var(--danger);
   padding: 12px 16px;
   border-radius: 8px;
 }
@@ -172,20 +172,20 @@ const questionCount = computed(() => props.exam?.examQuestions?.length ?? 0)
 }
 
 .meta-item {
-  background: #f9fafb;
+  background: var(--bg-page);
   border-radius: 8px;
   padding: 16px;
 }
 
 .label {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .value {
   margin: 6px 0 0;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .question-list-header {
@@ -197,11 +197,11 @@ const questionCount = computed(() => props.exam?.examQuestions?.length ?? 0)
 
 .question-count {
   font-size: 14px;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .question-table-wrapper {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -220,9 +220,9 @@ const questionCount = computed(() => props.exam?.examQuestions?.length ?? 0)
 }
 
 .question-table-wrapper th {
-  background: #f9fafb;
+  background: var(--bg-page);
   font-weight: 600;
-  color: #374151;
+  color: var(--text-primary);
 }
 
 .question-table-wrapper tr:last-child td {
