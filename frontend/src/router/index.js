@@ -75,18 +75,6 @@ const router = createRouter({
       component: () => import('@/views/SubscriptionView.vue')
     },
     {
-      path: '/discussions',
-      name: 'Discussions',
-      component: () => import('@/views/DiscussionView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/discussions/:id',
-      name: 'DiscussionDetail',
-      component: () => import('@/views/DiscussionDetailView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
       path: '/gamification',
       name: 'GamificationDashboard',
       component: () => import('@/views/GamificationDashboard.vue'),

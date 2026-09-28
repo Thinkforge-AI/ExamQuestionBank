@@ -16,7 +16,7 @@
         <div class="profile-card">
           <h2 class="section-title">顯示名稱</h2>
           <p class="section-desc">
-            此名稱將在討論區的發文和回答中顯示，取代你的 Google 名稱。
+            此名稱將作為你在網站上的顯示名稱，取代你的 Google 名稱。
           </p>
           
           <div class="form-group">
@@ -71,45 +71,6 @@
               {{ profile?.email || '-' }}
               <span v-if="profile?.google_name" class="google-name">({{ profile.google_name }})</span>
             </span>
-          </div>
-        </div>
-        
-        <!-- Credits Section -->
-        <div class="profile-card">
-          <h2 class="section-title">點數與聲望</h2>
-          
-          <div class="stats-grid">
-            <div class="stat-item">
-              <i class="bi bi-gem stat-icon credits"></i>
-              <div class="stat-info">
-                <span class="stat-value">{{ profile?.credits || 0 }}</span>
-                <span class="stat-label">目前點數</span>
-              </div>
-            </div>
-            
-            <div class="stat-item">
-              <i class="bi bi-mortarboard-fill stat-icon reputation"></i>
-              <div class="stat-info">
-                <span class="stat-value">{{ profile?.reputation || 0 }}</span>
-                <span class="stat-label">聲望值</span>
-              </div>
-            </div>
-            
-            <div class="stat-item">
-              <i class="bi bi-graph-up-arrow stat-icon earned"></i>
-              <div class="stat-info">
-                <span class="stat-value">{{ profile?.total_earned || 0 }}</span>
-                <span class="stat-label">累計獲得</span>
-              </div>
-            </div>
-            
-            <div class="stat-item">
-              <i class="bi bi-cart-dash stat-icon spent"></i>
-              <div class="stat-info">
-                <span class="stat-value">{{ profile?.total_spent || 0 }}</span>
-                <span class="stat-label">累計花費</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -445,57 +406,6 @@ onMounted(() => {
   font-weight: 500;
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
-  background: var(--bg-page);
-  border-radius: 8px;
-}
-
-.stat-icon {
-  font-size: 1.5rem;
-}
-
-.stat-icon.credits {
-  color: var(--icon-blue-fg);
-}
-
-.stat-icon.reputation {
-  color: var(--icon-amber-fg);
-}
-
-.stat-icon.earned {
-  color: var(--icon-green-fg);
-}
-
-.stat-icon.spent {
-  color: var(--icon-orange-fg);
-}
-
-.stat-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.stat-value {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.stat-label {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-}
-
 @media (max-width: 480px) {
   .profile-view {
     padding: 1rem;
@@ -507,10 +417,6 @@ onMounted(() => {
   
   .profile-card {
     padding: 1.25rem;
-  }
-  
-  .stats-grid {
-    grid-template-columns: 1fr;
   }
 }
 </style>
