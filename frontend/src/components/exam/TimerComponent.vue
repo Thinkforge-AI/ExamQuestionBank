@@ -21,12 +21,14 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, watch } from 'vue'
 
 /**
  * TimerComponent
- * Displays countdown timer with visual feedback based on remaining time
- * Handles auto-submission when timer expires
+ * Shows the time left, given the limit and how much of it has been used.
+ * It does not keep time itself: the parent owns the clock (useExamClock), so the
+ * countdown pauses and resumes together with the exam.
+ * Emits each threshold once, when the time left crosses it.
  */
 
 const props = defineProps({
@@ -34,16 +36,15 @@ const props = defineProps({
     type: Number,
     required: true // in seconds
   },
-  isActive: {
-    type: Boolean,
-    default: false
+  elapsed: {
+    type: Number,
+    default: 0 // seconds already used
   }
 })
 
 const emit = defineEmits(['time-warning', 'time-critical', 'time-expired'])
 
-const timeLeft = ref(props.timeLimit)
-let intervalId = null
+const timeLeft = computed(() => Math.max(0, props.timeLimit - Math.floor(props.elapsed)))
 
 const formattedTime = computed(() => {
   const minutes = Math.floor(timeLeft.value / 60).toString().padStart(2, '0')
@@ -63,72 +64,15 @@ const timerDescription = computed(() => {
   return 'Normal time remaining'
 })
 
-const startTimer = () => {
-  if (intervalId) {
-    clearInterval(intervalId)
-  }
-  
-  intervalId = setInterval(() => {
-    if (timeLeft.value > 0) {
-      timeLeft.value--
-      
-      // Emit warning events
-      if (timeLeft.value === 300) { // 5 minutes
-        emit('time-warning', timeLeft.value)
-      } else if (timeLeft.value === 60) { // 1 minute
-        emit('time-critical', timeLeft.value)
-      } else if (timeLeft.value === 0) {
-        emit('time-expired')
-        stopTimer()
-      }
-    }
-  }, 1000)
-}
-
-const stopTimer = () => {
-  if (intervalId) {
-    clearInterval(intervalId)
-    intervalId = null
-  }
-}
-
-const resetTimer = () => {
-  stopTimer()
-  timeLeft.value = props.timeLimit
-}
-
-// Watch for prop changes
-watch(() => props.timeLimit, (newTimeLimit) => {
-  timeLeft.value = newTimeLimit
+// Emit when the countdown crosses a threshold (not when it starts past one:
+// a resumed exam that is already under 5 minutes shouldn't re-warn).
+watch(timeLeft, (left, before) => {
+  if (before > 300 && left <= 300 && left > 60) emit('time-warning', left)
+  if (before > 60 && left <= 60 && left > 0) emit('time-critical', left)
+  if (before > 0 && left === 0) emit('time-expired')
 })
 
-watch(() => props.isActive, (isActive) => {
-  if (isActive) {
-    startTimer()
-  } else {
-    stopTimer()
-  }
-})
-
-// Start timer if active on mount
-onMounted(() => {
-  if (props.isActive) {
-    startTimer()
-  }
-})
-
-// Cleanup on unmount
-onUnmounted(() => {
-  stopTimer()
-})
-
-// Expose methods for parent component
-defineExpose({
-  startTimer,
-  stopTimer,
-  resetTimer,
-  timeLeft: computed(() => timeLeft.value)
-})
+defineExpose({ timeLeft })
 </script>
 
 <style scoped>

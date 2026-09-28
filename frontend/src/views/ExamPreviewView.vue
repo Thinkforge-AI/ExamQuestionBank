@@ -34,7 +34,7 @@
               :disabled="starting"
               aria-label="Start exam"
             >
-              {{ starting ? '準備中…' : '開始測驗' }}
+              {{ starting ? '準備中…' : savedAttempt ? '繼續上次的作答' : '開始測驗' }}
             </button>
           </template>
         </ExamHeader>
@@ -56,15 +56,22 @@
             <div class="testing-info">
               <strong>作答模式</strong>
               <span>第 {{ currentQuestionIndex + 1 }} / {{ totalQuestions }} 題</span>
+              <span v-if="lastSavedAt && syncState === 'local'" class="save-status" aria-live="polite">
+                <i class="bi bi-cloud-slash" aria-hidden="true"></i>
+                進度先存在這台裝置，連上網路後會同步
+              </span>
+              <span v-else-if="lastSavedAt" class="save-status" aria-live="polite">
+                <i class="bi bi-cloud-check" aria-hidden="true"></i>
+                進度已自動儲存
+              </span>
             </div>
             <TimerComponent
-              v-if="exam.time_limit"
-              :time-limit="timeLimit"
-              :is-active="isQuizActive"
+              v-if="timeLimitSeconds"
+              :time-limit="timeLimitSeconds"
+              :elapsed="elapsedSeconds"
               @time-warning="handleTimeWarning"
               @time-critical="handleTimeCritical"
               @time-expired="handleTimeExpired"
-              ref="timerRef"
             />
           </div>
 
@@ -203,10 +210,88 @@
     >
       <div class="modal-content">
         <h3 id="warning-title">離開測驗？</h3>
-        <p>您的作答進度將會被保存，但計時器會繼續計時。確定要離開嗎？</p>
+        <p>作答進度會保存，離開期間不計時。回到這份考卷時可以接著寫。</p>
         <div class="modal-actions">
           <button class="btn btn-secondary" @click="cancelNavigation">取消</button>
           <button class="btn btn-primary" @click="confirmNavigation">確定離開</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resume Prompt: an unfinished attempt exists for this exam -->
+    <div
+      v-if="showResumePrompt && savedAttempt"
+      class="modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="resume-title"
+      aria-describedby="resume-desc"
+    >
+      <div class="modal-content resume-modal">
+        <template v-if="!confirmingRestart">
+          <h3 id="resume-title">{{ savedAttemptTimeUp ? '上次作答的時間已經用完' : '上次的作答還沒寫完' }}</h3>
+          <p id="resume-desc">{{ savedAttemptWhen }}離開，進度都有保存。</p>
+          <dl class="resume-facts">
+            <div>
+              <dt>已作答</dt>
+              <dd>{{ savedAttempt.answeredCount }} / {{ totalQuestions }} 題</dd>
+            </div>
+            <div>
+              <dt>還剩時間</dt>
+              <dd>{{ savedAttemptTimeLeft }}</dd>
+            </div>
+            <div>
+              <dt>標記待複查</dt>
+              <dd>{{ savedAttempt.flagged.size }} 題</dd>
+            </div>
+            <div>
+              <dt>停在</dt>
+              <dd>第 {{ savedAttempt.currentIndex + 1 }} 題</dd>
+            </div>
+          </dl>
+          <p class="resume-note">離開期間不計時。換一台裝置登入，也能接著寫。</p>
+          <div class="resume-actions">
+            <button v-if="savedAttemptTimeUp" class="btn btn-primary" @click="submitSavedAttempt">
+              交卷，看這次的成績
+            </button>
+            <button v-else class="btn btn-primary" @click="resumeAttempt">
+              繼續作答，從第 {{ savedAttempt.currentIndex + 1 }} 題開始
+            </button>
+            <button class="btn btn-secondary" @click="confirmingRestart = true">重新開始</button>
+            <button class="btn btn-link" @click="showResumePrompt = false">先不要</button>
+          </div>
+        </template>
+        <template v-else>
+          <h3 id="resume-title">清除進度並重新開始？</h3>
+          <p id="resume-desc">
+            已作答的 {{ savedAttempt.answeredCount }} 題和 {{ savedAttempt.flagged.size }} 個標記都會清除<template v-if="timeLimitSeconds">，時間從 {{ exam.time_limit }} 分鐘重新計算</template>。
+          </p>
+          <p v-if="restartError" class="resume-error" role="alert">{{ restartError }}</p>
+          <div class="modal-actions">
+            <button class="btn btn-secondary" @click="confirmingRestart = false; restartError = ''">返回</button>
+            <button class="btn btn-danger" @click="restartAttempt">清除並重新開始</button>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- Another tab or device continued this attempt: stop here rather than overwrite it -->
+    <div
+      v-if="takenOver"
+      class="modal-overlay"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="taken-over-title"
+      aria-describedby="taken-over-desc"
+    >
+      <div class="modal-content resume-modal">
+        <h3 id="taken-over-title">這次作答在別的地方接著寫了</h3>
+        <p id="taken-over-desc">
+          另一個分頁或裝置繼續了這次作答，這裡的進度可能比較舊。為了不蓋掉那邊的答案，這裡先停下來，也暫停計時。
+        </p>
+        <div class="resume-actions">
+          <button class="btn btn-primary" @click="loadLatestAttempt">載入最新的進度</button>
+          <button class="btn btn-secondary" @click="keepThisAttempt">改用這裡的進度繼續</button>
         </div>
       </div>
     </div>
@@ -222,7 +307,7 @@
       <div class="modal-content error-modal">
         <h3 id="submission-error-title">提交失敗</h3>
         <p>{{ submissionErrorMessage }}</p>
-        <p class="error-hint">您的答案已保存在本地，可以重新提交。</p>
+        <p class="error-hint">成績還在這個頁面上，可以重新提交；離開頁面前請先提交成功。</p>
         <div class="modal-actions">
           <button class="btn btn-secondary" @click="dismissSubmissionError">稍後再試</button>
           <button class="btn btn-primary" @click="retrySubmission">重新提交</button>
@@ -233,10 +318,13 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import { useExamStore } from '@/stores/examStore'
 import questionService from '@/services/questionService'
+import examService from '@/services/examService'
+import { useExamClock } from '@/composables/useExamClock'
+import { loadAttempt, saveAttempt, clearAttempt, fromServerAttempt, toServerProgress } from '@/lib/examAttemptStorage'
 
 // Import components
 import ExamHeader from '@/components/exam/ExamHeader.vue'
@@ -266,23 +354,73 @@ const userAnswers = ref({})
 const questionDetails = ref({})
 const showResults = ref(false)
 const examResults = ref(null)
-const startTime = ref(null)
 const isLoading = ref(false)
 const showExplanations = ref(false)
 const showNavigationWarning = ref(false)
 const pendingNavigation = ref(null)
-const timerRef = ref(null)
 const errorBoundaryRef = ref(null)
 const showSubmissionError = ref(false)
 const submissionErrorMessage = ref('')
 const flaggedQuestions = ref(new Set())
 
+// Unfinished attempt saved for this exam (see examAttemptStorage), and the resume prompt
+const savedAttempt = ref(null)
+const showResumePrompt = ref(false)
+const confirmingRestart = ref(false)
+const lastSavedAt = ref(null)
+
+// Server-side attempt (exam_attempt). null while offline: progress then stays on this device.
+const attemptId = ref(null)
+const submittedAttemptId = ref(null)
+const currentUserId = ref(null)
+const syncState = ref(null) // 'synced' | 'local'
+let serverSaveTimer = null
+
+// This page, as a writer of the attempt. Continuing an attempt from the resume prompt
+// claims it; once another tab or device claims it, this page's saves are refused.
+const writerId = crypto.randomUUID()
+let claimOnNextSave = false
+const takenOver = ref(false)
+
+// Time actually spent answering; pauses while the page is hidden or left
+const { elapsedSeconds, start: startClock, pause: pauseClock, sync: syncClock } = useExamClock()
+
 // Computed properties
 const totalQuestions = computed(() => exam.value?.exam_questions?.length || 0)
 
-const timeLimit = computed(() => {
-  if (!exam.value?.time_limit) return 30 * 60 // Default 30 minutes
-  return exam.value.time_limit * 60 // Convert minutes to seconds
+const questionIds = computed(() => (exam.value?.exam_questions || []).map((eq) => eq.question))
+
+// The limit the server attempt started with (null: none), so editing the exam doesn't
+// change the time of a sitting already under way. undefined: no server attempt.
+const attemptTimeLimitSeconds = ref(undefined)
+
+// null when there is no time limit
+const timeLimitSeconds = computed(() => {
+  const snapshot = savedAttempt.value ? savedAttempt.value.timeLimitSeconds : attemptTimeLimitSeconds.value
+  if (snapshot !== undefined) return snapshot
+  const minutes = Number(exam.value?.time_limit)
+  return Number.isFinite(minutes) && minutes > 0 ? minutes * 60 : null
+})
+
+const savedAttemptTimeUp = computed(() =>
+  !!(savedAttempt.value && timeLimitSeconds.value && savedAttempt.value.elapsedSeconds >= timeLimitSeconds.value)
+)
+
+const savedAttemptTimeLeft = computed(() => {
+  if (!savedAttempt.value) return ''
+  if (!timeLimitSeconds.value) return '不限時'
+  const left = Math.max(0, timeLimitSeconds.value - savedAttempt.value.elapsedSeconds)
+  return left >= 60 ? `${Math.floor(left / 60)} 分鐘` : `${left} 秒`
+})
+
+// "今天 14:32" / "9 月 26 日 14:32"
+const savedAttemptWhen = computed(() => {
+  const at = savedAttempt.value?.updatedAt ? new Date(savedAttempt.value.updatedAt) : null
+  if (!at || Number.isNaN(at.getTime())) return ''
+  const time = at.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false })
+  const today = new Date()
+  const sameDay = at.toDateString() === today.toDateString()
+  return sameDay ? `今天 ${time} ` : `${at.getMonth() + 1} 月 ${at.getDate()} 日 ${time} `
 })
 
 const currentQuestion = computed(() => {
@@ -382,8 +520,9 @@ const loadExam = async () => {
     exam.value = data
     await loadAllQuestionDetails()
     
-    // Try to restore state from localStorage
-    restoreExamState()
+    // An unfinished attempt? Ask whether to continue instead of resuming silently.
+    savedAttempt.value = await loadSavedAttempt()
+    showResumePrompt.value = !!savedAttempt.value
   } catch (err) {
     const friendlyError = createUserFriendlyError(err)
     error.value = friendlyError.message
@@ -391,6 +530,66 @@ const loadExam = async () => {
   } finally {
     isLoading.value = false
   }
+}
+
+// The unfinished attempt to offer: the server's, merged with this device's copy.
+const loadSavedAttempt = async () => {
+  const examId = exam.value.id
+  try {
+    currentUserId.value = await examService.getCurrentUserId()
+  } catch {
+    currentUserId.value = null
+  }
+
+  let local = loadAttempt(examId, questionIds.value)
+  // Progress left on this browser by a different account (or with no one signed in) is not this user's
+  if (local?.userId && local.userId !== currentUserId.value) local = null
+
+  let server = null
+  let serverReachable = true
+  try {
+    server = fromServerAttempt((await examService.getExamAttempt(examId)).data, questionIds.value)
+  } catch (err) {
+    serverReachable = false
+    console.warn('Could not load the saved attempt from the server; using this device only', err)
+  }
+
+  if (server) {
+    // Answers made on this device that never reached the server (e.g. offline) win when
+    // newer, but time used only moves forward. That includes a sitting started offline,
+    // before this device had a server attempt: it carries on as the server's attempt.
+    const unsynced = local && (local.attemptId === server.attemptId || !local.attemptId)
+    if (unsynced && new Date(local.updatedAt) > new Date(server.updatedAt)) {
+      return {
+        ...local,
+        attemptId: server.attemptId,
+        elapsedSeconds: Math.max(local.elapsedSeconds, server.elapsedSeconds),
+        timeLimitSeconds: server.timeLimitSeconds
+      }
+    }
+    return server
+  }
+  // No open attempt on the server, but this copy belonged to one: it was submitted
+  // or abandoned elsewhere, so it is stale.
+  if (local?.attemptId && serverReachable) {
+    clearAttempt(examId)
+    return null
+  }
+  return local
+}
+
+// Start (or get the already open) attempt on the server. Failing leaves progress on this device.
+const openServerAttempt = async () => {
+  try {
+    const { data } = await examService.startExamAttempt(exam.value.id)
+    attemptId.value = data?.id || null
+    attemptTimeLimitSeconds.value = data?.id ? (data.time_limit_seconds ?? null) : undefined
+  } catch (err) {
+    attemptId.value = null
+    attemptTimeLimitSeconds.value = undefined
+    console.warn('Could not start the attempt on the server; progress stays on this device', err)
+  }
+  syncState.value = attemptId.value ? 'synced' : 'local'
 }
 
 const loadAllQuestionDetails = async () => {
@@ -411,7 +610,14 @@ const loadAllQuestionDetails = async () => {
 
 const handleStartExam = async () => {
   if (!exam.value || starting.value) return
-  
+
+  // Never start over on top of saved progress without asking
+  if (savedAttempt.value) {
+    confirmingRestart.value = false
+    showResumePrompt.value = true
+    return
+  }
+
   starting.value = true
   quizMessage.value = ''
   userAnswers.value = {}
@@ -419,6 +625,7 @@ const handleStartExam = async () => {
   
   try {
     await examStore.startExam(exam.value.id)
+    await openServerAttempt()
     launchQuiz()
   } catch (err) {
     const friendlyError = createUserFriendlyError(err)
@@ -432,8 +639,67 @@ const handleStartExam = async () => {
 const launchQuiz = () => {
   isQuizActive.value = true
   currentQuestionIndex.value = 0
-  startTime.value = Date.now()
+  flaggedQuestions.value = new Set()
+  startClock(0)
   persistExamState()
+}
+
+const applySavedAttempt = () => {
+  const saved = savedAttempt.value
+  userAnswers.value = { ...saved.answers }
+  flaggedQuestions.value = new Set(saved.flagged)
+  currentQuestionIndex.value = saved.currentIndex
+  attemptTimeLimitSeconds.value = saved.timeLimitSeconds
+  savedAttempt.value = null
+  showResumePrompt.value = false
+  return saved
+}
+
+const resumeAttempt = async () => {
+  const saved = applySavedAttempt()
+  showResults.value = false
+  isQuizActive.value = true
+  startClock(saved.elapsedSeconds)
+  quizMessage.value = `已接著上次的進度，從第 ${saved.currentIndex + 1} 題開始`
+  attemptId.value = saved.attemptId
+  syncState.value = saved.attemptId ? 'synced' : 'local'
+  claimOnNextSave = true // continuing here takes the attempt over from any other tab or device
+  persistExamState()
+  // Progress that only existed on this device gets an attempt on the server now
+  if (!attemptId.value) await openServerAttempt()
+  await flushServerSave()
+}
+
+// The saved attempt has no time left: grade what was answered.
+const submitSavedAttempt = () => {
+  const saved = applySavedAttempt()
+  attemptId.value = saved.attemptId
+  startClock(saved.elapsedSeconds)
+  submitExam(true)
+}
+
+const restartError = ref('')
+
+const restartAttempt = async () => {
+  const previousAttemptId = savedAttempt.value?.attemptId
+  restartError.value = ''
+  // The server must close the old attempt first; otherwise starting again would
+  // hand back that same attempt with its time already used.
+  if (previousAttemptId) {
+    try {
+      await examService.abandonExamAttempt(previousAttemptId)
+    } catch (err) {
+      console.warn('Could not abandon the previous attempt on the server', err)
+      restartError.value = '現在連不上伺服器，進度沒有清除。請確認網路後再試一次。'
+      return
+    }
+  }
+  clearAttempt(exam.value.id)
+  savedAttempt.value = null
+  showResumePrompt.value = false
+  confirmingRestart.value = false
+  userAnswers.value = {}
+  await handleStartExam()
 }
 
 const selectAnswer = (optionId) => {
@@ -481,13 +747,16 @@ const handleSubmitExam = async () => {
 }
 
 const submitExam = async (autoSubmit = false) => {
-  // Stop timer
-  if (timerRef.value) {
-    timerRef.value.stopTimer()
-  }
-  
+  pauseClock()
   isQuizActive.value = false
-  
+  // Graded from here on: no longer an unfinished attempt, even if saving the result fails.
+  // The server closes it together with saving the result (save_exam_result + attempt id).
+  clearTimeout(serverSaveTimer)
+  submittedAttemptId.value = attemptId.value
+  attemptId.value = null
+  if (exam.value) clearAttempt(exam.value.id)
+  lastSavedAt.value = null
+
   let correct = 0
   const total = totalQuestions.value
   const results = []
@@ -530,9 +799,8 @@ const submitExam = async (autoSubmit = false) => {
   })
   
   const score = Math.round((correct / total) * 100)
-  const durationSeconds = startTime.value
-    ? Math.round((Date.now() - startTime.value) / 1000)
-    : null
+  // Time actually spent answering (pauses while away are excluded)
+  const durationSeconds = elapsedSeconds.value
   
   examResults.value = {
     correct,
@@ -551,26 +819,38 @@ const submitExam = async (autoSubmit = false) => {
   saveResultsToBackend(score, correct, total, durationSeconds, wrongQuestionIds)
 }
 
+// An attempt started offline has no server attempt yet: open one before saving the
+// result, so a retry after a lost response returns the first result instead of adding
+// another. Still unreachable: the result is saved without one.
+const ensureSubmittedAttempt = async () => {
+  if (submittedAttemptId.value) return
+  try {
+    const { data } = await examService.startExamAttempt(exam.value.id)
+    submittedAttemptId.value = data?.id || null
+  } catch (err) {
+    console.warn('Could not open a server attempt for the result', err)
+  }
+}
+
 // Separate function to save results to backend (non-blocking)
 const saveResultsToBackend = async (score, correct, total, durationSeconds, wrongQuestionIds) => {
   try {
+    await ensureSubmittedAttempt()
     await examStore.saveExamResult({
       exam_id: exam.value.id,
       score,
       correct_count: correct,
       total_count: total,
       duration_seconds: durationSeconds,
-      wrong_question_ids: wrongQuestionIds
+      wrong_question_ids: wrongQuestionIds,
+      attempt_id: submittedAttemptId.value
     })
-    // Clear persisted state after successful submission
-    clearPersistedState()
   } catch (err) {
     console.error('Failed to save exam result:', err)
     // Show submission error modal but results are already shown
     const friendlyError = createUserFriendlyError(err)
     submissionErrorMessage.value = friendlyError.message
     showSubmissionError.value = true
-    // Keep the state persisted for retry
   }
 }
 
@@ -581,15 +861,17 @@ const retrySubmission = async () => {
   if (!examResults.value) return
   
   try {
+    await ensureSubmittedAttempt()
     await examStore.saveExamResult({
       exam_id: exam.value.id,
       score: examResults.value.score,
       correct_count: examResults.value.correct,
       total_count: examResults.value.total,
       duration_seconds: examResults.value.duration,
-      wrong_question_ids: examResults.value.wrongQuestionIds
+      wrong_question_ids: examResults.value.wrongQuestionIds,
+      // Same attempt: a retry after a lost response doesn't create a second result
+      attempt_id: submittedAttemptId.value
     })
-    clearPersistedState()
     quizMessage.value = '成績已成功保存'
   } catch (err) {
     const friendlyError = createUserFriendlyError(err)
@@ -683,67 +965,101 @@ const handleKeyboardNavigation = (event) => {
   }
 }
 
-// State persistence
+// State persistence: the unfinished attempt is saved on this device at once
+// (see examAttemptStorage) and sent to the server shortly after.
+const currentProgress = () => ({
+  questionIds: questionIds.value,
+  answers: userAnswers.value,
+  flagged: flaggedQuestions.value,
+  currentIndex: currentQuestionIndex.value,
+  elapsedSeconds: elapsedSeconds.value
+})
+
 const persistExamState = () => {
+  if (!exam.value || !isQuizActive.value || takenOver.value) return
+  syncClock()
+  const savedAt = saveAttempt(exam.value.id, {
+    ...currentProgress(),
+    attemptId: attemptId.value,
+    userId: currentUserId.value,
+    writerId,
+    timeLimitSeconds: attemptTimeLimitSeconds.value
+  })
+  if (savedAt) lastSavedAt.value = savedAt
+  scheduleServerSave()
+}
+
+const scheduleServerSave = () => {
+  clearTimeout(serverSaveTimer)
+  serverSaveTimer = setTimeout(() => flushServerSave(), 2000)
+}
+
+// Send the progress to the server now. `keepalive` is for the page being hidden or closed.
+const flushServerSave = async ({ keepalive = false } = {}) => {
+  clearTimeout(serverSaveTimer)
+  serverSaveTimer = null
+  if (!exam.value || !isQuizActive.value || takenOver.value) return
+  if (!attemptId.value) {
+    if (keepalive) return
+    await openServerAttempt() // e.g. it failed while offline; try again
+    if (!attemptId.value) return
+  }
+  const progress = toServerProgress(currentProgress())
+  const claim = claimOnNextSave
   try {
-    const state = {
-      examId: exam.value?.id,
-      userAnswers: userAnswers.value,
-      currentQuestionIndex: currentQuestionIndex.value,
-      isQuizActive: isQuizActive.value,
-      startTime: startTime.value,
-      flaggedQuestions: Array.from(flaggedQuestions.value),
-      timestamp: new Date().toISOString()
-    }
-    localStorage.setItem('exam-preview-state', JSON.stringify(state))
+    await examService.saveAttemptProgress(attemptId.value, progress, { writerId, claim, keepalive })
+    if (claim) claimOnNextSave = false
+    syncState.value = 'synced'
   } catch (err) {
-    console.warn('Failed to persist exam state:', err)
+    if (err.conflict) {
+      stopForTakeover()
+      return
+    }
+    syncState.value = 'local'
+    console.warn('Could not save progress to the server; it is kept on this device', err)
   }
 }
 
-const restoreExamState = () => {
-  try {
-    const savedState = localStorage.getItem('exam-preview-state')
-    if (!savedState) return
-    
-    const state = JSON.parse(savedState)
-    
-    // Only restore if same exam and recent (within 24 hours)
-    if (state.examId !== exam.value?.id) {
-      clearPersistedState()
-      return
-    }
-    
-    const savedTime = new Date(state.timestamp)
-    const hoursDiff = (Date.now() - savedTime.getTime()) / (1000 * 60 * 60)
-    
-    if (hoursDiff >= 24) {
-      clearPersistedState()
-      return
-    }
-    
-    // Restore state
-    userAnswers.value = state.userAnswers || {}
-    currentQuestionIndex.value = state.currentQuestionIndex || 0
-    isQuizActive.value = state.isQuizActive || false
-    startTime.value = state.startTime || null
-    flaggedQuestions.value = new Set(state.flaggedQuestions || [])
-    
-    if (isQuizActive.value) {
-      quizMessage.value = '已恢復上次的作答進度'
-    }
-  } catch (err) {
-    console.warn('Failed to restore exam state:', err)
-    clearPersistedState()
-  }
+// Another tab or device continued the attempt. Stop answering and counting time here
+// until the user picks which progress to keep.
+const stopForTakeover = () => {
+  if (takenOver.value) return
+  clearTimeout(serverSaveTimer)
+  pauseClock()
+  takenOver.value = true
 }
 
-const clearPersistedState = () => {
-  try {
-    localStorage.removeItem('exam-preview-state')
-  } catch (err) {
-    console.warn('Failed to clear persisted state:', err)
-  }
+// Discard this page's (older) progress and offer the attempt as saved elsewhere.
+const loadLatestAttempt = async () => {
+  isQuizActive.value = false
+  takenOver.value = false
+  // This page's own copy on this device would otherwise look newer than the server's
+  if (loadAttempt(exam.value.id, questionIds.value)?.writerId === writerId) clearAttempt(exam.value.id)
+  savedAttempt.value = await loadSavedAttempt()
+  showResumePrompt.value = !!savedAttempt.value
+}
+
+// Keep going with this page's progress: take the attempt back, overwriting the other.
+const keepThisAttempt = async () => {
+  takenOver.value = false
+  claimOnNextSave = true
+  startClock(elapsedSeconds.value)
+  persistExamState()
+  await flushServerSave()
+}
+
+// Save the time used every 10 seconds, and whenever the page is hidden or closed
+watch(elapsedSeconds, (seconds) => {
+  if (isQuizActive.value && seconds > 0 && seconds % 10 === 0) persistExamState()
+})
+
+const saveBeforeLeaving = () => {
+  persistExamState()
+  flushServerSave({ keepalive: true })
+}
+
+const persistOnHide = () => {
+  if (document.visibilityState === 'hidden') saveBeforeLeaving()
 }
 
 // Error handling
@@ -798,7 +1114,10 @@ const confirmNavigation = () => {
   
   // Navigate to the saved destination
   if (destination) {
-    // Temporarily disable quiz active to allow navigation
+    // Save and pause first; the attempt stays unfinished and can be resumed
+    persistExamState()
+    flushServerSave()
+    pauseClock()
     isQuizActive.value = false
     router.push(destination)
   }
@@ -819,17 +1138,25 @@ onBeforeRouteLeave((to, from, next) => {
 // Lifecycle hooks
 onMounted(() => {
   loadExam()
-  
-  // Handle browser refresh/close warning
+
+  // Handle browser refresh/close warning, and save progress whenever the page goes away
   window.addEventListener('beforeunload', handleBeforeUnload)
+  window.addEventListener('pagehide', saveBeforeLeaving)
+  document.addEventListener('visibilitychange', persistOnHide)
 })
 
 onBeforeUnmount(() => {
+  persistExamState()
+  flushServerSave()
+  pauseClock()
   window.removeEventListener('beforeunload', handleBeforeUnload)
+  window.removeEventListener('pagehide', saveBeforeLeaving)
+  document.removeEventListener('visibilitychange', persistOnHide)
 })
 
 const handleBeforeUnload = (event) => {
   if (isQuizActive.value) {
+    persistExamState()
     event.preventDefault()
     event.returnValue = ''
   }
@@ -1091,6 +1418,95 @@ defineExpose({
   display: flex;
   gap: 12px;
   justify-content: flex-end;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: var(--on-primary);
+}
+
+.btn-link {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-link:hover:not(:disabled) {
+  color: var(--text-primary);
+}
+
+.save-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Resume Prompt */
+.modal-content.resume-modal {
+  max-width: 480px;
+  padding: 28px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+}
+
+.resume-modal h3 {
+  font-size: 21px;
+}
+
+.resume-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 16px 0 12px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
+}
+
+.resume-facts div {
+  padding: 12px 14px;
+  background: var(--surface-raised);
+}
+
+.resume-facts dt {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.resume-facts dd {
+  margin: 4px 0 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.modal-content p.resume-note {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.modal-content p.resume-error {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.resume-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.resume-actions .btn {
+  width: 100%;
+  min-height: 44px;
+  justify-content: center;
 }
 
 /* Error Modal */
